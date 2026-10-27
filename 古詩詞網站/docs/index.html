@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>謝老師AI互動教室．古詩詞文</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>詩</text></svg>">
+<style>
+@font-face {
+  font-family:"香港自由標楷體";
+  src:url("https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/Gianb9JmZo2K6FxFn8BcbF7tnTf") format("woff2");
+  font-weight:400; font-style:normal; font-display:swap;
+}
+:root {
+  --paper:#fbf3e0;
+  --ink:#3d3226;
+  --ink-soft:#6b5d4a;
+  --seal:#b5433a;
+  --line:#d9c9a3;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { overflow-x:hidden; }
+body {
+  font-family:"香港自由標楷體","DFKai-SB","BiauKai","AR PL UKai CN","Kaiti TC",serif;
+  color:var(--ink);
+  background-color:var(--paper);
+  background-image:url("https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/XYvEbamWroZDurxA4yqczFrsneL");
+  background-size:cover;
+  background-position:center top;
+  background-attachment:fixed;
+  min-height:100vh;
+  padding-bottom:60px;
+}
+@media(max-width:768px){ body { background-attachment:scroll; } }
+body::after {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:rgba(251,243,224,0.25);
+}
+.wrap { position:relative; z-index:1; max-width:900px; margin:0 auto; padding:0 16px; }
+
+/* ===== 動態圖層 ===== */
+.fx { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:2; }
+.petal {
+  position:absolute; top:-30px;
+  width:14px; height:12px;
+  background:radial-gradient(circle at 30% 30%, #ffe0e6, #f0a8b8);
+  border-radius:150% 0 150% 0;
+  opacity:0.85;
+  animation:petal-fall linear infinite;
+}
+@keyframes petal-fall {
+  0%   { transform:translate(0,-5vh) rotate(0deg); }
+  50%  { transform:translate(40px,50vh) rotate(360deg); }
+  100% { transform:translate(-30px,108vh) rotate(720deg); opacity:0.6; }
+}
+.cloud {
+  position:absolute; background:rgba(255,255,255,0.35);
+  border-radius:60px; filter:blur(22px);
+  animation:cloud-drift linear infinite;
+}
+@keyframes cloud-drift {
+  from { transform:translateX(-20vw); }
+  to   { transform:translateX(120vw); }
+}
+.spark {
+  position:absolute; width:5px; height:5px; border-radius:50%;
+  background:#ffd98a; box-shadow:0 0 10px #ffd98a, 0 0 20px rgba(255,217,138,0.6);
+  animation:twinkle ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%,100% { opacity:0.15; transform:scale(0.7); }
+  50%    { opacity:0.9; transform:scale(1.2); }
+}
+@media(prefers-reduced-motion: reduce) {
+  .fx * { animation:none !important; }
+}
+
+/* ===== Hero ===== */
+.hero {
+  position:relative; margin:18px auto 26px; border-radius:22px; overflow:hidden;
+  box-shadow:0 10px 30px rgba(90,60,30,0.18), 0 2px 6px rgba(90,60,30,0.1);
+  border:3px solid #fff;
+}
+.hero img { display:block; width:100%; height:auto; }
+.hero-mask {
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(251,243,224,0.15) 0%, rgba(251,243,224,0.55) 60%, rgba(251,243,224,0.92) 100%);
+}
+.hero-text {
+  position:absolute; left:0; right:0; bottom:18px; text-align:center; padding:0 20px;
+}
+.hero-text h1 {
+  font-size:clamp(26px, 5.5vw, 50px);
+  color:#4a2f1a; letter-spacing:2px;
+  text-shadow:0 2px 0 #fff, 0 4px 14px rgba(255,255,255,0.8);
+  line-height:1.25; font-weight:700;
+}
+.hero-text .sub {
+  display:inline-block; margin-top:6px;
+  font-size:clamp(20px, 4vw, 34px);
+  color:var(--seal); letter-spacing:8px; padding:2px 18px;
+}
+.hero-text .sub::before, .hero-text .sub::after {
+  content:""; display:inline-block; width:28px; height:2px; background:var(--seal);
+  vertical-align:middle; margin:0 10px; opacity:0.6;
+}
+.seal {
+  display:inline-block; background:var(--seal); color:#fff;
+  font-size:14px; padding:3px 8px; border-radius:4px;
+  margin-left:10px; transform:rotate(-4deg); vertical-align:middle; letter-spacing:2px;
+}
+
+/* ===== 年級卡片網格 ===== */
+main.grid-grades {
+  display:grid; grid-template-columns:repeat(2, 1fr); gap:16px;
+}
+@media(min-width:720px){ main.grid-grades { grid-template-columns:repeat(3, 1fr); gap:18px; } }
+@media(min-width:1080px){ main.grid-grades { grid-template-columns:repeat(4, 1fr); gap:18px; } }
+.grade-block {
+  background:rgba(255,253,246,0.94);
+  border-radius:20px; padding:22px 16px 18px; text-align:center;
+  border:2px solid #fff;
+  box-shadow:0 6px 18px rgba(120,80,40,0.14), inset 0 0 0 1px var(--line);
+  backdrop-filter:blur(2px);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.grade-block:hover { transform:translateY(-4px); box-shadow:0 12px 26px rgba(120,80,40,0.2); }
+.grade-badge {
+  width:108px; height:108px; margin:0 auto 12px; border-radius:50%;
+  background:#fff; overflow:hidden;
+  box-shadow:0 6px 16px rgba(120,80,40,0.2), 0 0 0 4px #fff, 0 0 0 6px var(--accent);
+}
+.grade-badge img { width:100%; height:100%; object-fit:cover; display:block; }
+.grade-name {
+  font-size:30px; color:var(--ink); letter-spacing:4px; line-height:1.1; font-weight:700;
+}
+.grade-sub { font-size:12px; color:var(--ink-soft); margin:6px 0 14px; letter-spacing:1px; line-height:1.5; }
+
+.entries { display:flex; flex-direction:column; gap:10px; }
+.entry-row {
+  position:relative; display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+}
+.entry-btn {
+  flex:1; min-width:0;
+  display:flex; align-items:center; justify-content:center; gap:8px; padding:8px 10px;
+  background:linear-gradient(180deg, var(--accent), var(--accent-deep));
+  color:#fff; text-decoration:none; border-radius:22px;
+  box-shadow:0 3px 0 var(--accent-deep);
+  transition:transform .15s, box-shadow .15s;
+}
+.entry-btn:active { transform:translateY(2px); box-shadow:0 1px 0 var(--accent-deep); }
+.entry-btn-icon {
+  flex:0 0 32px; width:32px; height:32px; border-radius:50%;
+  object-fit:cover; border:2px solid rgba(255,255,255,0.85);
+  box-shadow:0 1px 3px rgba(0,0,0,0.15);
+}
+.entry-title { font-size:14px; letter-spacing:1px; line-height:1.3; }
+.qr-toggle {
+  flex:0 0 40px; width:40px; height:40px; border-radius:50%;
+  border:2px solid var(--accent); background:#fff; color:var(--accent-deep);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background .2s, color .2s;
+}
+.qr-toggle:hover { background:var(--accent); color:#fff; }
+.qr-toggle.active { background:var(--seal); border-color:var(--seal); color:#fff; }
+
+.qr-box {
+  flex-basis:100%; max-height:0; overflow:hidden;
+  transition:max-height .4s ease, margin-top .3s ease;
+  text-align:center;
+}
+.qr-box.open { max-height:320px; margin-top:4px; }
+.qr-frame {
+  display:inline-block; padding:10px; background:#fff; border-radius:12px;
+  border:2px solid var(--line);
+}
+.qr-frame img, .qr-frame canvas { display:block; }
+.qr-hint { font-size:12px; color:var(--ink-soft); margin-top:8px; letter-spacing:1px; }
+
+/* ===== Footer ===== */
+.foot {
+  text-align:center; margin-top:30px; color:var(--ink-soft); font-size:13px; letter-spacing:2px;
+}
+.foot .rule { display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:8px; letter-spacing:4px; }
+.foot .rule span { display:inline-block; width:60px; height:1px; background:var(--line); }
+
+@media(max-width:480px) {
+  .grade-badge { width:88px; height:88px; }
+  .grade-name { font-size:26px; }
+  .entry-title { font-size:13px; }
+}
+</style>
+</head>
+<body>
+<div class="fx" id="fx" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="hero">
+    <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/RheAb7KZaozDWMx4UnOc4DpWnwh" alt="古風書齋">
+    <div class="hero-mask"></div>
+    <div class="hero-text">
+      <h1>謝老師人工智能（AI）互動教室</h1>
+      <div class="sub">古詩詞文<span class="seal">教學</span></div>
+    </div>
+  </header>
+
+  <main class="grid-grades">
+    <section class="grade-block" style="--accent:#e8a0a8;--accent-deep:#c97078">
+      <div class="grade-badge"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/UQ26b3g23oqTPGxlLC4cvHhxn3b" alt=""></div>
+      <h2 class="grade-name">小一</h2>
+      <p class="grade-sub">一年級　啟蒙唐詩．朗朗上口</p>
+      <div class="entries">
+        <div class="entry-row">
+          <a class="entry-btn" href="小一古詩詞文.html" data-url="小一古詩詞文.html">
+            <img class="entry-btn-icon" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/UQ26b3g23oqTPGxlLC4cvHhxn3b" alt="">
+            <span class="entry-title">小一古詩詞文</span>
+          </a>
+          <button class="qr-toggle" data-target="qr-g1" aria-label="顯示二維碼"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v7M14 20h3"/></svg></button>
+          <div class="qr-box" id="qr-g1">
+            <div class="qr-frame"><div id="qrimg-g1"></div></div>
+            <p class="qr-hint">手機掃碼開始</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="grade-block" style="--accent:#e8b87a;--accent-deep:#c48a48">
+      <div class="grade-badge"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/W5nYbM4q3od5T8xH0IWcnmP3nlh" alt=""></div>
+      <h2 class="grade-name">小二</h2>
+      <p class="grade-sub">二年級　古詩童趣．山水之間</p>
+      <div class="entries">
+        <div class="entry-row">
+          <a class="entry-btn" href="小二古詩詞文.html" data-url="小二古詩詞文.html">
+            <img class="entry-btn-icon" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/W5nYbM4q3od5T8xH0IWcnmP3nlh" alt="">
+            <span class="entry-title">小二古詩詞文</span>
+          </a>
+          <button class="qr-toggle" data-target="qr-g2" aria-label="顯示二維碼"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v7M14 20h3"/></svg></button>
+          <div class="qr-box" id="qr-g2">
+            <div class="qr-frame"><div id="qrimg-g2"></div></div>
+            <p class="qr-hint">手機掃碼開始</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="grade-block" style="--accent:#8ab89a;--accent-deep:#5e9070">
+      <div class="grade-badge"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/Xca8bOEh7oXsDgxQHZ6cPtktnQe" alt=""></div>
+      <h2 class="grade-name">小三</h2>
+      <p class="grade-sub">三年級　詩詞格律．平仄入門</p>
+      <div class="entries">
+        <div class="entry-row">
+          <a class="entry-btn" href="小三古诗词文.html" data-url="小三古诗词文.html">
+            <img class="entry-btn-icon" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/Xca8bOEh7oXsDgxQHZ6cPtktnQe" alt="">
+            <span class="entry-title">小三古詩詞文</span>
+          </a>
+          <button class="qr-toggle" data-target="qr-g3" aria-label="顯示二維碼"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v7M14 20h3"/></svg></button>
+          <div class="qr-box" id="qr-g3">
+            <div class="qr-frame"><div id="qrimg-g3"></div></div>
+            <p class="qr-hint">手機掃碼開始</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="grade-block" style="--accent:#7a9ec8;--accent-deep:#4e78a8">
+      <div class="grade-badge"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/XvKmb8yfkoL9dYxessjcHa1Wnuf" alt=""></div>
+      <h2 class="grade-name">小四</h2>
+      <p class="grade-sub">四年級　唐宋名篇之意象</p>
+      <div class="entries">
+        <div class="entry-row">
+          <a class="entry-btn" href="小四古詩詞文.html" data-url="小四古詩詞文.html">
+            <img class="entry-btn-icon" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/XvKmb8yfkoL9dYxessjcHa1Wnuf" alt="">
+            <span class="entry-title">小四古詩詞文</span>
+          </a>
+          <button class="qr-toggle" data-target="qr-g4" aria-label="顯示二維碼"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v7M14 20h3"/></svg></button>
+          <div class="qr-box" id="qr-g4">
+            <div class="qr-frame"><div id="qrimg-g4"></div></div>
+            <p class="qr-hint">手機掃碼開始</p>
+          </div>
+        </div>
+        <div class="entry-row">
+          <a class="entry-btn" href="《題西林壁》互動遊戲.html" data-url="《題西林壁》互動遊戲.html">
+            <img class="entry-btn-icon" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/MKfAbyIUMo8Br0xoLndccxCdn6g" alt="">
+            <span class="entry-title">《題西林壁》互動遊戲</span>
+          </a>
+          <button class="qr-toggle" data-target="qr-g4extra" aria-label="顯示二維碼"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v7M14 20h3"/></svg></button>
+          <div class="qr-box" id="qr-g4extra">
+            <div class="qr-frame"><div id="qrimg-g4extra"></div></div>
+            <p class="qr-hint">手機掃碼開始</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="grade-block" style="--accent:#b89ec8;--accent-deep:#8e6ea8">
+      <div class="grade-badge"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/CbZibbZDLogbWrxcnYDcC1n4ngd" alt=""></div>
+      <h2 class="grade-name">小五</h2>
+      <p class="grade-sub">五年級　經典古文．情景交融</p>
+      <div class="entries">
+        <div class="entry-row">
+          <a class="entry-btn" href="小五古诗词文.html" data-url="小五古诗词文.html">
+            <img class="entry-btn-icon" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/CbZibbZDLogbWrxcnYDcC1n4ngd" alt="">
+            <span class="entry-title">小五古詩詞文</span>
+          </a>
+          <button class="qr-toggle" data-target="qr-g5" aria-label="顯示二維碼"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v7M14 20h3"/></svg></button>
+          <div class="qr-box" id="qr-g5">
+            <div class="qr-frame"><div id="qrimg-g5"></div></div>
+            <p class="qr-hint">手機掃碼開始</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="grade-block" style="--accent:#d47a6a;--accent-deep:#b05040">
+      <div class="grade-badge"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/FQOXbpHQzouTmUxe5kbc6bPGnNe" alt=""></div>
+      <h2 class="grade-name">小六</h2>
+      <p class="grade-sub">六年級　名篇賞析．升學銜接</p>
+      <div class="entries">
+        <div class="entry-row">
+          <a class="entry-btn" href="小六古詩詞文.html" data-url="小六古詩詞文.html">
+            <img class="entry-btn-icon" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/FQOXbpHQzouTmUxe5kbc6bPGnNe" alt="">
+            <span class="entry-title">小六古詩詞文</span>
+          </a>
+          <button class="qr-toggle" data-target="qr-g6" aria-label="顯示二維碼"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v7M14 20h3"/></svg></button>
+          <div class="qr-box" id="qr-g6">
+            <div class="qr-frame"><div id="qrimg-g6"></div></div>
+            <p class="qr-hint">手機掃碼開始</p>
+          </div>
+        </div>
+      </div>
+    </section></main>
+
+  <footer class="foot">
+    <div class="rule"><span></span>古風水彩．互動學習<span></span></div>
+    <div>點擊按鈕開啟課程，或點擊右側 QR 圖示顯示二維碼，手機掃碼開始</div>
+  </footer>
+</div>
+
+<script src="https://fastly.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+/* 生成動態特效：桃花瓣 × 18、浮雲 × 4、光點 × 12 */
+(function(){
+  const fx = document.getElementById('fx');
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div'); p.className='petal';
+    p.style.left = Math.random()*100+'vw';
+    p.style.animationDuration = (8+Math.random()*8)+'s';
+    p.style.animationDelay = (-Math.random()*12)+'s';
+    const s = 10+Math.random()*10;
+    p.style.width = s+'px'; p.style.height = (s*0.85)+'px';
+    fx.appendChild(p);
+  }
+  for(let i=0;i<4;i++){
+    const c = document.createElement('div'); c.className='cloud';
+    c.style.top = (5+Math.random()*70)+'vh';
+    c.style.width = (120+Math.random()*140)+'px';
+    c.style.height = (40+Math.random()*30)+'px';
+    c.style.animationDuration = (60+Math.random()*60)+'s';
+    c.style.animationDelay = (-Math.random()*60)+'s';
+    fx.appendChild(c);
+  }
+  for(let i=0;i<12;i++){
+    const s = document.createElement('div'); s.className='spark';
+    s.style.left = Math.random()*100+'vw';
+    s.style.top = Math.random()*100+'vh';
+    s.style.animationDuration = (2+Math.random()*3)+'s';
+    s.style.animationDelay = (-Math.random()*4)+'s';
+    fx.appendChild(s);
+  }
+})();
+
+const GAMES = [
+  {"id": "g1", "url": "小一古詩詞文.html"},
+  {"id": "g2", "url": "小二古詩詞文.html"},
+  {"id": "g3", "url": "小三古诗词文.html"},
+  {"id": "g4", "url": "小四古詩詞文.html"},
+  {"id": "g4extra", "url": "《題西林壁》互動遊戲.html"},
+  {"id": "g5", "url": "小五古诗词文.html"},
+  {"id": "g6", "url": "小六古詩詞文.html"}
+];
+document.querySelectorAll('.entry-btn').forEach(a=>{
+  a.addEventListener('click', (ev)=>{
+    ev.preventDefault();
+    const url = a.getAttribute('data-url') || a.href;
+    try {
+      const w = window.open(url, '_blank');
+      if(!w) window.location.href = url;
+    } catch(e) { window.location.href = url; }
+  });
+});
+document.querySelectorAll('.qr-toggle').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const id = btn.dataset.target;
+    const box = document.getElementById(id);
+    const already = box.classList.contains('open');
+    document.querySelectorAll('.qr-box.open').forEach(b=>b.classList.remove('open'));
+    document.querySelectorAll('.qr-toggle.active').forEach(b=>b.classList.remove('active'));
+    if(!already){
+      box.classList.add('open');
+      btn.classList.add('active');
+      const inner = document.getElementById('qrimg-'+id.replace('qr-',''));
+      if(inner && !inner.hasChildNodes()){
+        const g = GAMES.find(x=>x.id===id.replace('qr-',''));
+        if(g && window.QRCode){
+          const absUrl = new URL(g.url, window.location.href).href;
+          new QRCode(inner, { text:absUrl, width:160, height:160,
+            colorDark:"#3d3226", colorLight:"#ffffff",
+            correctLevel: QRCode.CorrectLevel.M });
+        }
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>

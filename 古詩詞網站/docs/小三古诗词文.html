@@ -1,0 +1,3410 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>古詩樂園 - 小學古詩文互動學習</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{width:100%;min-height:100%;font-family:"ZCOOL XiaoWei","Ma Shan Zheng","Noto Serif TC","PingFang TC",serif;color:#2C2C2C;background:#F5E8CC;overflow-x:hidden}
+body{background:linear-gradient(180deg,#F5E8CC 0%,#EFD9B0 100%);padding-bottom:40px;position:relative}
+.petal{position:fixed;top:-30px;width:14px;height:14px;background:radial-gradient(circle at 30% 30%,#FFC0CB,#E68FA8);border-radius:150% 0 150% 0;opacity:.7;pointer-events:none;animation:fall linear infinite;z-index:1}
+@keyframes fall{0%{transform:translateY(-30px) rotate(0)}100%{transform:translateY(110vh) rotate(720deg)}}
+/* 頂部 */
+.topbar{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#8B2B1F,#6B1F15);color:#F5E8CC;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.topbar .back{background:#D4A04A;color:#2C2C2C;border:none;border-radius:20px;padding:6px 14px;font-size:16px;font-weight:bold;cursor:pointer;display:none}
+.topbar .back:hover{background:#e6b258;transform:translateY(-1px)}
+.topbar .next-poem-btn{background:#F5E8CC;color:#8B2B1F;margin-left:10px;box-shadow:0 2px 0 #bfa36a}
+.topbar .next-poem-btn:hover{background:#fff3d6;color:#b53829}
+.topbar .next-poem-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.topbar h1{font-size:22px;color:#F5E8CC;letter-spacing:2px}
+.sound-btn{background:rgba(255,255,255,.15);border:1px solid #D4A04A;color:#F5E8CC;border-radius:50%;width:42px;height:42px;font-size:20px;cursor:pointer}
+/* 首頁 */
+.banner{width:100%;aspect-ratio:16/9;max-height:340px;background-size:cover;background-position:center;position:relative;border-bottom:4px solid #8B2B1F}
+.banner::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(139,43,31,0) 50%,rgba(139,43,31,.55) 100%)}
+.banner-text{position:absolute;bottom:14px;left:0;right:0;text-align:center;color:#FFF3D6;z-index:2;text-shadow:2px 2px 6px rgba(0,0,0,.6)}
+.banner-text h2{font-size:32px;letter-spacing:4px;margin-bottom:4px}
+.banner-text p{font-size:15px;letter-spacing:2px;opacity:.95}
+.section-title{text-align:center;padding:24px 10px 12px;color:#8B2B1F;font-size:22px;letter-spacing:2px;position:relative}
+.section-title::before,.section-title::after{content:"❀";color:#D4A04A;margin:0 10px;font-size:16px}
+.bookshelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;padding:10px 20px;max-width:1200px;margin:0 auto}
+.book{background:#FFF8E8;border:2px solid #D4A04A;border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s;box-shadow:0 4px 10px rgba(139,43,31,.15)}
+.book:hover,.book:active{transform:translateY(-4px) scale(1.02)}
+.book-cover{height:110px;background-size:cover;background-position:center;position:relative}
+.book-cover .icon{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.85);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.book-info{padding:8px 10px}
+.book-info .title{font-size:16px;color:#8B2B1F;font-weight:bold;margin-bottom:3px}
+.book-info .author{font-size:13px;color:#6B4A3C}
+.rule-entry{max-width:460px;margin:20px auto;padding:16px;background:linear-gradient(135deg,#D4A04A,#B8863A);border-radius:16px;text-align:center;color:#FFF8E8;font-size:20px;cursor:pointer;box-shadow:0 6px 14px rgba(139,43,31,.25);letter-spacing:3px}
+.rule-entry .big{font-size:42px;display:block;margin-bottom:4px}
+/* 詩詳情頁 */
+.page{display:none;max-width:1200px;margin:0 auto;padding:10px 16px}
+.page.active{display:block}
+/* 詩歌主圖：桌面端並排顯示，圖片較小；手機端單列 */
+.poem-hero{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center;margin-bottom:8px}
+.poem-img{width:100%;max-height:340px;object-fit:contain;background:#F5E6C8;border-radius:14px;border:3px solid #D4A04A;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.poem-scroll{background:linear-gradient(180deg,#FFF8E8,#F5E8CC);border:2px solid #8B2B1F;border-radius:14px;padding:20px 14px;text-align:center;position:relative;box-shadow:inset 0 0 20px rgba(139,43,31,.08);height:100%;display:flex;align-items:center;justify-content:center}
+.poem-scroll::before,.poem-scroll::after{content:"❦";position:absolute;color:#D4A04A;font-size:18px;left:50%;transform:translateX(-50%)}
+.poem-scroll::before{top:6px}
+.poem-scroll::after{bottom:6px}
+.poem-text{font-size:26px;line-height:1.9;color:#2C2C2C;letter-spacing:3px;padding:10px 0;writing-mode:horizontal-tb}
+.info-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.info-btn{background:#FFF8E8;border:2px solid #D4A04A;border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;font-size:14px;color:#8B2B1F}
+.info-btn .ic{font-size:26px;display:block;margin-bottom:2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.tag{background:#8B2B1F;color:#F5E8CC;padding:4px 10px;border-radius:14px;font-size:13px}
+.tag.gold{background:#D4A04A;color:#2C2C2C}
+.tag.green{background:#4A8C3C}
+.tag.blue{background:#3A7CA5}
+/* 概念圖 */
+.concept{background:#FFF8E8;border:2px dashed #D4A04A;border-radius:14px;padding:14px;margin:12px 0}
+.concept h3{text-align:center;color:#8B2B1F;margin-bottom:10px;font-size:17px}
+.concept-svg{width:100%;height:260px}
+.concept-node{cursor:pointer;transition:all .2s}
+.concept-node:hover{filter:brightness(1.1)}
+.concept-center{fill:#8B2B1F}
+/* 遊戲入口 */
+.game-entries{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.game-card{background:linear-gradient(135deg,#FFF8E8,#F5E8CC);border:2px solid #D4A04A;border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.1);min-height:110px;display:flex;flex-direction:column;justify-content:center}
+.game-card:active{transform:scale(.97)}
+.game-card .gic{font-size:38px;margin-bottom:6px}
+.game-card .gt{font-size:16px;color:#8B2B1F;font-weight:bold}
+.game-card .gd{font-size:12px;color:#6B4A3C;margin-top:3px}
+/* 模態框 */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.show{display:flex}
+.modal-box{background:#FFF8E8;border:3px solid #8B2B1F;border-radius:16px;padding:20px;max-width:960px;width:96vw;max-height:92vh;overflow-y:auto;position:relative;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.modal-close{position:absolute;top:10px;right:12px;background:#8B2B1F;color:#F5E8CC;border:none;width:38px;height:38px;border-radius:50%;font-size:20px;cursor:pointer;z-index:20}
+.modal h3{color:#8B2B1F;text-align:center;margin-bottom:12px;font-size:24px}
+.modal p{font-size:17px;line-height:1.9;color:#2C2C2C;margin-bottom:10px}
+/* 遊戲容器 */
+.game-wrap{background:#FFF8E8;border:3px solid #8B2B1F;border-radius:16px;padding:14px;max-width:900px;margin:0 auto}
+.game-title{text-align:center;color:#8B2B1F;font-size:24px;margin-bottom:10px;letter-spacing:2px}
+.game-hint{text-align:center;color:#6B4A3C;font-size:17px;margin-bottom:12px}
+.game-area{position:relative;width:100%;border-radius:12px;overflow:hidden;background:#2C1810;aspect-ratio:16/10;min-height:400px}
+.game-area .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+/* 小劇場 */
+.theater-hot{position:absolute;width:64px;height:64px;transform:translate(-50%,-50%);cursor:pointer;border-radius:50%;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,160,74,.7)}50%{box-shadow:0 0 0 14px rgba(212,160,74,0)}}
+.theater-hot .ring{position:absolute;inset:0;border:3px solid #D4A04A;border-radius:50%;background:radial-gradient(circle,rgba(255,248,232,.35),rgba(255,248,232,0))}
+.theater-hot .tip{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:#8B2B1F;color:#FFF3D6;font-size:12px;padding:2px 8px;border-radius:10px;white-space:nowrap;animation:bounce 1s infinite}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-4px)}}
+.bubble{position:absolute;background:#FFF;border:2px solid #8B2B1F;border-radius:16px;padding:12px 16px;font-size:15px;max-width:240px;min-width:120px;line-height:1.55;z-index:30;box-shadow:0 4px 14px rgba(0,0,0,.25);animation:popin .3s;transform:translateX(-30%);word-break:break-word}
+.bubble::after{content:"";position:absolute;left:30%;transform:translateX(-50%);border-left:10px solid transparent;border-right:10px solid transparent}
+.bubble.bottom::after{top:-12px;border-bottom:12px solid #8B2B1F}
+.bubble.top::after{bottom:-12px;border-top:12px solid #8B2B1F}
+@keyframes popin{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+/* 找一找 */
+.find-hot{position:absolute;width:54px;height:54px;transform:translate(-50%,-50%);cursor:pointer;border-radius:50%;border:3px dashed rgba(139,43,31,.0)}
+.find-hot.found{border-color:#4A8C3C;background:rgba(74,140,60,.2);animation:none}
+.find-hot.found::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#4A8C3C;font-size:30px;font-weight:bold}
+.find-list{display:flex;gap:8px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.find-chip{background:#EFD9B0;border:2px solid #D4A04A;border-radius:20px;padding:6px 12px;font-size:14px;display:flex;align-items:center;gap:6px;color:#8B2B1F}
+.find-chip.done{background:#4A8C3C;color:#FFF;border-color:#4A8C3C;text-decoration:line-through;opacity:.7}
+.find-chip img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+/* 場景布置 - 關鍵修復：投放區內圖片限制尺寸，絕對定位不溢出 */
+.scene-zone{position:absolute;border:3px dashed #8B2B1F;border-radius:10px;transform:translate(-50%,-50%);background:rgba(255,248,232,.45);display:flex;align-items:center;justify-content:center;color:#8B2B1F;font-size:14px;font-weight:bold;text-align:center;z-index:2;overflow:hidden}
+.scene-zone.filled{border-style:solid;border-color:#4A8C3C;background:rgba(74,140,60,.2)}
+.scene-zone img{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:contain!important;max-width:100%!important;max-height:100%!important;border-radius:6px;pointer-events:none;z-index:3}
+.scene-zone .zone-label{position:relative;z-index:1;background:rgba(255,248,232,.7);padding:2px 6px;border-radius:6px;font-size:12px}
+.scene-zone.filled .zone-label{display:none}
+.item-tray{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:12px;background:#EFD9B0;border-radius:10px;margin-top:12px}
+.drag-item{width:76px;height:76px;background:#FFF8E8;border:2px solid #D4A04A;border-radius:12px;cursor:grab;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.drag-item img{width:100%;height:100%;object-fit:cover}
+.drag-item.dragging{opacity:.4;transform:scale(.9)}
+.drag-item.placed{opacity:.25;pointer-events:none}
+/* 連連看 */
+.connect-board{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:10px;position:relative}
+.connect-col{display:flex;flex-direction:column;gap:12px}
+.connect-item{background:#FFF8E8;border:2px solid #D4A04A;border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:16px;color:#8B2B1F;transition:all .2s;min-height:48px;display:flex;align-items:center;justify-content:center}
+.connect-item.selected{background:#D4A04A;color:#FFF}
+.connect-item.done{background:#4A8C3C;color:#FFF;border-color:#4A8C3C;pointer-events:none}
+.connect-svg{position:absolute;inset:0;pointer-events:none;width:100%;height:100%}
+/* 塗色 */
+.color-palette{display:flex;gap:10px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.color-btn{width:50px;height:50px;border-radius:50%;border:3px solid #8B2B1F;cursor:pointer;transition:transform .2s}
+.color-btn.active{transform:scale(1.2);box-shadow:0 0 0 4px #D4A04A}
+.color-target{position:absolute;transform:translate(-50%,-50%);cursor:pointer;border:2px dashed rgba(255,255,255,.3);border-radius:8px}
+.color-target.done{border-color:#4A8C3C}
+/* 旅程 */
+.journey{padding:14px}
+.journey-path{display:flex;flex-direction:column;gap:10px;margin:10px 0}
+.journey-stop{display:flex;gap:12px;align-items:flex-start;opacity:.4;transition:opacity .4s}
+.journey-stop.done{opacity:1}
+.journey-stop .dot{width:36px;height:36px;background:#D4A04A;color:#FFF;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:bold;border:3px solid #8B2B1F}
+.journey-stop.done .dot{background:#4A8C3C;border-color:#2F6B24}
+.journey-stop .box{background:#FFF8E8;border:2px solid #D4A04A;border-radius:10px;padding:10px;flex:1}
+.journey-stop .verse{font-size:17px;color:#8B2B1F;margin-bottom:6px;font-weight:bold}
+.journey-q{font-size:15px;margin-bottom:8px}
+.journey-opt{background:#EFD9B0;border:2px solid #D4A04A;border-radius:8px;padding:8px 10px;margin:4px 0;cursor:pointer;font-size:14px;width:100%;text-align:left}
+.journey-opt:hover{background:#D4A04A;color:#FFF}
+.journey-opt.correct{background:#4A8C3C;color:#FFF;border-color:#2F6B24}
+.journey-opt.wrong{background:#C94A3A;color:#FFF;border-color:#8B2B1F}
+/* 遠行遊戲 */
+.voyage-wrap{text-align:center}
+.voyage-scene{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/9;width:100%;background:#F5E6D3}
+.voyage-scene-img{width:100%;height:100%;object-fit:cover;transition:opacity .4s}
+.v-stage-label{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(139,43,31,.9);color:#FFF8E8;padding:8px 22px;border-radius:24px;font-size:20px;font-weight:700;z-index:3}
+.v-text{margin:14px auto;padding:14px 20px;background:#FFF8E8;border:2px solid #D4A04A;border-radius:14px;font-size:18px;color:#5C3A1E;max-width:680px;line-height:1.6}
+.v-next-btn{background:linear-gradient(135deg,#C23B22,#8B2B1F);color:#FFF8E8;border:none;padding:12px 36px;border-radius:30px;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(139,43,31,.4);transition:transform .2s}
+.v-next-btn:hover{transform:translateY(-2px)}
+.v-next-btn:disabled{background:#aaa;cursor:not-allowed}
+.v-progress{display:flex;justify-content:center;align-items:center;margin-top:14px;gap:0}
+.v-prog-dot{width:36px;height:36px;border-radius:50%;background:#E8D5B5;color:#8B6F47;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #C9A775;transition:all .3s}
+.v-prog-dot.cur{background:#C23B22;color:#fff;border-color:#8B2B1F;transform:scale(1.2)}
+.v-prog-dot.done{background:#4A8C3C;color:#fff;border-color:#2F6B24}
+.v-prog-line{width:40px;height:4px;background:#C9A775}
+@media(max-width:767px){
+  .v-text{font-size:15px;padding:10px 14px}
+  .v-next-btn{font-size:17px;padding:10px 24px}
+  .v-stage-label{font-size:16px;padding:6px 16px}
+  .v-prog-dot{width:30px;height:30px;font-size:13px}
+  .v-prog-line{width:24px}
+}
+@media(max-width:500px){
+  .v-prog-line{width:14px}
+}
+/* 填詩 */
+.fill-line{font-size:20px;line-height:2.4;text-align:center;color:#2C2C2C;padding:6px 4px}
+.fill-slot{display:inline-block;min-width:70px;height:32px;border:2px dashed #8B2B1F;border-radius:6px;background:#FFF8E8;margin:0 4px;vertical-align:middle;text-align:center;padding:0 6px;color:#8B2B1F;font-size:18px}
+.fill-slot.filled{border-style:solid;background:#D4A04A;color:#FFF}
+.fill-words{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:10px;margin-top:10px}
+.fill-word{background:#D4A04A;color:#2C2C2C;border:2px solid #8B2B1F;border-radius:10px;padding:8px 14px;font-size:16px;cursor:grab;font-weight:bold}
+.fill-word.used{opacity:.3;pointer-events:none}
+/* 對仗 */
+.pair-board{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:10px}
+.pair-left,.pair-right{display:flex;flex-direction:column;gap:8px}
+.pair-item{background:#FFF8E8;border:2px solid #D4A04A;border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:15px;color:#8B2B1F;min-height:44px;display:flex;align-items:center;justify-content:center}
+.pair-item.right-item{background:#EFD9B0}
+.pair-item.selected{background:#D4A04A;color:#FFF}
+.pair-item.done{background:#4A8C3C;color:#FFF;border-color:#2F6B24;pointer-events:none}
+.pair-equals{text-align:center;color:#D4A04A;font-size:22px;font-weight:bold}
+/* 孟母教誨 */
+.lesson-hot{position:absolute;width:70px;height:70px;transform:translate(-50%,-50%);cursor:pointer;border-radius:50%}
+.lesson-hot .ring{position:absolute;inset:0;border:3px solid #D4A04A;border-radius:50%;animation:pulse 1.2s infinite;background:radial-gradient(circle,rgba(255,248,232,.25),transparent)}
+.lesson-hot.done .ring{border-color:#4A8C3C;animation:none;background:rgba(74,140,60,.2)}
+.lesson-hot.done::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#4A8C3C;font-size:34px;font-weight:bold;z-index:2}
+.lesson-hot .tip{position:absolute;top:72px;left:50%;transform:translateX(-50%);background:#8B2B1F;color:#FFF3D6;font-size:12px;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.lesson-step{text-align:center;padding:8px;background:#FFF8E8;border-radius:8px;margin-bottom:8px;font-size:15px;color:#8B2B1F}
+.lesson-step .step-done{color:#4A8C3C;font-weight:bold}
+/* 多角度觀瀑 */
+.view-tabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.view-tab{background:#FFF8E8;border:2px solid #D4A04A;border-radius:20px;padding:8px 14px;font-size:14px;color:#8B2B1F;cursor:pointer;font-family:inherit}
+.view-tab.active{background:#8B2B1F;color:#F5E8CC;border-color:#8B2B1F}
+.view-frame{position:relative;overflow:hidden;border-radius:12px;border:3px solid #D4A04A;background:#1A2A3A;height:360px;z-index:1}
+.view-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .5s ease,transform .7s ease}
+.view-info{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.9) 30%);color:#FFF3D6;padding:80px 16px 18px;font-size:15px;line-height:1.6;max-height:60%;overflow-y:auto;box-sizing:border-box}
+.view-info .poem-line{color:#D4A04A;font-size:18px;font-weight:bold;margin-bottom:6px;letter-spacing:2px}
+.view-progress{display:flex;justify-content:center;gap:8px;margin-top:10px}
+.view-dot{width:12px;height:12px;border-radius:50%;background:#D4A04A;opacity:.3;cursor:pointer}
+.view-dot.active{opacity:1;transform:scale(1.3)}
+/* 七步成詩 */
+.qibu-road{position:relative;background:linear-gradient(90deg,#F5E8CC 0%,#EFD9B0 100%);border-radius:20px;padding:20px 16px;border:2px solid #D4A04A}
+.qibu-steps{display:flex;justify-content:space-between;margin-bottom:14px;position:relative}
+.qibu-steps::before{content:'';position:absolute;top:26px;left:8%;right:8%;height:4px;background:#D4A04A;border-radius:2px;z-index:0}
+.qb-step{width:48px;height:48px;border-radius:50%;background:#F5E8CC;border:3px solid #D4A04A;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold;color:#8B2B1F;z-index:1;position:relative;transition:all .3s}
+.qb-step.done{background:#4A8C3C;border-color:#2F6B24;color:#FFF}
+.qb-step.current{background:#8B2B1F;border-color:#D4A04A;color:#FFF;animation:pulse 1s infinite}
+.qb-q{background:#FFF8E8;border-radius:14px;padding:14px;margin-bottom:10px;font-size:17px;color:#2C2C2C;line-height:1.6}
+.qb-opts{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
+.qb-opt{background:#FFF8E8;border:2px solid #D4A04A;border-radius:12px;padding:10px 14px;font-size:16px;color:#8B2B1F;cursor:pointer;text-align:left;font-family:inherit}
+.qb-opt:hover{background:#D4A04A;color:#FFF}
+.qb-opt.correct{background:#4A8C3C;color:#FFF;border-color:#2F6B24}
+.qb-opt.wrong{background:#C94A3A;color:#FFF;border-color:#8B2B1F;animation:shake .4s}
+.qb-explain{background:#E8F5E9;border-left:4px solid #4A8C3C;padding:10px 12px;border-radius:6px;font-size:15px;color:#2C2C2C;line-height:1.5;margin-top:8px;display:none}
+.qb-explain.show{display:block}
+/* 靜夜山澗 以動襯靜 */
+.quiet-area{position:relative;width:100%;border-radius:20px;overflow:hidden;background:#1a2340;user-select:none}
+.quiet-bg{width:100%;display:block;transition:filter 1.2s}
+.quiet-hot{position:absolute;width:110px;height:100px;transform:translate(-50%,-50%);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5}
+.quiet-hot .q-spot{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,rgba(255,220,130,.95) 0,rgba(255,220,130,0) 70%);animation:qPulse 1.5s infinite;position:absolute;z-index:2}
+.quiet-hot::before{content:attr(data-num);position:absolute;width:50px;height:50px;border-radius:50%;background:#c8a24a;color:#fff;font-size:24px;font-weight:bold;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.4);z-index:4;border:3px solid #FFE8B0;font-family:"Ma Shan Zheng","ZCOOL KuaiLe",cursive}
+.quiet-hot .q-tip{position:absolute;top:-60px;background:#FFF8E0;border:2px solid #c8a24a;border-radius:14px;padding:6px 12px;font-size:15px;font-weight:bold;color:#5a3a1a;white-space:nowrap;animation:tipBounce 1s infinite;pointer-events:none;z-index:6}
+.quiet-hot.done{pointer-events:none}
+.quiet-hot.done::before{background:#4A8C3C;border-color:#B0E0A0}
+.quiet-hot.done .q-spot{display:none}
+.quiet-hot.done .q-tip{display:none}
+.quiet-pop{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.6);opacity:0;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:10;transition:all .5s cubic-bezier(.34,1.56,.64,1)}
+.quiet-pop.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.quiet-pop img{width:110px;height:110px;object-fit:contain;border-radius:20px;background:#fffbf0;padding:8px;box-shadow:0 6px 20px rgba(0,0,0,.5);border:3px solid #c8a24a}
+.quiet-pop .qp-poem{background:linear-gradient(135deg,#c8a24a,#e8c670);color:#fff;padding:8px 20px;border-radius:22px;font-size:23px;font-weight:bold;font-family:"Ma Shan Zheng",cursive;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.quiet-pop .qp-text{background:#FFF8E0;color:#5a3a1a;padding:10px 16px;border-radius:12px;font-size:15px;max-width:340px;text-align:center;line-height:1.6;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.quiet-progress{position:absolute;left:50%;top:14px;transform:translateX(-50%);display:flex;gap:10px;z-index:20}
+.quiet-pdot{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.3);border:2px solid #fff;color:#fff;font-size:15px;font-weight:bold;display:flex;align-items:center;justify-content:center;transition:.3s}
+.quiet-pdot.done{background:#4A8C3C;border-color:#B0E0A0}
+.quiet-moral{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(26,35,64,.96));padding:18px 20px;color:#FFE8B0;font-size:16px;text-align:center;line-height:1.7;z-index:15;opacity:0;transition:opacity 1.2s .3s}
+.quiet-hint{text-align:center;color:#5a3a1a;font-size:18px;margin-bottom:10px;font-weight:bold}
+@keyframes qPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(2.4);opacity:0}}
+/* 小小挑戰問答 */
+.quiz-box{background:linear-gradient(135deg,#FFF8E0,#FFEFC4);border:3px dashed #c8a24a;border-radius:16px;padding:14px;margin-top:10px}
+.qz-title{color:#8B2B1F;font-weight:bold;font-size:19px;text-align:center}
+.qz-q{text-align:center;font-size:17px;margin:10px 0;color:#3a2a15;font-weight:bold}
+.qz-opts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.qz-btn{background:#fffbf0;border:2px solid #c8a24a;color:#5a3a1a;padding:10px 20px;border-radius:22px;font-size:16px;cursor:pointer;font-family:inherit;transition:.2s;font-weight:bold}
+.qz-btn:hover{background:#FFE8B0;transform:translateY(-2px);box-shadow:0 4px 10px rgba(139,75,31,.2)}
+.qz-btn:disabled{cursor:not-allowed;transform:none;box-shadow:none}
+.qz-result{margin-top:4px}
+#conceptSvg{background:radial-gradient(ellipse at center,#fffbf0 0%,#f5e8cc 100%);border-radius:24px;border:4px solid #D4A04A;margin:20px auto;max-width:720px;width:100%;box-shadow:0 8px 28px rgba(139,75,31,.25);position:relative;z-index:1;overflow:visible;display:block}
+.quiet-area{height:420px}
+.quiet-hot{width:110px;height:90px}
+.quiet-hot::before{width:46px;height:46px;font-size:22px}
+.quiet-pop img{width:110px;height:100px}
+.quiet-pop .qp-poem{font-size:21px}
+.quiet-pop .qp-text{font-size:14px;max-width:300px}
+.timewheel-wrap{text-align:center}
+.tw-scene{position:relative;height:340px;border-radius:14px;border:3px solid #D4A04A;overflow:hidden;margin:0 auto 14px;background:#1A2A3A}
+.tw-scene-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .6s}
+.tw-poem{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(139,43,31,.9);color:#FFF3D6;padding:8px 18px;border-radius:18px;font-size:18px;letter-spacing:3px;white-space:nowrap;z-index:3;font-weight:bold}
+.tw-label{position:absolute;top:58px;left:50%;transform:translateX(-50%);background:#D4A04A;color:#2C2C2C;padding:5px 16px;border-radius:14px;font-size:16px;font-weight:bold;z-index:3}
+.tw-text{background:#FFF8E8;border-radius:12px;padding:14px;font-size:17px;color:#2C2C2C;line-height:1.7;margin-bottom:10px;border-left:4px solid #D4A04A;min-height:60px}
+.tw-controls{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:10px}
+.tw-btn{background:#8B2B1F;color:#F5E8CC;border:none;width:54px;height:54px;border-radius:50%;font-size:24px;cursor:pointer;font-family:inherit}
+.tw-btn:disabled{opacity:.4;cursor:not-allowed}
+.tw-stage{font-size:19px;color:#8B2B1F;font-weight:bold;min-width:130px}
+.tw-moral{background:#FFF3D6;border:2px dashed #D4A04A;border-radius:12px;padding:14px;font-size:16px;color:#8B2B1F;line-height:1.7;display:none;margin-top:8px}
+.tw-moral.show{display:block}
+/* 孟母三遷 */
+.nb-story{background:#FFF8E8;border-radius:12px;padding:12px;font-size:16px;color:#2C2C2C;line-height:1.7;margin-bottom:12px;border-left:4px solid #8B2B1F}
+.nb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:10px}
+.nb-card{background:#FFF8E8;border:3px solid #D4A04A;border-radius:14px;padding:8px;text-align:center;cursor:pointer;transition:all .3s;overflow:hidden}
+.nb-card:hover{transform:translateY(-4px);box-shadow:0 6px 14px rgba(0,0,0,.15)}
+.nb-img{width:100%;height:110px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+.nb-emoji{font-size:30px;margin-bottom:4px;display:none}
+.nb-title{font-size:16px;color:#8B2B1F;font-weight:bold;margin-bottom:6px}
+.nb-card.selected-bad{border-color:#C94A3A;background:#FFEBEE}
+.nb-card.selected-good{border-color:#4A8C3C;background:#E8F5E9}
+.nb-result{border-radius:12px;padding:14px;font-size:16px;line-height:1.7;margin-top:10px;display:none}
+.nb-result.bad{display:block;background:#FFEBEE;border-left:4px solid #C94A3A;color:#8B2B1F}
+.nb-result.good{display:block;background:#E8F5E9;border-left:4px solid #4A8C3C;color:#2F6B24}
+.nb-next{background:#D4A04A;color:#2C2C2C;border:none;padding:10px 24px;border-radius:22px;font-size:16px;cursor:pointer;margin-top:8px;display:none;font-family:inherit}
+/* 平板橫版 (768px-1199px) ：使用預設樣式，小幅優化 */
+@media(min-width:768px) and (max-width:1199px){
+.poem-text{font-size:28px;letter-spacing:3px}
+.modal-box{max-width:860px}
+.game-area{min-height:440px;aspect-ratio:16/10}
+}
+/* 手機豎版 (<=767px) ：單列佈局 */
+@media(max-width:767px){
+.poem-hero{grid-template-columns:1fr;gap:10px}
+.poem-img{max-height:260px}
+.poem-scroll{padding:14px 10px}
+.info-row{grid-template-columns:repeat(4,1fr);gap:6px}
+.info-btn{font-size:13px;padding:8px 2px}
+.info-btn .ic{font-size:24px}
+.game-entries{grid-template-columns:1fr}
+.rule-cards{grid-template-columns:1fr}
+.concept-svg{height:240px}
+.game-area{min-height:440px}
+.theater-hot{width:56px;height:56px}
+.lesson-hot{width:60px;height:60px}
+.drag-item{width:62px;height:62px}
+.poem-text{font-size:24px;letter-spacing:2px;line-height:1.8}
+.modal-box{width:96vw;padding:14px}
+.modal h3{font-size:20px}
+.modal p{font-size:15px}
+.meter-game{height:360px;max-width:100%}
+.game-area{aspect-ratio:4/3;min-height:300px}
+}
+/* 小手機 (<=500px) */
+@media(max-width:500px){
+.banner{aspect-ratio:16/10;max-height:240px}
+.banner-text h2{font-size:24px;letter-spacing:2px}
+.banner-text p{font-size:14px}
+.bookshelf{grid-template-columns:repeat(2,1fr);gap:10px;padding:8px 10px}
+.book-cover{height:100px}
+.book-info .title{font-size:15px}
+.book-info .author{font-size:12px}
+.rule-entry{margin:14px 10px;padding:12px;font-size:18px}
+.rule-entry .big{font-size:36px}
+.section-title{font-size:20px;padding:18px 10px 10px}
+.poem-img{max-height:220px;border-width:2px}
+.poem-text{font-size:22px;letter-spacing:1px}
+.tag{font-size:13px;padding:4px 10px}
+.theater-hot{width:50px;height:50px}
+.theater-hot .tip{top:52px;font-size:11px}
+.lesson-hot{width:54px;height:54px}
+.lesson-hot .tip{top:56px;font-size:11px}
+.drag-item{width:56px;height:56px}
+.connect-item{font-size:15px;padding:10px;min-height:42px}
+.fill-line{font-size:18px;line-height:2.2}
+.fill-slot{min-width:60px;height:30px;font-size:17px;margin:0 2px}
+.fill-word{padding:6px 12px;font-size:15px}
+.pair-item{font-size:14px;padding:8px;min-height:40px}
+.meter-game{height:320px}
+.meter-cell{width:44px;height:44px;font-size:18px}
+.modal-box{padding:12px;max-height:92vh}
+.modal h3{font-size:18px}
+.modal p{font-size:14px;line-height:1.7}
+.game-card{min-height:90px;padding:10px 8px}
+.game-card .gic{font-size:34px}
+.game-card .gt{font-size:15px}
+.game-card .gd{font-size:12px}
+.game-area{aspect-ratio:1/1;min-height:260px}
+.scene-zone{width:64px!important;height:64px!important;font-size:11px}
+/* 新遊戲手機適配 */
+.view-frame{height:220px}
+.view-tab{padding:6px 10px;font-size:13px}
+.view-info{padding:30px 10px 10px;font-size:13px}
+.view-info .poem-line{font-size:16px}
+.qb-step{width:38px;height:38px;font-size:16px}
+.qb-q{font-size:15px;padding:10px}
+.qb-opt{font-size:14px;padding:8px 10px}
+.tw-scene{height:240px}
+.tw-poem{font-size:15px;padding:5px 12px}
+.tw-label{font-size:13px;padding:4px 12px;top:46px}
+.tw-text{font-size:14px;padding:10px}
+.tw-tip{font-size:14px !important}
+.tw-btn{width:44px;height:44px;font-size:20px}
+.tw-stage{font-size:16px;min-width:110px}
+.nb-img{height:90px}
+.nb-title{font-size:14px}
+.nb-card{padding:8px 6px}
+.nb-story{font-size:14px;padding:10px}
+.nb-result{font-size:14px;padding:10px}
+}
+/* 極小手機 (<=360px) */
+@media(max-width:360px){
+.bookshelf{grid-template-columns:repeat(2,1fr);gap:8px}
+.book-cover{height:88px}
+.info-btn{font-size:11px;padding:6px 2px}
+.info-btn .ic{font-size:18px}
+.poem-text{font-size:18px}
+.poem-img{max-height:180px}
+.view-frame{height:190px}
+.view-info .poem-line{font-size:14px}
+.qb-step{width:32px;height:32px;font-size:14px}
+.tw-scene{height:200px}
+.tw-poem{font-size:14px;padding:4px 10px}
+.tw-label{font-size:12px;padding:3px 10px;top:40px}
+.tw-tip{font-size:13px !important}
+.nb-grid{gap:6px}
+.nb-img{height:72px}
+.nb-title{font-size:12px}
+}
+@media(max-width:767px){
+.quiet-area{height:280px}
+.quiet-hot{width:70px;height:70px}
+.quiet-hot::before{width:38px;height:38px;font-size:18px}
+.quiet-hot .q-tip{font-size:13px;top:-50px;padding:4px 8px}
+.quiet-pop img{width:110px;height:80px}
+.quiet-pop .qp-poem{font-size:18px;padding:6px 14px}
+.quiet-pop .qp-text{font-size:13px;max-width:240px;padding:8px 12px}
+.quiet-moral{padding:12px 14px;font-size:14px}
+.quiet-moral b{font-size:18px!important}
+.quiet-pdot{width:26px;height:26px;font-size:13px}
+.qz-btn{padding:8px 14px;font-size:14px}
+}
+@media(max-width:500px){
+.quiet-area{height:220px}
+.quiet-hot{width:60px;height:60px}
+.quiet-hot::before{width:32px;height:32px;font-size:16px}
+.quiet-pop img{width:64px;height:64px}
+.quiet-pop .qp-poem{font-size:15px;padding:5px 10px}
+.quiet-pop .qp-text{font-size:12px;max-width:200px}
+}
+
+
+/* ========== 知識板塊 ========== */
+.knowledge-section{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:20px 0;
+}
+@media (max-width:768px){
+  .knowledge-section{grid-template-columns:1fr;}
+}
+.know-card{
+  background:var(--paper);
+  border-radius:16px;
+  border:2px solid var(--line);
+  box-shadow:0 4px 14px rgba(139,69,19,.08);
+  overflow:hidden;
+}
+.know-head{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;
+  background:linear-gradient(90deg,rgba(178,34,34,.08),rgba(218,165,32,.08));
+  border-bottom:1px solid var(--line);
+}
+.know-emoji{font-size:22px;}
+.know-title{font-size:19px;font-weight:bold;color:var(--red);}
+.know-avatar{
+  width:56px;height:56px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--gold);box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+.know-body{padding:14px 16px;}
+.know-body p{font-size:16px;line-height:1.8;color:var(--ink);margin:0 0 10px;}
+.know-text{font-size:16px;line-height:1.8;color:var(--ink);}
+.know-text b{color:var(--red);}
+.know-img-wrap{
+  display:flex;justify-content:center;margin:12px 0;
+}
+.know-illust{
+  max-width:100%;max-height:280px;border-radius:12px;
+  border:2px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.08);
+  object-fit:contain;
+}
+.know-illust-small{
+  max-width:200px;max-height:200px;border-radius:12px;
+  border:2px solid var(--line);object-fit:contain;
+}
+
+/* ========== 小問答題 ========== */
+.quiz-block{
+  margin-top:14px;
+  padding:12px;
+  background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(178,34,34,.05));
+  border:2px dashed var(--gold);
+  border-radius:12px;
+}
+.quiz-q{font-size:16px;font-weight:bold;color:var(--red);margin-bottom:10px;}
+.quiz-opts{display:flex;flex-wrap:wrap;gap:8px;}
+.quiz-opt{
+  padding:8px 16px;font-size:15px;
+  background:#fff;border:2px solid var(--line);border-radius:20px;
+  cursor:pointer;color:var(--ink);
+  transition:all .2s;font-family:inherit;
+}
+.quiz-opt:hover{border-color:var(--red);background:#fff5e6;transform:translateY(-2px);}
+.quiz-opt.correct{background:#e6f9e6;border-color:#4caf50;color:#2e7d32;font-weight:bold;}
+.quiz-opt.wrong{background:#ffe6e6;border-color:#f44336;color:#c62828;}
+.quiz-opt:disabled{cursor:default;}
+.quiz-feedback{
+  margin-top:10px;padding:8px 12px;border-radius:8px;
+  font-size:15px;line-height:1.6;
+}
+.quiz-feedback.ok{background:#e6f9e6;color:#2e7d32;}
+.quiz-feedback.no{background:#ffe6e6;color:#c62828;}
+
+
+/* ========== 四大知識板塊互動遊戲 ========== */
+.know-section{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:20px 0;}
+@media (max-width:768px){.know-section{grid-template-columns:1fr;}}
+.kcard{background:var(--paper);border-radius:16px;border:2px solid var(--line);box-shadow:0 4px 14px rgba(139,69,19,.08);overflow:hidden;}
+.kcard-h{display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(90deg,rgba(178,34,34,.08),rgba(218,165,32,.08));border-bottom:1px solid var(--line);}
+.kcard-h .av{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 2px 6px rgba(0,0,0,.1);}
+.kcard-h .emj{font-size:24px;}
+.kcard-h h4{margin:0;font-size:20px;font-weight:bold;color:var(--red);}
+.kcard-h .sub{font-size:14px;color:#8B6B3C;margin-top:2px;}
+.kcard-b{padding:14px 16px;}
+.kcard-b p{font-size:16px;line-height:1.8;color:var(--ink);margin:0 0 10px;}
+.kcard-b .ill{display:block;max-width:100%;max-height:260px;margin:10px auto;border-radius:12px;border:2px solid var(--line);object-fit:contain;}
+.kcard-b .rhet-line{background:#F0F7EC;border-left:5px solid #4A8C3C;padding:8px 14px;border-radius:10px;margin:6px 0;font-size:15px;line-height:1.7;}
+.kcard-b .rhet-line b{color:#4A8C3C;}
+.kcard-b .meter-box{background:#FDF2E9;border-left:5px solid #C94A3A;padding:12px 14px;border-radius:10px;margin:8px 0;font-size:15px;line-height:1.8;}
+.rhyme-word{display:inline-block;background:#FFF3D6;border:3px solid #D4A849;border-radius:10px;padding:3px 12px;margin:3px 5px;font-weight:bold;color:#8B2B1F;font-size:18px;box-shadow:0 2px 6px rgba(212,168,73,.3)}
+
+/* 作者: 真假小判官 */
+.judge-game{margin-top:12px;padding:12px;background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(178,34,34,.05));border:2px dashed var(--gold);border-radius:12px;}
+.judge-game .ti{font-size:16px;font-weight:bold;color:var(--red);margin-bottom:10px;}
+.judge-stmt{background:#fff;border:2px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:15px;line-height:1.6;display:flex;align-items:center;gap:10px;transition:all .2s;}
+.judge-stmt.done{opacity:.85;}
+.judge-stmt .stxt{flex:1;}
+.judge-btns{display:flex;gap:8px;}
+.jb{padding:6px 14px;border-radius:20px;border:2px solid var(--line);background:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:bold;transition:all .15s;}
+.jb:hover{transform:translateY(-2px);}
+.jb.t{color:#2e7d32;border-color:#4caf50;}
+.jb.f{color:#c62828;border-color:#f44336;}
+.jb:disabled{cursor:default;opacity:.7;}
+.judge-stmt.ok{background:#e6f9e6;border-color:#4caf50;}
+.judge-stmt.no{background:#ffe6e6;border-color:#f44336;}
+.judge-stmt .jicon{font-size:22px;}
+.judge-score{text-align:center;padding:8px;font-size:16px;font-weight:bold;color:var(--red);}
+
+/* 背景: 故事場景捲 */
+.story-game{margin-top:12px;padding:12px;background:linear-gradient(135deg,rgba(58,124,165,.08),rgba(178,34,34,.05));border:2px dashed #3A7CA5;border-radius:12px;}
+.story-game .ti{font-size:16px;font-weight:bold;color:#2A5C7F;margin-bottom:10px;text-align:center;}
+.story-seq{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:640px){.story-seq{grid-template-columns:repeat(2,1fr);}}
+.story-seq{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));width:100%;max-width:100%;}
+@media(max-width:500px){.story-seq{grid-template-columns:repeat(2,1fr);}}
+.story-card{background:#fff;border:3px solid var(--line);border-radius:10px;padding:6px;cursor:pointer;transition:all .2s;text-align:center;width:100%;box-sizing:border-box;min-width:0;}
+.story-card:hover{transform:translateY(-3px);border-color:#3A7CA5;}
+.story-card.done{border-color:#4caf50;opacity:.8;pointer-events:none;}
+.story-card.active{border-color:#DAA520;box-shadow:0 0 0 3px rgba(218,165,32,.3);}
+.story-card img{width:100%;aspect-ratio:1/1;height:auto;object-fit:cover;border-radius:10px;border:2px solid var(--paper);display:block;}
+.story-card .sl{font-size:14px;font-weight:bold;color:#2A5C7F;margin-top:6px;line-height:1.3;word-break:break-all;}
+@media(max-width:500px){.story-card .sl{font-size:12px;}}
+.story-card .snum{display:inline-block;width:22px;height:22px;line-height:22px;border-radius:50%;background:#ddd;color:#666;font-size:12px;font-weight:bold;margin-right:4px;}
+.story-card.done .snum{background:#4caf50;color:#fff;}
+
+/* 投影大屏故事卡 */
+@media(min-width:1200px){
+  .story-seq{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));}
+  .story-card .sl{font-size:16px;}
+}
+.story-desc{margin-top:10px;padding:8px 12px;background:#EAF2F8;border-radius:8px;font-size:14px;color:#2A5C7F;line-height:1.6;min-height:30px;text-align:center;}
+
+/* 修辭: 修辭點點亮（單修辭） */
+.spot-game{margin-top:12px;padding:14px;background:linear-gradient(135deg,rgba(74,140,60,.08),rgba(218,165,32,.06));border:2px dashed #4A8C3C;border-radius:12px;user-select:none;}
+.spot-game .ti{font-size:17px;font-weight:bold;color:#2F6B24;margin-bottom:4px;text-align:center;}
+.spot-game .tip{font-size:14px;color:#4A7A3C;text-align:center;margin-bottom:12px;}
+.spot-poem{background:#FFFBEA;border:2px solid #DAA520;border-radius:10px;padding:16px 20px;font-family:"ma shan zheng","ZCOOL KuaiLe",cursive;font-size:24px;line-height:2;text-align:center;color:#3A2818;margin:0 auto;max-width:680px;letter-spacing:2px;}
+@media(max-width:500px){.spot-poem{font-size:19px;padding:12px 10px;line-height:1.9;letter-spacing:1px;}}
+.spot-word{display:inline-block;padding:2px 6px;margin:0 2px;border-radius:6px;cursor:pointer;transition:all .2s;position:relative;}
+.spot-word:hover{background:rgba(218,165,32,.25);transform:scale(1.08);}
+.spot-word.got{background:linear-gradient(135deg,#FFE55C,#FFD700);color:#8B4513;font-weight:bold;border:2px solid #B8860B;box-shadow:0 0 12px rgba(255,215,0,.7);animation:spotGlow .6s ease;}
+.spot-word.miss{animation:chipShake .4s ease;color:#C94A3A;}
+.spot-result{margin-top:12px;padding:10px 14px;background:#EAF7E7;border:2px solid #4A8C3C;border-radius:10px;font-size:16px;color:#2F6B24;line-height:1.6;display:none;}
+.spot-result.show{display:block;animation:fade .4s ease;}
+@keyframes spotGlow{0%{transform:scale(1.4);}60%{transform:scale(.95);}100%{transform:scale(1);}}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* 修辭: 修辭魔法寶盒 拖拽分類 */
+.box-game{margin-top:12px;padding:14px;background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(201,74,58,.06));border:2px dashed #DAA520;border-radius:12px;user-select:none;}
+.box-game .ti{font-size:17px;font-weight:bold;color:#8B4513;margin-bottom:4px;text-align:center;}
+.box-game .tip{font-size:14px;color:#7A5A3C;text-align:center;margin-bottom:12px;}
+.box-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:14px;min-height:64px;padding:10px;background:#FFFBEA;border-radius:10px;border:1px dashed #DAA520;}
+.box-chip{padding:8px 16px;background:linear-gradient(135deg,#FFF8E7,#F5E8CC);border:2px solid #B8860B;border-radius:20px;font-size:16px;font-family:"ma shan zheng","ZCOOL KuaiLe",cursive;cursor:grab;color:#5A3A1F;box-shadow:0 2px 6px rgba(139,69,19,.15);transition:transform .15s;white-space:nowrap;}
+.box-chip:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 4px 12px rgba(139,69,19,.25);}
+.box-chip.dragging{opacity:.4;cursor:grabbing;}
+.box-chip.success{animation:chipFly .5s ease forwards;pointer-events:none;}
+@keyframes chipFly{0%{transform:scale(1);opacity:1}100%{transform:scale(.3) translateY(-30px);opacity:0}}
+.box-chip.wrong{animation:chipShake .4s ease;}
+@keyframes chipShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
+.boxes-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+.mbox{background:#fff;border:3px solid var(--bc,#DAA520);border-radius:14px;padding:10px 12px;text-align:center;position:relative;min-height:120px;transition:all .3s;}
+.mbox.drag-over{transform:scale(1.06);box-shadow:0 0 20px var(--bc,#DAA520);}
+.mbox .mname{font-size:18px;font-weight:bold;color:var(--bc,#8B4513);margin-bottom:2px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.mbox .memoji{font-size:22px;}
+.mbox .mcount{font-size:13px;color:#8A6A4C;margin-bottom:8px;}
+.mbox .mitems{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-height:28px;}
+.mbox .mitems span{background:var(--bc,#DAA520);color:#fff;padding:2px 8px;border-radius:10px;font-size:13px;font-family:"ma shan zheng",cursive;}
+.mbox .mdesc{margin-top:8px;font-size:13px;color:#5A4A3C;line-height:1.5;display:none;padding:6px 8px;background:var(--bbg,#FFF8E7);border-radius:8px;}
+.mbox.done .mdesc{display:block;}
+.mbox.done{background:var(--bbg,#FFF8E7);}
+.box-result{margin-top:12px;text-align:center;font-size:18px;font-weight:bold;color:#C94A3A;min-height:28px;}
+
+/* 修辭: 修辭印章蓋一蓋（單修辭，儀式感） */
+.seal-game{margin-top:12px;padding:16px;background:linear-gradient(135deg,rgba(201,74,58,.06),rgba(184,134,11,.05));border:2px dashed #C94A3A;border-radius:14px;user-select:none;}
+.seal-game .ti{font-size:17px;font-weight:bold;color:#8B2B1F;margin-bottom:4px;text-align:center;}
+.seal-game .tip{font-size:14px;color:#6B4A3C;text-align:center;margin-bottom:14px;}
+.seal-station{display:flex;gap:20px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
+.seal-tools{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:150px;}
+.seal-stamp{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#A0522D,#5C2E1C);border:6px solid #3E1F10;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#F5E8CC;font-weight:bold;cursor:pointer;transition:all .2s;box-shadow:0 6px 18px rgba(62,31,16,.5),inset 0 2px 4px rgba(255,255,255,.15);font-family:"ma shan zheng",cursive;user-select:none;position:relative;}
+.seal-stamp:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 10px 24px rgba(62,31,16,.6);}
+.seal-stamp.ink{background:radial-gradient(circle at 35% 35%,#C94A3A,#8B2B1F);border-color:#5A1C12;box-shadow:0 6px 18px rgba(139,43,31,.6),inset 0 0 18px rgba(201,74,58,.7);}
+.seal-stamp.ink::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(201,74,58,.5);animation:inkRing .8s ease-in-out infinite;}
+@keyframes inkRing{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.8;transform:scale(1.06)}}
+.seal-stamp .sname{font-size:22px;line-height:1.1;text-align:center;}
+.seal-stamp .slabel{font-size:11px;opacity:.8;margin-top:2px;}
+.seal-inkpad{width:90px;height:30px;border-radius:8px 8px 30px 30px;background:linear-gradient(180deg,#D64A3A,#8B2B1F);border:3px solid #5A1C12;box-shadow:0 4px 10px rgba(0,0,0,.3);position:relative;}
+.seal-inkpad::before{content:"印泥";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#FFE6D6;font-size:13px;font-weight:bold;font-family:"ma shan zheng",cursive;letter-spacing:2px;}
+.seal-hint{font-size:13px;color:#8B4A3C;text-align:center;}
+.seal-poem{position:relative;background:linear-gradient(135deg,#FFFBEA,#F5E8C9);border:2px solid #C9B382;border-radius:10px;padding:20px 70px 20px 22px;font-family:"ma shan zheng","ZCOOL KuaiLe",cursive;font-size:24px;line-height:2.2;text-align:center;color:#3A2818;flex:1;min-width:280px;max-width:720px;letter-spacing:2px;box-shadow:inset 0 0 30px rgba(184,134,11,.12);}
+.seal-poem:has(.seal-word[data-correct="1"]){padding-right:80px;}
+.seal-poem::before,.seal-poem::after{content:"";position:absolute;width:24px;height:24px;background:radial-gradient(circle,rgba(139,69,19,.15),transparent);border-radius:50%;}
+.seal-poem::before{top:6px;left:6px;}
+.seal-poem::after{bottom:6px;right:6px;}
+@media(max-width:500px){.seal-poem{font-size:19px;padding:14px 10px;line-height:2;letter-spacing:1px;min-width:0;}.seal-stamp{width:90px;height:90px;}.seal-stamp .sname{font-size:17px;}}
+.seal-word{display:inline-block;padding:6px 10px;margin:4px 3px;border-radius:8px;cursor:pointer;transition:transform .15s,background .15s,box-shadow .15s;position:relative;background:rgba(255,255,255,.25);border:1px solid transparent;}
+.seal-word:hover{background:rgba(201,74,58,.18);transform:scale(1.04);box-shadow:0 2px 8px rgba(201,74,58,.2);}
+.seal-word.pending{background:rgba(255,180,70,.35)!important;border-color:#E67E22!important;box-shadow:0 0 12px rgba(230,126,34,.5);transform:scale(1.05);}
+.seal-word.picked{background:rgba(201,74,58,.1);}
+.seal-word.miss{animation:chipShake .4s ease;color:#C94A3A;background:rgba(201,74,58,.1);}
+.seal-word .mark{position:absolute;top:50%;right:-28px;transform:translateY(-50%) rotate(-12deg) scale(0);width:48px;height:48px;display:flex;align-items:center;justify-content:center;color:#C92020;font-family:"ma shan zheng",cursive;font-weight:bold;font-size:11px;background:radial-gradient(circle,rgba(201,32,32,.2) 25%,rgba(201,32,32,.05) 70%);border:2px solid #C92020;border-radius:50%;pointer-events:none;text-shadow:0 0 2px #fff;line-height:1.1;text-align:center;z-index:2;}
+.seal-word.stamped{color:#C92020;font-weight:bold;background:rgba(201,32,32,.18);border-color:rgba(201,32,32,.4);transform:scale(1.03);}
+.seal-word.stamped .mark{transform:translateY(-50%) rotate(-12deg) scale(1);animation:stampDown .45s cubic-bezier(.2,1.6,.4,1);width:54px;height:54px;right:-36px;box-shadow:0 2px 6px rgba(201,32,32,.3);}
+@keyframes stampDown{0%{transform:translate(-50%,-50%) rotate(-20deg) scale(3.5);opacity:0}60%{transform:translate(-50%,-50%) rotate(-10deg) scale(.85);opacity:1}100%{transform:translate(-50%,-50%) rotate(-12deg) scale(1);opacity:1}}
+.seal-result{margin-top:12px;padding:10px 14px;background:#EAF7E7;border:2px solid #4A8C3C;border-radius:10px;font-size:16px;color:#2F6B24;line-height:1.6;display:none;text-align:center;}
+.seal-result.show{display:block;animation:fade .4s ease;}
+.seal-progress{font-size:13px;color:#8B4A3C;text-align:center;margin-top:8px;}
+
+/* 格律: 韻腳圈一圈 */
+.rhyme-game{margin-top:12px;padding:12px;background:linear-gradient(135deg,rgba(201,74,58,.08),rgba(218,165,32,.05));border:2px dashed #C94A3A;border-radius:12px;}
+.rhyme-game .ti{font-size:16px;font-weight:bold;color:#C94A3A;margin-bottom:6px;}
+.rhyme-hint{font-size:14px;color:#8B4A3C;margin-bottom:10px;}
+.rhyme-poem{font-size:22px;font-family:"ma shan zheng","ZCOOL KuaiLe",cursive;line-height:2;text-align:center;background:#FFFAF0;padding:14px;border-radius:10px;border:1px dashed #C94A3C;color:#3a2a15;margin-bottom:8px;letter-spacing:3px;}
+.rhyme-ch{display:inline-block;padding:2px 4px;margin:0 1px;border-radius:6px;cursor:pointer;transition:all .2s;position:relative;}
+.rhyme-ch:hover{background:#fff5e6;}
+.rhyme-ch.found{background:#FFE8C2;color:#C94A3A;font-weight:bold;border:2px solid #C94A3A;padding:0 2px;box-shadow:0 0 12px rgba(201,74,58,.4);}
+.rhyme-ch.wrong{background:#FFE6E6;color:#c62828;animation:shake .3s;}
+.rhyme-ch .ring{position:absolute;top:-6px;left:-6px;right:-6px;bottom:-6px;border:2px solid #C94A3A;border-radius:50%;pointer-events:none;animation:ringPulse .8s ease-out forwards;}
+@keyframes ringPulse{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.5);opacity:0}}
+.rhyme-lines{position:relative;margin-top:8px;min-height:40px;}
+.rhyme-line{position:absolute;top:20px;height:3px;background:linear-gradient(90deg,#C94A3A,#DAA520);border-radius:2px;animation:lineDraw .5s ease forwards;}
+@keyframes lineDraw{from{width:0}}
+
+@keyframes fadeIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+.fade-in{animation:fadeIn .5s ease;}
+
+/* ===== 圖片配對 ===== */
+.match-board{display:grid;grid-template-columns:1fr 60px 1fr;gap:10px 18px;margin-top:14px;align-items:center;user-select:none}
+.match-col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.match-col-title{font-size:14px;font-weight:700;color:#8d4c1a;margin-bottom:2px;text-align:center}
+.match-card{width:100%;min-height:95px;background:linear-gradient(145deg,#fff9ec,#fef0d9);border:2.5px solid #e8c27a;border-radius:14px;padding:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .25s;box-sizing:border-box;position:relative}
+.match-card img{width:72px;height:72px;object-fit:cover;border-radius:10px;flex-shrink:0;border:2px solid #d9a441}
+.match-card .ml{font-size:14px;font-weight:700;color:#8d4c1a;line-height:1.3;flex:1}
+.match-card.selected{border-color:#c23b22;box-shadow:0 0 0 3px rgba(194,59,34,.2);transform:translateY(-2px);background:#fff1d6}
+.match-card.matched{border-color:#388e3c;opacity:.7;cursor:default;background:#e8f5e9}
+.match-card.wrong{animation:shake .4s;border-color:#e53935}
+.match-lines{position:relative;display:flex;align-items:center;justify-content:center;height:100%}
+.match-status{text-align:center;padding:12px;margin-top:14px;border-radius:12px;font-size:15px;font-weight:700;display:none}
+.match-status.ok{background:#e8f5e9;color:#2e7d32;display:block}
+.match-status.bad{background:#ffebee;color:#c62828;display:block}
+.match-status.err{background:#ffebee;color:#c62828;display:block}
+@media(max-width:500px){
+  .match-board{grid-template-columns:1fr 0 1fr;gap:6px 10px}
+  .match-lines{display:none}
+  .match-card{padding:6px;min-height:78px;flex-direction:column;gap:4px;text-align:center}
+  .match-card img{width:56px;height:56px}
+  .match-card .ml{font-size:12px}
+}
+
+
+/* ====== 新版格律頁（古風繪本風） ====== */
+.rule-intro{margin:14px 0 16px}.rc-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.rule-card{background:linear-gradient(180deg,#FFFAEC 0%,#F5E8CC 100%);border-radius:18px;overflow:hidden;box-shadow:0 6px 0 #C9A96E,0 10px 20px rgba(139,43,31,.15);border:3px solid #C9A96E;display:flex;flex-direction:column}
+.rule-card.new{background:linear-gradient(180deg,#FFF5F0 0%,#F8DDD0 100%);border-color:#C94A3A;box-shadow:0 6px 0 #8B2B1F,0 10px 20px rgba(139,43,31,.18)}
+.rc-img{width:100%;height:150px;overflow:hidden;background:#F5E8CC;display:flex;align-items:center;justify-content:center}
+.rc-img img{width:100%;height:100%;object-fit:cover}
+.rc-body{padding:12px 14px 16px;position:relative}
+.rc-icon{position:absolute;top:-18px;right:12px;width:42px;height:42px;border-radius:50%;background:#FFD966;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 3px 0 #C9A96E;border:3px solid #FFF8E8}
+.rule-card.new .rc-icon{background:#F5B6A5;box-shadow:0 3px 0 #8B2B1F}
+.rule-card h4{margin:0 0 4px;color:#5c3a1f;font-size:18px;font-family:"ZCOOL KuaiLe",cursive}
+.rc-sub{margin:0 0 10px;color:#8B5A2B;font-size:13px;font-style:italic}
+.rule-card ul{margin:0;padding:0;list-style:none}
+.rule-card li{padding:4px 0;color:#3D2A1A;font-size:14px;display:flex;align-items:center;gap:6px}
+.bul{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;background:#FFEFC1;border-radius:50%;font-size:12px;flex-shrink:0}
+.rule-card.new .bul{background:#FFE0D4}
+.rc-example{margin-top:10px;padding:6px 10px;background:rgba(139,43,31,.1);border-radius:10px;text-align:center;color:#8B2B1F;font-size:13px;font-weight:bold}
+
+.rule-scroll{background:linear-gradient(180deg,#FFF9E8 0%,#F5E8CC 100%);border:3px solid #C9A96E;border-radius:16px;padding:14px;margin:10px 0 18px;box-shadow:0 4px 12px rgba(139,43,31,.12);position:relative}
+.rule-scroll::before,.rule-scroll::after{content:'';position:absolute;top:0;bottom:0;width:20px;background:linear-gradient(90deg,#8B2B1F,#5c1d15);border-radius:4px}
+.rule-scroll::before{left:-8px}.rule-scroll::after{right:-8px}
+.rs-title{text-align:center;color:#8B2B1F;font-family:"ZCOOL KuaiLe",cursive;font-size:18px;margin-bottom:10px}
+.rs-row{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;padding:7px 6px;border-radius:8px;font-size:14px;align-items:center}
+.rs-row:nth-child(even){background:rgba(201,169,110,.15)}
+.rs-head{background:linear-gradient(90deg,#FFEFC1,#FFE0D4)!important;font-weight:bold;color:#8B2B1F;border-radius:10px;margin-bottom:4px}
+.rs-k{color:#5c3a1f;font-weight:bold;display:flex;align-items:center;gap:4px}
+.rs-v{color:#3D2A1A;text-align:center}
+.old-c{color:#6B5836}.new-c{color:#8B2B1F}
+
+.meter-cover{position:relative;width:100%;max-width:540px;margin:0 auto;border-radius:18px;overflow:hidden;border:3px solid #8B7347;box-shadow:0 6px 0 #5c4a2d,0 10px 18px rgba(60,40,20,.2);background:#E8D9B5}
+.meter-bg{display:block;width:100%;height:auto}
+.meter-board{position:absolute;left:0;right:0;top:0;bottom:0}
+.meter-start,.meter-end{position:absolute;display:flex;flex-direction:column;align-items:center;font-size:14px;font-weight:bold;color:#8B2B1F;font-family:"ZCOOL KuaiLe",cursive;text-shadow:0 1px 2px #FFF}
+.meter-start{left:8px;bottom:12px}.meter-end{right:8px;top:16%}
+.meter-start span,.meter-end span{background:#FFD966;border-radius:8px;padding:2px 8px;font-size:12px;margin-bottom:2px;border:2px solid #C9A96E}
+.meter-player{position:absolute;font-size:28px;z-index:5;transform:translate(-50%,50%);transition:left .4s cubic-bezier(.5,1.8,.5,1),bottom .4s cubic-bezier(.5,1.8,.5,1);filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+.meter-hint{text-align:center;font-size:14px;color:#6B4A3C;margin:12px 0 10px;line-height:1.6;padding:0 10px}
+.meter-cell{position:absolute;width:42px;height:42px;border-radius:10px;background:#FFF8E7;border:2px solid #C9A96E;display:flex;align-items:center;justify-content:center;font-family:"ZCOOL KuaiLe",cursive;font-size:20px;color:#5C3A1E;cursor:pointer;box-shadow:0 3px 0 #8B6F3C;transform:translate(-50%,-50%);transition:all .25s;user-select:none}
+.meter-cell:hover{transform:translate(-50%,-50%) scale(1.08);background:#FFF2CC}
+.meter-cell.correct{background:#C7E9B0;border-color:#4A8C3C;color:#2F6B24;box-shadow:0 3px 0 #2F6B24;pointer-events:none}
+.meter-cell.wrong{background:#F8C8C0;border-color:#C94A3A;animation:shake .35s}
+.meter-cell.passed{background:#FFE8A3;border-color:#C98A2A;pointer-events:none}
+.meter-btns{text-align:center}
+.rule-footer{text-align:center;margin:18px 0 10px}
+
+@media(max-width:640px){
+  .rc-wrap{grid-template-columns:1fr}
+  .rs-row{grid-template-columns:1fr 1fr 1fr;font-size:13px;gap:4px;padding:6px 3px}
+  .rc-img{height:120px}
+  .meter-start,.meter-end{font-size:12px}
+  .meter-player{font-size:22px}
+}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+<button class="back" id="backBtn">← 返回書架</button>
+<button class="back next-poem-btn" id="nextPoemBtn" onclick="goNextPoem()" style="display:none">下一首 ➜</button>
+<h1 id="topTitle">🌸 古詩樂園 🌸</h1>
+<button class="sound-btn" id="soundBtn" title="音效開關">🔊</button>
+</div>
+
+<!-- 首頁 -->
+<div class="page active" id="homePage">
+<div class="banner" id="banner" style="background-image:url('https://gips2.baidu.com/it/u=2495634690,427766384&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720')">
+<div class="banner-text"><h2>🌸 古詩樂園 🌸</h2><p>和詩人做朋友，快樂學古詩</p></div>
+</div>
+<div class="section-title">十首古詩，點擊開啟學習</div>
+<div class="bookshelf" id="bookshelf"></div>
+<div class="rule-entry" id="goRule"><span class="big">📏</span>認識詩歌格律</div>
+</div>
+
+<!-- 詩歌詳情頁 -->
+<div class="page" id="poemPage">
+<div class="poem-hero">
+<img class="poem-img" id="poemImg" src="" alt="">
+<div class="poem-scroll"><div class="poem-text" id="poemText"></div></div>
+</div>
+<div class="know-section" id="knowSection"></div>
+<div class="tags" id="poemTags"></div>
+<div class="concept">
+<h3>🗺️ 全詩概念圖</h3>
+<svg class="concept-svg" id="conceptSvg" viewBox="0 0 520 340" style="min-height:340px"></svg>
+</div>
+<div class="game-entries" id="gameEntries"></div>
+<div style="text-align:center;margin:16px 0"><button class="journey-next" onclick="goHome()" style="background:#8B2B1F;color:#F5E8CC;border:none;padding:10px 22px;border-radius:24px;font-size:16px;cursor:pointer">🏠 返回書架</button></div>
+</div>
+
+<!-- 格律頁（重製版·古風繪本風） -->
+<div class="page" id="rulePage">
+<div class="section-title">📏 認識詩歌格律</div>
+
+<!-- 詩歌兩大類說明卡片 -->
+<div class="rule-intro">
+  <div class="rc-wrap">
+    <div class="rule-card old">
+      <div class="rc-img"><img src="https://gips0.baidu.com/it/u=999007395,2365092010&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024"></div>
+      <div class="rc-body">
+        <div class="rc-icon">🌿</div>
+        <h4>古體詩 · 自由奔放</h4>
+        <p class="rc-sub">就像在草地上自由奔跑的小馬</p>
+        <ul>
+          <li><span class="bul">📝</span>字數、句數不限</li>
+          <li><span class="bul">🎵</span>押韻比較自由</li>
+          <li><span class="bul">⚖️</span>不講究對仗</li>
+        </ul>
+        <div class="rc-example">例：《七步詩》《遊子吟》</div>
+      </div>
+    </div>
+    <div class="rule-card new">
+      <div class="rc-img"><img src="https://gips1.baidu.com/it/u=3672825898,1782004720&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024"></div>
+      <div class="rc-body">
+        <div class="rc-icon">🏯</div>
+        <h4>近體詩 · 嚴謹工整</h4>
+        <p class="rc-sub">就像整整齊齊的小亭子</p>
+        <ul>
+          <li><span class="bul">📝</span>絕句四句、律詩八句</li>
+          <li><span class="bul">🎵</span>固定押韻位置</li>
+          <li><span class="bul">⚖️</span>講究對仗、平仄</li>
+        </ul>
+        <div class="rc-example">例：《九月九日》《絕句》</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 對比捲軸 -->
+<div class="rule-scroll">
+  <div class="rs-title">🔍 一眼看出差別</div>
+  <div class="rs-row rs-head"><span class="rs-k">對比項目</span><span class="rs-v old-c">🌿 古體詩</span><span class="rs-v new-c">🏯 近體詩</span></div>
+  <div class="rs-row"><span class="rs-k">句數</span><span class="rs-v">不限</span><span class="rs-v">絕句4句／律詩8句</span></div>
+  <div class="rs-row"><span class="rs-k">字數</span><span class="rs-v">不限</span><span class="rs-v">五言5字／七言7字</span></div>
+  <div class="rs-row"><span class="rs-k">押韻</span><span class="rs-v">自由可換韻</span><span class="rs-v">偶數句尾固定押韻</span></div>
+  <div class="rs-row"><span class="rs-k">對仗</span><span class="rs-v">不要求</span><span class="rs-v">律詩兩聯必須對仗</span></div>
+  <div class="rs-row"><span class="rs-k">平仄</span><span class="rs-v">不講究</span><span class="rs-v">有嚴格規定</span></div>
+</div>
+
+<!-- 格律小博士問答闖關 -->
+<div class="concept">
+  <h3>🎓 遊戲：格律小博士闖關</h3>
+  <div class="meter-cover">
+    <img class="meter-bg" src="https://gips2.baidu.com/it/u=3834985787,957861237&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152" style="opacity:.25">
+    <div class="meter-board" id="meterGame">
+    </div>
+  </div>
+  <p class="meter-hint">答對一題，小書童就前進一格，8題全對你就是「格律小博士」啦！🌟</p>
+</div>
+
+<div class="rule-footer">
+  <button class="journey-next" onclick="goHome()" style="background:#8B2B1F;color:#F5E8CC;border:none;padding:12px 28px;border-radius:28px;font-size:16px;cursor:pointer;box-shadow:0 4px 0 #5c1d15">🏠 返回書架</button>
+</div>
+</div>
+
+<!-- 模態框 -->
+<div class="modal" id="modal"><div class="modal-box">
+<button class="modal-close" onclick="closeModal()">✕</button>
+<div id="modalContent"></div>
+</div></div>
+
+<script>
+/* 修辭比喻圖片配對遊戲 */
+function renderRhetoricMatch(r,pid){
+  const pairs = r.pairs.slice();
+  let rightItems = pairs.map((p,i)=>({i,img:p.right,label:p.rightLabel,explain:p.explain,used:false}));
+  for(let i=rightItems.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rightItems[i],rightItems[j]]=[rightItems[j],rightItems[i]];}
+  let selectedLeft=-1, selectedRight=-1, done=0;
+  let html = '<div class="match-game" id="g_'+pid+'"><div class="rh-prompt">🎯 <b>'+r.title+'</b>：'+r.desc+'</div>'
+    +'<div class="match-board"><div class="match-col"><div class="match-col-title">📝 詩中事物</div>';
+  pairs.forEach((p,i)=>{
+    html += '<div class="match-card" data-side="L" data-i="'+i+'"><img src="'+U(p.left)+'"><div class="ml">'+p.leftLabel+'</div></div>';
+  });
+  html += '</div><div class="match-lines"></div><div class="match-col"><div class="match-col-title">💡 比喻含義</div>';
+  rightItems.forEach((p,j)=>{
+    html += '<div class="match-card" data-side="R" data-i="'+p.i+'" data-j="'+j+'"><img src="'+U(p.img)+'"><div class="ml">'+p.label+'</div></div>';
+  });
+  html += '</div></div><div class="match-status"></div></div>';
+  setTimeout(()=>{
+    const g = document.getElementById('g_'+pid);
+    if(!g)return;
+    const status = g.querySelector('.match-status');
+    g.querySelectorAll('.match-card').forEach(c=>{
+      c.onclick = ()=>{
+        if(c.classList.contains('matched'))return;
+        const side=c.dataset.side, idx=parseInt(c.dataset.i);
+        if(side==='L'){
+          g.querySelectorAll('.match-card[data-side=L]').forEach(x=>x.classList.remove('selected'));
+          c.classList.add('selected');selectedLeft=idx;
+        }else{
+          g.querySelectorAll('.match-card[data-side=R]').forEach(x=>x.classList.remove('selected'));
+          c.classList.add('selected');selectedRight=idx;
+        }
+        if(selectedLeft>=0 && selectedRight>=0){
+          const lc=g.querySelector('.match-card[data-side=L][data-i="'+selectedLeft+'"]');
+          const rc=g.querySelector('.match-card[data-side=R][data-i="'+selectedRight+'"]');
+          if(selectedLeft===selectedRight){
+            lc.classList.add('matched');lc.classList.remove('selected');
+            rc.classList.add('matched');rc.classList.remove('selected');
+            done++;sfxRight();
+            if(done===pairs.length){
+              status.className='match-status ok';
+              status.innerHTML='🎉 全部配對成功！你懂比喻啦！';
+              sfxWin();
+            }else{
+              status.className='match-status';status.innerHTML='✅ 配對正確，繼續加油！';
+            }
+          }else{
+            lc.classList.add('wrong');rc.classList.add('wrong');sfxWrong();
+            setTimeout(()=>{lc.classList.remove('wrong','selected');rc.classList.remove('wrong','selected');},500);
+            status.className='match-status bad';status.innerHTML='❌ 不對哦，再想一想～';
+          }
+          selectedLeft=selectedRight=-1;
+        }
+      };
+    });
+  },100);
+  return html;
+}
+/* 根據詩歌生成修辭魔法寶盒分組數據 */
+function buildRhetGroups(poem, qd){
+  // 如果配置了圖片配對模式，直接返回
+  if(qd.rhetoric && qd.rhetoric.mode==='match'){
+    return [{mode:'match', config:qd.rhetoric}];
+  }
+  // 從 poem.rhet 和 qd.rhet_items（若存在）生成，否則自動從 rhet_hits 聚合
+  if(qd.rhet_groups){
+    if(qd.rhet_groups.length===1)qd.rhet_groups[0].mode=qd.rhet_groups[0].mode||'seal';
+    return qd.rhet_groups;
+  }
+  // fallback 按rhet聚合
+  const map={};
+  (qd.rhet_hits||[]).forEach(h=>{
+    if(!map[h.rhet])map[h.rhet]={emoji:'✨',desc:'',items:[]};
+    map[h.rhet].items.push({text:h.word,desc:h.desc});
+  });
+  const arr=Object.entries(map).map(([name,g])=>({name,emoji:g.emoji,desc:g.desc||'——',items:g.items}));
+  if(arr.length===1)arr[0].mode='seal';
+  return arr;
+}
+const poemsQuiz = {
+  "jiuyue": {
+    "author": [
+      {
+        "text": "王維是唐代著名詩人，被稱為「詩佛」",
+        "ans": true
+      },
+      {
+        "text": "王維寫這首詩的時候已經五十多歲了",
+        "ans": false
+      },
+      {
+        "text": "王維多才多藝，會畫畫、會彈琴、會寫詩",
+        "ans": true
+      },
+      {
+        "text": "王維寫詩最擅長寫邊塞打仗的場面",
+        "ans": false
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips1.baidu.com/it/u=860671234,387269283&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "十七歲離家",
+        "desc": "王維十七歲就離開家鄉，獨自到長安求學"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=2523502909,3012236361&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "重陽佳節",
+        "desc": "重陽節到了，家家戶戶都和親人團聚登高"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=3161444005,3101826566&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "獨自登高",
+        "desc": "王維一個人登上高處，望着家鄉的方向"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=2650175332,2355533988&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "插遍茱萸",
+        "desc": "想到兄弟們都插上茱萸，唯獨少了自己"
+      }
+    ],
+    "rhet_groups": [{"name": "直接抒情", "emoji": "❤️", "desc": "詩人直接說出自己心裏的感受，不拐彎抹角。", "pairMode":"single", "items": [{"text": "每逢佳節倍思親", "desc": "「每到佳節就加倍思念親人」——直白說出心中思念，樸實動人。","pair":0}]}],
+    "rhet_distract": ["登高處", "山東兄弟", "異鄉為異客", "遍插茱萸"],
+    "rhymes": [
+      "親",
+      "人"
+    ]
+  },
+  "fude": {
+    "author": [
+      {
+        "text": "白居易是唐代大詩人，寫詩會念給老婆婆聽",
+        "ans": true
+      },
+      {
+        "text": "白居易年輕時到長安，顧況開玩笑說「長安居大不易」",
+        "ans": true
+      },
+      {
+        "text": "白居易的號是「詩仙」",
+        "ans": false
+      },
+      {
+        "text": "白居易寫的詩很淺白，老人小孩都能讀懂",
+        "ans": true
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips3.baidu.com/it/u=2295067848,1448585292&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "草原茂盛",
+        "desc": "茂盛的原上草，每年都會枯黃又轉綠"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=3078294080,4255407881&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "野火燒過",
+        "desc": "野火怎樣燒都燒不盡地下的根"
+      },
+      {
+        "img": "https://gips1.baidu.com/it/u=4125297453,2788790322&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "春風又生",
+        "desc": "春風一吹小草又頑強地冒出新芽"
+      },
+      {
+        "img": "https://gips1.baidu.com/it/u=2852441337,2456876534&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "古道送別",
+        "desc": "在這長滿青草的古道上送別友人"
+      }
+    ],
+    "rhet_groups": [{"name": "對仗", "emoji": "⚖️", "desc": "兩句話字數相等、意思相對，讀起來朗朗上口。", "pairMode":"pair", "items": [{"text": "野火燒不盡", "desc": "上句寫野火殘酷——怎樣燒都燒不盡。","pair":0}, {"text": "春風吹又生", "desc": "下句與上句工整對應——春風一吹又長出來了！","pair":0}]}],
+    "rhet_distract": ["原上草", "一歲一枯榮", "滿古道"],
+    "rhymes": [
+      "榮",
+      "生",
+      "城",
+      "情"
+    ]
+  },
+  "lushan": {
+    "author": [
+      {
+        "text": "李白是唐代偉大詩人，人稱「詩仙」",
+        "ans": true
+      },
+      {
+        "text": "李白個性瀟灑，喜歡喝酒、遊山玩水",
+        "ans": true
+      },
+      {
+        "text": "李白寫這首詩時是在皇宮裏當大官",
+        "ans": false
+      },
+      {
+        "text": "李白寫詩想像力特別豐富，非常浪漫",
+        "ans": true
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips0.baidu.com/it/u=1705013126,122774602&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "遊覽廬山",
+        "desc": "五十多歲的李白來到江西廬山遊玩"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=2254481265,3371286001&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "香爐紫煙",
+        "desc": "陽光照在香爐峰上升起紫色雲煙"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=2437805344,1577020034&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "抬頭望瀑",
+        "desc": "抬頭看瀑布從高高的山崖飛瀉而下"
+      },
+      {
+        "img": "https://gips1.baidu.com/it/u=2686121468,3718462397&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "銀河落天",
+        "desc": "大膽想像瀑布像是銀河從天上落下"
+      }
+    ],
+    "rhet_groups": [{"name": "誇張", "emoji": "😮", "desc": "故意把事物說得比真實更大/更高/更深，讓人印象深刻。", "items": [{"text": "三千尺", "desc": "廬山瀑布其實沒有三千尺高，誇張地形容它非常高。"}]}, {"name": "比喻", "emoji": "🎯", "desc": "把一個東西比作另一個相似的東西，讓畫面更形象。", "items": [{"text": "銀河落九天", "desc": "把瀑布比作天上的銀河從最高的九天落下來，非常有想像力！"}]}],
+    "rhet_distract": ["生紫煙", "掛前川", "遙看"],
+    "rhymes": [
+      "煙",
+      "川",
+      "天"
+    ]
+  },
+  "qibu": {
+    "author": [
+      {
+        "text": "曹植是三國時期曹操的兒子，才華很高",
+        "ans": true
+      },
+      {
+        "text": "謝靈運說「天下才有一石，曹子建獨占八斗」",
+        "ans": true
+      },
+      {
+        "text": "曹植的哥哥曹丕對他特別疼愛照顧",
+        "ans": false
+      },
+      {
+        "text": "曹植在走七步的時間裏就寫出了這首詩",
+        "ans": true
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips0.baidu.com/it/u=2489767353,3717155148&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "曹丕妒忌",
+        "desc": "哥哥曹丕當了皇帝，妒忌曹植的才華"
+      },
+      {
+        "img": "https://gips2.baidu.com/it/u=548419068,2956721061&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "七步命題",
+        "desc": "命令曹植在七步之內寫出一首詩，否則殺頭"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=350421803,3614229119&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "邁步吟詩",
+        "desc": "曹植走一步想一句，走着走着流下淚來"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=1177261433,3851992981&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "哥哥慚愧",
+        "desc": "曹丕聽完詩非常慚愧，放過了弟弟"
+      }
+    ],
+    "rhet_groups": [{"name": "比喻", "emoji": "🎯", "desc": "用豆萁煮豆子來比喻兄弟之間互相迫害，非常形象。", "items": [{"text": "豆在釜中泣", "desc": "把豆子當作人在哭泣，比喻曹植自己的悲傷。"}, {"text": "本是同根生", "desc": "用「同根生」比喻兄弟本是同胞親人。"}, {"text": "相煎何太急", "desc": "用豆萁煮豆比喻曹丕逼迫自己，為何要這麼着急！"}]}],
+    "rhetoric": {"mode":"match","title":"🎯 比喻配對","desc":"左邊是詩中寫的事物，右邊是它比喻的意思，配一配吧！",
+      "pairs":[
+        {"left":"https://gips3.baidu.com/it/u=2240525582,2796271802&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","leftLabel":"🍲 煮豆燃豆萁","right":"https://gips0.baidu.com/it/u=830281556,803112442&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","rightLabel":"⚔️ 哥哥逼迫弟弟","explain":"「豆萁燒豆」比喻哥哥曹丕逼迫弟弟曹植。"},
+        {"left":"https://gips1.baidu.com/it/u=1693294004,2307253009&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","leftLabel":"😢 豆在釜中泣","right":"https://gips1.baidu.com/it/u=4003477868,2927723668&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","rightLabel":"😭 曹植傷心落淚","explain":"豆子哭泣，其實是曹植自己傷心落淚。"},
+        {"left":"https://gips2.baidu.com/it/u=1947873994,1497086927&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","leftLabel":"🌱 本是同根生","right":"https://gips3.baidu.com/it/u=3148035303,1384127875&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","rightLabel":"👬 親生一母兄弟","explain":"豆和豆萁同根生長，比喻曹丕曹植是一母同胞的親兄弟。"}
+      ]
+    },
+    "rhet_distract": ["持作羹", "漉菽以為汁", "煮豆燃豆萁"],
+    "rhymes": [
+      "泣",
+      "急"
+    ]
+  },
+  "zenghao": {
+    "author": [
+      {
+        "text": "汪倫是李白的超級粉絲，非常仰慕李白",
+        "ans": true
+      },
+      {
+        "text": "汪倫寫信邀請李白：「這裏有十里桃花，萬家酒店」",
+        "ans": true
+      },
+      {
+        "text": "汪倫所說的「十里桃花」「萬家酒店」是真的",
+        "ans": false
+      },
+      {
+        "text": "李白被汪倫的熱情感動，寫下這首詩送給他",
+        "ans": true
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips1.baidu.com/it/u=2773929121,3208148096&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "巧妙邀請",
+        "desc": "汪倫用「十里桃花、萬家酒店」邀請李白"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=124660741,1631532794&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "桃花潭遊",
+        "desc": "李白來到桃花潭，兩人一起遊玩喝酒"
+      },
+      {
+        "img": "https://gips1.baidu.com/it/u=1258379363,3988046135&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "乘船將行",
+        "desc": "李白要走了，坐上船準備出發"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=1951890027,2221916329&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "岸上踏歌",
+        "desc": "忽然聽到岸邊汪倫和鄉親們踏歌送行"
+      }
+    ],
+    "rhet_groups": [{"name": "誇張", "emoji": "😮", "desc": "故意把事物說得比真實更大/更深。", "items": [{"text": "深千尺", "desc": "桃花潭水其實沒有千尺深，是誇張地說水很深。"}]}, {"name": "襯托", "emoji": "🌟", "desc": "用一樣東西來反襯另一樣東西，讓它更突出。", "items": [{"text": "不及汪倫送我情", "desc": "用千尺深潭來反襯——潭水再深，也比不上汪倫對我的友情深！"}]}],
+    "rhet_distract": ["乘舟將欲行", "踏歌聲", "桃花潭水"],
+    "rhymes": [
+      "行",
+      "聲",
+      "情"
+    ]
+  },
+  "huanghe": {
+    "author": [
+      {
+        "text": "孟浩然是唐代著名山水田園詩人",
+        "ans": true
+      },
+      {
+        "text": "李白比孟浩然年長很多，是孟浩然的前輩",
+        "ans": false
+      },
+      {
+        "text": "李白非常尊敬和欣賞孟浩然",
+        "ans": true
+      },
+      {
+        "text": "李白在黃鶴樓送別孟浩然去揚州",
+        "ans": true
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips0.baidu.com/it/u=1195741039,2471824199&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "黃鶴樓別",
+        "desc": "兩人在黃鶴樓告別，孟浩然要去廣陵"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=3736839507,2572548275&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "煙花三月",
+        "desc": "正是煙花三月，楊柳桃花盛開的美麗季節"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=581641533,253548130&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "孤帆遠影",
+        "desc": "白帆漸行漸遠，消失在碧藍天際"
+      },
+      {
+        "img": "https://gips1.baidu.com/it/u=3964343270,3749790706&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "長江天際",
+        "desc": "只看見長江水滾滾流向天邊，滿心依依不捨"
+      }
+    ],
+    "rhet_groups": [{"name": "借景抒情", "emoji": "🌅", "desc": "不直接說自己難過，而是把感情藏在景色描寫裏。", "pairMode":"pair", "items": [{"text": "孤帆遠影碧空盡", "desc": "看着朋友的船漸漸遠去，最後消失在天邊——不捨全在景色裏。","pair":0}, {"text": "唯見長江天際流", "desc": "只看見長江水滾滾流向天邊，把思念也隨江水送遠。","pair":0}]}],
+    "rhet_distract": ["故人西辭", "煙花三月", "黃鶴樓"],
+    "rhymes": [
+      "樓",
+      "州",
+      "流"
+    ]
+  },
+  "niaoming": {
+    "author": [
+      {
+        "text": "這首詩的作者也是王維",
+        "ans": true
+      },
+      {
+        "text": "王維晚年住在山裏，過着寧靜的生活",
+        "ans": true
+      },
+      {
+        "text": "王維有「詩佛」之稱，詩寫得像畫一樣美",
+        "ans": true
+      },
+      {
+        "text": "王維寫這首詩表達了熱鬧繁華的城市生活",
+        "ans": false
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips0.baidu.com/it/u=1078322744,2684629824&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "春山夜裏",
+        "desc": "春天的夜晚，人們都安靜下來了"
+      },
+      {
+        "img": "https://gips2.baidu.com/it/u=508657098,3966104786&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "桂花飄落",
+        "desc": "細細的桂花從枝頭輕輕落下"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=596610053,782043571&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "月亮升起",
+        "desc": "明月升起，亮光驚動了山裏的小鳥"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=292756413,2639086839&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "鳥鳴山澗",
+        "desc": "小鳥不時在春天的山澗裏清脆地叫幾聲"
+      }
+    ],
+    "rhet_groups": [{"name": "以動襯靜", "emoji": "🌙", "desc": "用細小的聲音和動作，反過來顯得周圍更加安靜。", "items": [{"text": "人閒桂花落", "desc": "連細小的桂花落下都能感覺到——說明周圍多安靜！"}, {"text": "月出驚山鳥", "desc": "月亮出來就能驚醒山鳥——山裏是多麼寂靜啊。"}, {"text": "時鳴春澗中", "desc": "鳥偶爾叫一聲，回聲在空山中特別清楚，更顯得山空。"}]}],
+    "rhet_distract": ["夜靜春山空", "人閒桂花落"],
+    "rhymes": [
+      "空",
+      "中"
+    ]
+  },
+  "jueju": {
+    "author": [
+      {
+        "text": "杜甫是唐代偉大詩人，人稱「詩聖」",
+        "ans": true
+      },
+      {
+        "text": "杜甫寫詩像歷史記錄一樣，被稱為「詩史」",
+        "ans": true
+      },
+      {
+        "text": "杜甫經歷安史之亂，生活曾經非常艱苦",
+        "ans": true
+      },
+      {
+        "text": "寫這首詩時杜甫心情很悲傷",
+        "ans": false
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips1.baidu.com/it/u=3332033850,1993547696&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "成都草堂",
+        "desc": "戰亂後杜甫在成都草堂，生活暫時安穩"
+      },
+      {
+        "img": "https://gips1.baidu.com/it/u=3117967796,3147865649&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "春光明媚",
+        "desc": "春天陽光普照，山河秀麗，春風送來花草香"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=2110830311,3362549896&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "燕子銜泥",
+        "desc": "溼潤的泥土上燕子忙碌地銜泥築巢"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=792218193,1474717515&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "鴛鴦沙暖",
+        "desc": "溫暖沙灘上鴛鴦安靜地依偎打盹"
+      }
+    ],
+    "rhet_groups": [{"name": "對仗", "emoji": "⚖️", "desc": "兩句話字數相等、結構相同、意思相配，讀起來朗朗上口。", "pairMode":"multi", "items": [{"text": "遲日江山麗", "desc": "第一句寫春日山河秀美——「遲日」對「春風」，「江山麗」對「花草香」。","pair":0}, {"text": "春風花草香", "desc": "第二句寫春風吹來花草香氣，和第一句字數結構完全對應。","pair":0}, {"text": "泥融飛燕子", "desc": "第三句寫燕子銜泥築巢，是春天的「動」——和第四句「靜」的鴛鴦成對。","pair":1}, {"text": "沙暖睡鴛鴦", "desc": "第四句寫鴛鴦在溫暖沙上睡覺，是春天的「靜」——和第三句「動」的燕子工整對仗。","pair":1}]}],
+    "rhet_distract": ["江山麗", "花草香", "沙暖"],
+    "rhymes": [
+      "香",
+      "鴦"
+    ]
+  },
+  "youziyin": {
+    "author": [
+      {
+        "text": "孟郊是唐代詩人，年輕時多次考科舉才考上",
+        "ans": true
+      },
+      {
+        "text": "孟郊一生清貧，寫了很多關於母親和民間疾苦的詩",
+        "ans": true
+      },
+      {
+        "text": "孟郊五十歲當了小官，第一件事是接母親來奉養",
+        "ans": true
+      },
+      {
+        "text": "《遊子吟》寫的是朋友之間深厚的友誼",
+        "ans": false
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips1.baidu.com/it/u=2859078779,866594599&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "母親縫衣",
+        "desc": "兒子要遠行，母親在油燈下一針一線縫衣裳"
+      },
+      {
+        "img": "https://gips1.baidu.com/it/u=2137534461,1689211267&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "密密縫補",
+        "desc": "母親把針腳縫得密密的，怕衣服破了兒子受寒"
+      },
+      {
+        "img": "https://gips2.baidu.com/it/u=1179698958,1432972477&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "遲遲擔憂",
+        "desc": "母親心裏捨不得，怕兒子很晚才能回家"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=3931323764,1912394121&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "寸草春暉",
+        "desc": "兒子孝心就像小草，怎能報答母愛如春天陽光！"
+      }
+    ],
+    "rhet_groups": [{"name": "比喻", "emoji": "🎯", "desc": "用小草和陽光來比喻兒女和母愛，非常貼切感動。", "items": [{"text": "誰言寸草心", "desc": "「寸草心」比喻兒女微小的心意，就像小草那樣渺小。"}, {"text": "報得三春暉", "desc": "「三春暉」比喻母愛就像春天的陽光一樣偉大溫暖。小草怎能報答陽光呢？"}]}],
+    "rhetoric": {"mode":"match","title":"🎯 比喻配對","desc":"左邊是詩中寫的事物，右邊是它比喻的意思，配一配吧！",
+      "pairs":[
+        {"left":"https://gips1.baidu.com/it/u=562187704,2049961614&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","leftLabel":"🌱 誰言寸草心","right":"https://gips1.baidu.com/it/u/2488722664,632874965&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","rightLabel":"👶 兒女的孝心","explain":"「寸草心」比喻兒女小小的孝心。"},
+        {"left":"https://gips1.baidu.com/it/u/3229255811,1994662183&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","leftLabel":"🧵 慈母手中線","right":"https://gips3.baidu.com/it/u/244525970,1576402119&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","rightLabel":"💝 母親的牽掛","explain":"母親手裏的一針一線，都是對兒子的牽掛。"},
+        {"left":"https://gips1.baidu.com/it/u/1194015419,4172721539&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","leftLabel":"☀️ 報得三春暉","right":"https://gips1.baidu.com/it/u/1165878578,2395444616&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024","rightLabel":"💕 偉大的母愛","explain":"「三春暉」比喻母愛像春日陽光一樣偉大溫暖，小草難以報答。"}
+      ]
+    },
+    "rhet_distract": ["手中線", "身上衣", "臨行密密縫"],
+    "rhymes": [
+      "衣",
+      "歸",
+      "暉"
+    ]
+  },
+  "jinlv": {
+    "author": [
+      {
+        "text": "《金縷衣》相傳是杜秋娘所作，她是唐代女子",
+        "ans": true
+      },
+      {
+        "text": "杜秋娘從小能歌善舞，非常聰明",
+        "ans": true
+      },
+      {
+        "text": "這首詩是勸人趕緊追求金錢和榮華富貴",
+        "ans": false
+      },
+      {
+        "text": "「金縷衣」是用金線織成、非常貴重的衣服",
+        "ans": true
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips2.baidu.com/it/u=856156264,1458871612&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "金縷華衣",
+        "desc": "金縷衣雖華貴，但不必太過貪戀"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=4245617513,1784263415&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "少年時光",
+        "desc": "最該珍惜的是寶貴的少年時光"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=3293661913,2127997818&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "花開堪折",
+        "desc": "花開了就要及時去摘，比喻把握機會"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=2582091012,167214679&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "空枝莫待",
+        "desc": "不要等到花謝了只剩空枝，才後悔沒有珍惜"
+      }
+    ],
+    "rhet_groups": [{"name": "反復", "emoji": "🔁", "desc": "同樣的話重複說，強調想要表達的意思。", "items": [{"text": "勸君莫惜金縷衣", "desc": "第一個「勸君」：勸你不要貪圖華麗衣裳。"}, {"text": "勸君惜取少年時", "desc": "第二個「勸君」：勸你一定要珍惜少年時光。兩個「勸君」加強語氣。"}]}, {"name": "借物喻理", "emoji": "🌸", "desc": "用一件事物來說明一個道理。", "items": [{"text": "花開堪折直須折", "desc": "用花開該摘就要摘，比喻年輕時要好好把握。"}, {"text": "莫待無花空折枝", "desc": "用花落後只能折空枝，比喻錯過時光就會後悔。"}]}],
+    "rhet_distract": ["金縷衣", "少年時", "空折枝"],
+    "rhymes": [
+      "衣",
+      "時",
+      "枝"
+    ]
+  },
+  "mengmu": {
+    "author": [
+      {
+        "text": "這首詩相傳是南宋王應麟為小朋友寫的",
+        "ans": true
+      },
+      {
+        "text": "孟母是孟子的母親，非常重視孩子教育",
+        "ans": true
+      },
+      {
+        "text": "孟子是我國古代偉大的思想家，被稱為「亞聖」",
+        "ans": true
+      },
+      {
+        "text": "孟母因為懶惰不願意搬家和教育孩子",
+        "ans": false
+      }
+    ],
+    "bg_steps": [
+      {
+        "img": "https://gips2.baidu.com/it/u=2445810479,3650786912&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024",
+        "label": "孟母教子",
+        "desc": "孟母非常重視小孟子的教育"
+      },
+      {
+        "img": "https://gips0.baidu.com/it/u=2078911985,2283809317&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "三遷擇鄰",
+        "desc": "孟母三次搬家，只為給孩子好的學習環境"
+      },
+      {
+        "img": "https://gips1.baidu.com/it/u=2311973953,4123881375&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "孟子逃學",
+        "desc": "小孟子覺得讀書辛苦，偷偷逃學回家"
+      },
+      {
+        "img": "https://gips3.baidu.com/it/u=2988198668,4063694804&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720",
+        "label": "斷機教子",
+        "desc": "孟母剪斷織布，告訴孩子讀書中斷就像織布剪斷一樣可惜"
+      }
+    ],
+    "rhet_groups": [{"name": "借事說理", "emoji": "📖", "desc": "通過一件真實發生的事情，告訴人們一個重要道理。", "pairMode":"pair", "items": [{"text": "子不學", "desc": "孩子不認真讀書、荒廢學業——孟母用剪斷織布的行為來勸告他。","pair":0}, {"text": "斷機杼", "desc": "孟母剪斷正在織的布——告訴孟子：讀書中斷就像織布剪斷一樣前功盡棄，做事不能半途而廢。","pair":0}]}],
+    "rhet_distract": ["昔孟母", "擇鄰處", "昔孟母"],
+    "rhymes": [
+      "處",
+      "杼"
+    ]
+  }
+};
+/* === 四大知識板塊遊戲助手 === */
+const p2k={'p1':'jiuyue','p2':'fude','p3':'lushan','p4':'qibu','p5':'zenghao','p6':'huanghe','p7':'niaoming','p8':'jinlv','p9':'jueju','p10':'mengmu'};
+const author_avatars={'p1':'https://gips3.baidu.com/it/u=2523502909,3012236361&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p2':'https://gips0.baidu.com/it/u=1127529546,2987149961&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p3':'https://gips1.baidu.com/it/u=3218157008,349558515&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p4':'https://gips3.baidu.com/it/u=350421803,3614229119&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p5':'https://gips1.baidu.com/it/u=3218157008,349558515&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p6':'https://gips1.baidu.com/it/u=3218157008,349558515&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p7':'https://gips3.baidu.com/it/u=2523502909,3012236361&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p8':'https://gips2.baidu.com/it/u=856156264,1458871612&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p9':'https://gips3.baidu.com/it/u=1245939452,3341983664&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p10':'https://gips1.baidu.com/it/u=973634116,554340314&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'};
+const bg_imgs={'p1':'https://gips1.baidu.com/it/u=860671234,387269283&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p2':'https://gips3.baidu.com/it/u=2295067848,1448585292&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p3':'https://gips0.baidu.com/it/u=1705013126,122774602&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p4':'https://gips0.baidu.com/it/u=2489767353,3717155148&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p5':'https://gips1.baidu.com/it/u=2773929121,3208148096&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p6':'https://gips0.baidu.com/it/u=4077282541,2437492152&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p7':'https://gips1.baidu.com/it/u=1416158793,3034443221&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p8':'https://gips3.baidu.com/it/u=4245617513,1784263415&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p9':'https://gips1.baidu.com/it/u=3117967796,3147865649&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024','p10':'https://gips2.baidu.com/it/u=2445810479,3650786912&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'};
+const rhet_icon='https://gips0.baidu.com/it/u=2452728542,388596684&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024';
+const meter_icon='https://gips1.baidu.com/it/u=3390407329,687047430&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024';
+
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* 作者: 真假小判官 HTML */
+function judgeGameHTML(items){
+  return `<div class="judge-game"><div class="ti">🌟 真假小判官：判斷下面說法對不對！</div>
+  ${items.map((it,i)=>`<div class="judge-stmt" data-i="${i}"><span class="jicon">❓</span><span class="stxt">${it.text}</span><span class="judge-btns"><button class="jb t" data-v="1">✅ 對</button><button class="jb f" data-v="0">❌ 錯</button></span></div>`).join('')}
+  <div class="judge-score"></div></div>`;
+}
+function initJudgeGame(box, items){
+  let correct=0, total=items.length, answered=0;
+  const scoreEl=box.querySelector('.judge-score');
+  box.querySelectorAll('.judge-stmt').forEach((row,idx)=>{
+    const ans=items[idx].ans;
+    row.querySelectorAll('.jb').forEach(btn=>{
+      btn.onclick=function(){
+        if(row.classList.contains('done'))return;
+        sfxClick();
+        const v=parseInt(this.dataset.v);
+        const ok=(v===1&&ans)||(v===0&&!ans);
+        row.classList.add('done');
+        row.classList.add(ok?'ok':'no');
+        row.querySelector('.jicon').textContent=ok?'✅':'❌';
+        if(ok){sfxRight();correct++;}else{sfxWrong();}
+        answered++;
+        row.querySelectorAll('.jb').forEach(b=>b.disabled=true);
+        if(answered===total){
+          if(correct===total){sfxWin();scoreEl.innerHTML=`🏆 太厲害了！${correct}/${total} 全對！`;}
+          else{scoreEl.innerHTML=`🌸 你答對了 ${correct}/${total} 題，再看看資料吧！`;}
+        }
+      };
+    });
+  });
+}
+
+/* 背景: 故事場景捲 HTML */
+function storyGameHTML(steps){
+  // 打亂順序
+  const shuffled=steps.map((s,i)=>({...s,orig:i})).sort(()=>Math.random()-.5);
+  return `<div class="story-game"><div class="ti">📖 故事場景捲：按正確順序點擊，拼出故事！</div>
+  <div class="story-seq">${shuffled.map((s,i)=>`<div class="story-card" data-orig="${s.orig}"><img src="${U(s.img)}" alt=""><div class="sl"><span class="snum">?</span>${s.label}</div></div>`).join('')}</div>
+  <div class="story-desc">👇 先點第一幕：故事從哪裏開始呢？</div></div>`;
+}
+function initStoryGame(box, steps){
+  let cur=0;
+  const cards=[...box.querySelectorAll('.story-card')];
+  const desc=box.querySelector('.story-desc');
+  cards.forEach(c=>{
+    c.onclick=function(){
+      if(c.classList.contains('done'))return;
+      sfxClick();
+      const orig=parseInt(c.dataset.orig);
+      if(orig===cur){
+        sfxRight();
+        c.classList.add('done');
+        c.querySelector('.snum').textContent=cur+1;
+        c.classList.add('active');
+        desc.textContent=`✅ ${steps[cur].label}：${steps[cur].desc}`;
+        cur++;
+        if(cur===steps.length){sfxWin();desc.innerHTML=`🏆 故事拼好了！<br>${steps.map(s=>s.label).join(' → ')}`;}
+      }else{
+        sfxWrong();
+        c.style.animation='shake .3s';setTimeout(()=>c.style.animation='',300);
+        desc.textContent='❌ 順序不對，再想想～故事應該怎樣開始呢？';
+      }
+    };
+  });
+}
+
+/* 修辭: 修辭點點亮（單修辭）HTML */
+function spotGameHTML(poem, groups){
+  const g=groups[0];
+  let html=`<div class="spot-game">
+    <div class="ti">✨ 修辭點點亮：在詩裏找出「${g.emoji} ${g.name}」的字詞！</div>
+    <div class="tip">${g.desc} 點一點你認為用到這個手法的字詞～共 ${g.items.length} 處</div>
+    <div class="spot-poem">`;
+  const targets=g.items.map(it=>it.text);
+  // 把 <br> 替換成視覺換行
+  let rawTxt=(poem.text||'').replace(/<br\s*\/?>/g,'\n');
+  let i=0;
+  let lineHtml='';
+  while(i<rawTxt.length){
+    let matched=false;
+    // 優先匹配最長目標（最多4字）
+    for(let L=4;L>=1;L--){
+      if(i+L<=rawTxt.length){
+        const seg=rawTxt.substring(i,i+L);
+        if(targets.includes(seg)){
+          lineHtml+=`<span class="spot-word" data-correct="1" data-desc="${(g.items.find(it=>it.text===seg).desc||'').replace(/"/g,'&quot;')}">${seg}</span>`;
+          i+=L;matched=true;break;
+        }
+      }
+    }
+    if(!matched){
+      const ch=rawTxt[i];
+      if(ch==='\n'){
+        html+=lineHtml+'<br>';lineHtml='';
+      }else if('，。？！、：；'.includes(ch)){
+        lineHtml+=ch;
+      }else{
+        lineHtml+=`<span class="spot-word" data-correct="0">${ch}</span>`;
+      }
+      i++;
+    }
+  }
+  if(lineHtml) html+=lineHtml;
+  html+=`</div><div class="spot-result" id="sres_${poem.id}"></div></div>`;
+  return html;
+}
+function initSpotGame(box, poem, groups){
+  const words=box.querySelectorAll('.spot-word[data-correct="1"]');
+  const all=box.querySelectorAll('.spot-word');
+  const total=words.length;
+  let done=0;
+  all.forEach(w=>{
+    w.addEventListener('click',()=>{
+      if(w.classList.contains('got')||w.classList.contains('miss'))return;
+      if(w.dataset.correct==='1'){
+        sfxRight();
+        w.classList.add('got');
+        done++;
+        const desc=w.dataset.desc||'運用了修辭手法！';
+        showToast(`✨ 找到了！「${w.textContent}」：${desc}`,'correct');
+        if(done===total){
+          sfxWin();
+          const res=box.querySelector('.spot-result');
+          res.innerHTML=`🏆 全部找齊啦！你已經認識<strong>${groups[0].name}</strong>啦！<br>💡 ${groups[0].final||groups[0].desc}`;
+          res.classList.add('show');
+          showToast(`🏆 ${poem.title}的${groups[0].name}修辭都找到啦！`,'win');
+        }
+      }else{
+        sfxWrong();
+        w.classList.add('miss');
+        setTimeout(()=>w.classList.remove('miss'),500);
+        showToast('再看看～這個字沒有用到這個修辭哦','wrong');
+      }
+    });
+  });
+}
+
+
+/* 修辭: 修辭印章蓋一蓋（單修辭）HTML —— 支持成對蓋章 */
+function sealGameHTML(poem, groups){
+  const g=groups[0];
+  g._paired=!!g.pairMode && g.pairMode!=='single';
+  // 把所有答案句（去除標點）加入集合
+  g._targetMap={}; // pureText -> item
+  g._pairSize={}; // pairId -> size
+  g.items.forEach(it=>{
+    const pure=it.text.replace(/[，。？！、：；,\.]/g,'');
+    g._targetMap[pure]=it;
+    if(it.pair!=null){g._pairSize[it.pair]=(g._pairSize[it.pair]||0)+1;}
+  });
+
+  // 拆分詩文：標點之間都當成一個可點的句子，包括三字經「子不學，斷機杼」裏的短語
+  const rawTxt=(poem.text||'').replace(/<br\s*\/?>/g,'').replace(/\n/g,'');
+  const lines=[];let cur='';
+  for(const ch of rawTxt){
+    if('，。？！'.includes(ch)){
+      if(cur.trim())lines.push(cur.trim());
+      cur='';
+    }else{cur+=ch;}
+  }
+  if(cur.trim())lines.push(cur.trim());
+
+  let poemHtml='';
+  lines.forEach((line)=>{
+    const pure=line.replace(/[，。？！、：；,\.]/g,'');
+    const item=g._targetMap[pure];
+    const isCorrect=!!item;
+    const pairId=isCorrect&&item.pair!=null?item.pair:'-';
+    const desc=isCorrect?(item.desc||'').replace(/"/g,'&quot;'):'';
+    poemHtml+=`<span class="seal-word" data-correct="${isCorrect?'1':'0'}" data-pair="${pairId}" data-pure="${pure}" data-desc="${desc}">${line}</span>`;
+  });
+
+  const tipLine = g.pairMode==='single'
+    ? '①點左邊大木印章蘸印泥 → ②找出運用「'+g.emoji+g.name+'」的詩句蓋章'
+    : '①點左邊大木印章蘸印泥 → ②成對的詩句要兩句都選中才會一起蓋章哦';
+
+  const html=`<div class="seal-game">
+    <div class="ti">🔴 修辭印章蓋一蓋：找出運用「${g.emoji}${g.name}」手法的詩句！</div>
+    <div class="tip">${tipLine}（蓋錯會搖一搖提示哦）👇</div>
+    <div class="seal-station">
+      <div class="seal-tools">
+        <div class="seal-stamp" id="stamp_${poem.id}">
+          <div class="sname">${g.name.slice(0,3)}</div>
+          <div class="slabel">${g.emoji} 印章</div>
+        </div>
+        <div class="seal-inkpad"></div>
+        <div class="seal-hint" id="sH_${poem.id}">點印章蘸印泥</div>
+      </div>
+      <div class="seal-poem" id="sPoem_${poem.id}">${poemHtml}</div>
+    </div>
+    <div class="seal-progress" id="sProg_${poem.id}">已蓋對 0 / ${g.items.length} 句</div>
+    <div class="seal-result" id="sRes_${poem.id}"></div>
+  </div>`;
+  return html;
+}
+
+function initSealGame(box, poem, groups){
+  const g=groups[0];
+  const stamp=box.querySelector('.seal-stamp');
+  const hint=box.querySelector('.seal-hint');
+  const prog=box.querySelector('.seal-progress');
+  const res=box.querySelector('.seal-result');
+  const words=box.querySelectorAll('.seal-word');
+  const total=g.items.length;
+  let done=0;
+  let inked=false;
+  let pending=null; // {word, pair, el}
+
+  function setInk(v){
+    inked=v;
+    stamp.classList.toggle('ink',v);
+    hint.textContent=v?(g._paired?'印泥蘸好啦！先點第一句，再找它的配對句蓋章～':'印泥蘸好了！去詩句上蓋章吧～'):'點印章蘸印泥';
+  }
+  function clearPending(){
+    if(pending){pending.el.classList.remove('pending');pending=null;}
+  }
+  function stampWord(wordEl, labelText){
+    wordEl.classList.add('stamped');
+    const mark=document.createElement('span');
+    mark.className='mark';
+    mark.textContent=g.name.slice(0,2);
+    wordEl.appendChild(mark);
+    done++;
+    prog.textContent=`已蓋對 ${done} / ${total} 句`;
+    showToast(`🔴 蓋對了！「${wordEl.dataset.pure}」${labelText||''}`,'correct');
+  }
+  function winCheck(){
+    if(done===total){
+      sfxWin();
+      res.innerHTML=`🏆 全部蓋對啦！你已經認識<strong>${g.name}</strong>這種修辭手法啦！<br>💡 ${g.final||g.desc}`;
+      res.classList.add('show');
+      showToast(`🏆 ${poem.title}的${g.name}修辭印章全部蓋完！`,'win');
+    }
+  }
+
+  stamp.addEventListener('click',()=>{
+    sfxClick();setInk(true);
+    stamp.animate([{transform:'scale(1)'},{transform:'scale(.92)'},{transform:'scale(1)'}],{duration:200,easing:'ease-out'});
+  });
+
+  words.forEach(w=>{
+    w.addEventListener('click',()=>{
+      if(w.classList.contains('stamped'))return;
+      if(w.classList.contains('miss'))return;
+      if(!inked){showToast('請先點左邊的大印章蘸印泥哦～','info');return;}
+
+      const isCorrect=w.dataset.correct==='1';
+
+      if(!g._paired){
+        // 單句模式：一句蓋一次
+        if(isCorrect){
+          sfxRight();setInk(false);stampWord(w,w.dataset.desc);winCheck();
+        }else{
+          sfxWrong();setInk(false);
+          w.classList.add('miss');setTimeout(()=>w.classList.remove('miss'),500);
+          showToast('咦～蓋歪了！這裏不是哦','wrong');
+        }
+        return;
+      }
+
+      // 成對模式
+      if(!pending){
+        // 第一次點
+        if(!isCorrect){
+          sfxWrong();setInk(false);
+          w.classList.add('miss');setTimeout(()=>w.classList.remove('miss'),500);
+          showToast('咦～蓋歪了！這句不是哦','wrong');
+          return;
+        }
+        // 選了第一個正確句
+        pending={el:w, pair:w.dataset.pair};
+        w.classList.add('pending');
+        sfxClick();
+        // 印泥不用消耗，等待選第二句
+        hint.textContent='✨ 這句是其中一句！再點另一句和它配對的（同組對仗/同組修辭）一起蓋章～';
+        showToast('✨ 好眼光！再找和它配對的另一句','info');
+      }else{
+        // 第二次點（有待確認配對）
+        if(w===pending.el){
+          // 點同一個，取消 pending
+          clearPending();setInk(false);
+          hint.textContent='已取消選擇，再重新蘸印泥試試吧';
+          return;
+        }
+        if(!isCorrect){
+          sfxWrong();setInk(false);
+          w.classList.add('miss');setTimeout(()=>w.classList.remove('miss'),500);
+          clearPending();
+          showToast('🤔 蓋錯了，這兩句不是一組哦～再想想','wrong');
+          return;
+        }
+        if(w.dataset.pair===pending.pair){
+          // 同一pair，成對成功！雙方一起蓋章
+          sfxRight();
+          const el1=pending.el, el2=w;
+          clearPending();setInk(false);
+          el1.classList.add('stamping');el2.classList.add('stamping');
+          setTimeout(()=>{el1.classList.remove('stamping');el2.classList.remove('stamping');},300);
+          stampWord(el1,el1.dataset.desc);
+          stampWord(el2,el2.dataset.desc);
+          showToast('✅ 兩句都對！配對成功，雙雙蓋章～','correct');
+          winCheck();
+        }else{
+          // 正確句但不同pair（例如遲日配泥融）
+          sfxWrong();setInk(false);
+          w.classList.add('miss');setTimeout(()=>w.classList.remove('miss'),500);
+          clearPending();
+          showToast('🤔 這兩句不是同一組哦～再想想它們各自的搭檔','wrong');
+        }
+      }
+    });
+  });
+}
+
+
+
+/* 修辭: 修辭魔法寶盒 拖拽分類 HTML */
+function boxGameHTML(poem, groups){
+  // groups: [{name,emoji,desc,color,bg,items:[{text,rhet,desc}],distractors:[{text,rhet:'wrong',desc:''}]}]
+  let total=0;
+  groups.forEach(g=>total+=g.items.length);
+  const colors=[
+    {c:'#C94A3A',bg:'#FFEDE7'},{c:'#4A8C3C',bg:'#EAF7E7'},{c:'#1E5BA8',bg:'#E7EFF7'},{c:'#B8860B',bg:'#FFF5DB'},{c:'#6A3FA8',bg:'#EFE7F7'}
+  ];
+  groups.forEach((g,i)=>{if(!g.color){g.color=colors[i%colors.length].c;g.bg=colors[i%colors.length].bg;}});
+  const allChips=[];
+  groups.forEach((g,gi)=>{
+    g.items.forEach(it=>allChips.push({text:it.text,rhet:g.name,gi,desc:it.desc,correct:true}));
+  });
+  (poem.rhet_distract||[]).forEach(d=>allChips.push({text:d,correct:false}));
+  // 打亂
+  for(let i=allChips.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[allChips[i],allChips[j]]=[allChips[j],allChips[i]];}
+  let html=`<div class="box-game">
+    <div class="ti">🎁 修辭魔法寶盒：把詩句小紙片送回它所屬的修辭盒！</div>
+    <div class="tip">按住小紙片拖到下面對應顏色的寶盒，投對了飛進去發光，投錯會彈回來～</div>
+    <div class="box-chips" id="bchips_${poem.id}">`;
+  allChips.forEach((c,ci)=>{
+    html+=`<div class="box-chip" draggable="true" data-ci="${ci}" data-correct="${c.correct?'1':'0'}" ${c.correct?`data-gi="${c.gi}" data-desc="${c.desc.replace(/"/g,'&quot;')}"`:''}>「${c.text}」</div>`;
+  });
+  html+=`</div><div class="boxes-row">`;
+  groups.forEach((g,gi)=>{
+    html+=`<div class="mbox" data-gi="${gi}" style="--bc:${g.color};--bbg:${g.bg}">
+      <div class="mname"><span class="memoji">${g.emoji}</span>${g.name}</div>
+      <div class="mcount">需要放 ${g.items.length} 片</div>
+      <div class="mitems"></div>
+      <div class="mdesc">${g.desc}</div>
+    </div>`;
+  });
+  html+=`</div><div class="box-result" id="bres_${poem.id}"></div></div>`;
+  return html;
+}
+function initBoxGame(box, poem, groups){
+  const chips=box.querySelectorAll('.box-chip');
+  const mboxes=box.querySelectorAll('.mbox');
+  const totalCorrect=groups.reduce((s,g)=>s+g.items.length,0);
+  let done=0;
+  let placed=new Set();
+  chips.forEach(chip=>{
+    chip.addEventListener('dragstart',e=>{
+      if(chip.classList.contains('success')||chip.classList.contains('wrong')||placed.has(chip.dataset.ci))return;
+      chip.classList.add('dragging');
+      e.dataTransfer.setData('text/plain',chip.dataset.ci);
+    });
+    chip.addEventListener('dragend',()=>chip.classList.remove('dragging'));
+    // 支持觸屏點擊選中再點寶盒（簡化：桌面拖拽即可，手機用點擊）
+    let selected=null;
+    chip.addEventListener('click',()=>{
+      if(chip.classList.contains('success')||chip.classList.contains('wrong')||placed.has(chip.dataset.ci))return;
+      sfxClick();
+      chips.forEach(c=>c.style.outline='');
+      if(selected===chip){selected=null;chip.style.outline='';return;}
+      selected=chip;
+      chip.style.outline='3px dashed #C94A3A';
+      showToast('點擊下方寶盒把小紙片送進去～','info');
+    });
+    chip._select=()=>selected;
+  });
+  mboxes.forEach(mb=>{
+    mb.addEventListener('dragover',e=>{e.preventDefault();mb.classList.add('drag-over');});
+    mb.addEventListener('dragleave',()=>mb.classList.remove('drag-over'));
+    mb.addEventListener('drop',e=>{
+      e.preventDefault();mb.classList.remove('drag-over');
+      const ci=e.dataTransfer.getData('text/plain');
+      const chip=box.querySelector(`.box-chip[data-ci="${ci}"]`);
+      placeChip(chip,mb);
+    });
+    mb.addEventListener('click',()=>{
+      const chip=[...chips].find(c=>c._select && c._select()===c && c.style.outline && !placed.has(c.dataset.ci));
+      if(chip) placeChip(chip,mb);
+    });
+  });
+  function placeChip(chip,mb){
+    if(!chip||placed.has(chip.dataset.ci))return;
+    chip.style.outline='';
+    const gi=parseInt(mb.dataset.gi);
+    if(chip.dataset.correct==='1' && parseInt(chip.dataset.gi)===gi){
+      sfxRight();
+      placed.add(chip.dataset.ci);
+      chip.classList.add('success');
+      const label=document.createElement('span');label.textContent='「'+chip.textContent.replace(/[「」]/g,'')+'」';
+      mb.querySelector('.mitems').appendChild(label);
+      const g=groups[gi];
+      const cur=mb.querySelectorAll('.mitems span').length;
+      if(cur===g.items.length){
+        mb.classList.add('done');
+      }
+      done++;
+      if(done===totalCorrect){
+        sfxWin();
+        const res=box.querySelector('.box-result');
+        res.innerHTML='🏆 全部送對啦！你已經認識這些修辭手法啦～';
+        showToast('🏆 全部送對啦！修辭小魔法師就是你！','win');
+      }
+    }else{
+      sfxWrong();
+      chip.classList.add('wrong');
+      setTimeout(()=>chip.classList.remove('wrong'),500);
+      showToast('再想想～ 這片不屬於這個盒子哦','wrong');
+    }
+  }
+}
+
+/* 格律: 韻腳圈一圈 HTML */
+function rhymeGameHTML(poem, rhymes){
+  return `<div class="rhyme-game"><div class="ti">🎵 韻腳圈一圈：找出押韻的字！</div>
+  <div class="rhyme-hint">讀一讀詩句，點擊句尾讀音相似的字～ 共 ${rhymes.length} 個</div>
+  <div class="rhyme-poem" id="rp_${poem.id}"></div>
+  <div class="rhyme-lines"></div></div>`;
+}
+function initRhymeGame(box, poem, rhymes){
+  const poemEl=box.querySelector('.rhyme-poem');
+  const lines=poem.text.split(/<br\s*\/?>/);
+  let html='';
+  lines.forEach((line,li)=>{
+    html+=`<span class="rhyme-line-wrap">`;
+    for(let i=0;i<line.length;i++){
+      html+=`<span class="rhyme-ch" data-ch="${line[i]}">${line[i]}</span>`;
+    }
+    html+=`</span><br>`;
+  });
+  poemEl.innerHTML=html;
+  let found=0;
+  const allRhymeSet=new Set(rhymes.join('').split(''));
+  // 找韻腳字（通常在句尾，但也可能其他位置）
+  box.querySelectorAll('.rhyme-ch').forEach(ch=>{
+    ch.onclick=function(){
+      if(this.classList.contains('found')||this.classList.contains('wrong'))return;
+      sfxClick();
+      const c=this.dataset.ch;
+      if(rhymes.some(r=>r.includes(c))){
+        sfxRight();
+        this.classList.add('found');
+        const ring=document.createElement('span');ring.className='ring';this.appendChild(ring);setTimeout(()=>ring.remove(),800);
+        found++;
+        if(found===rhymes.length){
+          sfxWin();showToast('🏆 韻腳全部找對了！讀起來真朗朗上口～','win');const rww=box.querySelector('.rhyme-words-wrap');const rht=box.querySelector('.rhyme-hint-text');if(rww){rww.style.display='inline';rww.classList.add('fade-in');}if(rht){rht.style.display='none';}
+        }
+      }else{
+        sfxWrong();
+        this.classList.add('wrong');setTimeout(()=>this.classList.remove('wrong'),600);
+      }
+    };
+  });
+}
+
+/* ========== 音效 ========== */
+let audioCtx=null,soundOn=true;
+function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}
+function beep(freq,dur,type='sine',vol=.15){
+if(!soundOn)return;ensureAudio();
+const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+o.type=type;o.frequency.value=freq;o.connect(g);g.connect(audioCtx.destination);
+g.gain.setValueAtTime(vol,audioCtx.currentTime);
+g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);
+o.start();o.stop(audioCtx.currentTime+dur);
+}
+function sfxClick(){beep(660,.08,'triangle',.1)}
+function sfxRight(){beep(523,.1,'sine',.15);setTimeout(()=>beep(784,.15,'sine',.15),100);setTimeout(()=>beep(1047,.2,'sine',.15),220)}
+function sfxWrong(){beep(220,.18,'sawtooth',.12);setTimeout(()=>beep(180,.2,'sawtooth',.12),150)}
+function sfxWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.2,'sine',.15),i*150))}
+/* 兼容包裝：playSound 映射到對應的 sfx 函數 */
+function playSound(kind){
+  if(kind==='click')sfxClick();
+  else if(kind==='correct'||kind==='right')sfxRight();
+  else if(kind==='wrong')sfxWrong();
+  else if(kind==='win')sfxWin();
+}
+document.getElementById('soundBtn').onclick=function(){soundOn=!soundOn;this.textContent=soundOn?'🔊':'🔇';sfxClick()};
+
+/* ========== 詩歌數據 ========== */
+const U=p=>{/* 把 & 編碼成 &，徹底避開HTML/CSS解析歧義 */return p};
+const poems=[
+{id:'p1',title:'九月九日憶山東兄弟',author:'王維',dynasty:'唐代',form:'七言絕句（近體詩）',
+rhyme:'押 en 韻',rhymes:['親','人'],
+bg:'十七歲的王維獨自在長安讀書，重陽佳節想起遠在家鄉的兄弟們。',
+rhet:[{t:'直接抒情',d:'「每逢佳節倍思親」直接說出心中思念，樸素真摯'},{t:'想象',d:'不說自己想兄弟，反說兄弟登高少一人，更感動'}],
+keywords:['思鄉','重陽','兄弟','茱萸'],
+text:'獨在異鄉為異客，<br>每逢佳節倍思親。<br>遙知兄弟登高處，<br>遍插茱萸少一人。',
+img:'https://gips3.baidu.com/it/u=3161444005,3101826566&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'🌕',color:'#C94A3A',
+authorBio:`王維（701-761），字摩詰，唐代偉大的詩人、畫家。他寫的山水田園詩特別美，人們叫他「詩佛」。這首詩是他十七歲在長安求學時寫的。`,emotionDetail:`詩人表達了<b>獨在他鄉的孤獨</b>與<b>對家鄉兄弟的深深思念</b>。重陽佳節別人都團圓，只有自己一個人在外，更覺得孤單；並透過想象兄弟們登高插茱萸時少了自己，反過來寫思念，更加動人。`,famous:`獨在異鄉為異客，每逢佳節倍思親`,theme:`詩人表達了<b>獨在他鄉的孤獨</b>與<b>對家鄉兄弟的深深思念</b>。重陽佳節別人都團圓，只有自己一個人在外，更覺得孤單；並透過想象兄弟們登高插茱萸時少了自己，反過來寫思念，更加動人。`,games:[
+{type:'scene',name:'🌿 重陽登高布置',desc:'把茱萸、糕點放到合適的地方',
+zones:[{label:'兄弟身上',x:82,y:30,accept:'zhuyu'},{label:'王維手邊',x:12,y:55,accept:'gao'}],
+items:[
+{id:'zhuyu',img:'https://gips2.baidu.com/it/u=823910067,3963056400&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'},
+{id:'gao',label:'糕',img:'https://gips0.baidu.com/it/u=607303885,2600480483&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'},
+{id:'yue',img:'https://gips3.baidu.com/it/u=3482785434,915034786&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'},
+{id:'hua',img:'https://gips2.baidu.com/it/u=3282602196,1099889832&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'}]
+},
+{type:'theater',name:'🎭 思親小劇場',desc:'點擊畫面中的人物物件，聽聽他們說甚麼',
+hotspots:[
+{id:'h1',label:'王維',x:15,y:45,text:'我獨自一人在外地，重陽節特別想家！'},
+{id:'h2',label:'兄弟們',x:82,y:28,text:'我們登高插茱萸，唯獨少了哥哥王維，好想他！'},
+{id:'h3',label:'茱萸',x:75,y:18,text:'古人重陽節插我，用來祈福辟邪～'},
+{id:'h4',label:'遠方的家',x:50,y:80,text:'家鄉在遠方，楓葉飄落，思念滿滿'}]
+}]},
+{id:'p2',title:'賦得古原草送別',author:'白居易',dynasty:'唐代',form:'五言律詩（近體詩）',
+rhyme:'押 eng 韻',rhymes:['榮','生','城','情'],
+bg:'白居易十六歲時寫的應考詩，借春草頑強生命力比喻離別之情。',
+rhet:[{t:'對仗',d:'「野火燒不盡，春風吹又生」一對工整的詩句，寫出小草頑強的生命力'}],
+keywords:['小草','野火','春風','送別'],
+text:'離離原上草，一歲一枯榮。<br>野火燒不盡，春風吹又生。<br>遠芳侵古道，晴翠接荒城。<br>又送王孫去，萋萋滿別情。',
+img:'https://gips1.baidu.com/it/u=2852441337,2456876534&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'🌱',color:'#4A8C3C',
+authorBio:`白居易（772-846），字樂天，唐代偉大詩人。他寫的詩淺白易懂，老婆婆都能讀懂，人們叫他「詩魔」。他十六歲就寫下了這首著名的小草詩。`,emotionDetail:`詩人一方面<b>歌頌小草頑強不屈的生命力</b>（野火燒不盡、春風吹又生），另一方面<b>抒發送別朋友時依依不捨的離愁</b>，滿滿的離情就像原上茂盛的春草一樣綿長。`,famous:`野火燒不盡，春風吹又生`,theme:`詩人一方面<b>歌頌小草頑強不屈的生命力</b>（野火燒不盡、春風吹又生），另一方面<b>抒發送別朋友時依依不捨的離愁</b>，滿滿的離情就像原上茂盛的春草一樣綿長。`,games:[
+{type:'grow',name:'🌱 春風吹又生',desc:'點空地種下小草，讓春風吹遍草原',
+bg:'https://gips3.baidu.com/it/u=3078294080,4255407881&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+bloomed:'https://gips1.baidu.com/it/u=4125297453,2788790322&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+spots:[{x:8,y:72},{x:20,y:80},{x:32,y:70},{x:45,y:78},{x:56,y:68},{x:68,y:80},{x:78,y:72},{x:90,y:76}]},
+{type:'journey',name:'🌱 送別五站旅程',desc:'跟着詩句走進草原送別',
+stops:[
+{verse:'離離原上草，一歲一枯榮',q:'小草每年會怎樣？',opts:[['永遠不變',false],['每年枯萎又發芽',true]]},
+{verse:'野火燒不盡',q:'野火能燒死小草嗎？',opts:[['能，全部燒死',false],['不能，根還活着',true]]},
+{verse:'春風吹又生',q:'小草甚麼時候再長出來？',opts:[['春天',true],['冬天',false]]},
+{verse:'遠芳侵古道',q:'小草長到哪裏？',opts:[['古老的道路上',true],['大海裏',false]]},
+{verse:'萋萋滿別情',q:'送別朋友心情是？',opts:[['依依不捨',true],['很生氣',false]]}]}]},
+{id:'p3',title:'望廬山瀑布',author:'李白',dynasty:'唐代',form:'七言絕句（近體詩）',
+rhyme:'押 an 韻',rhymes:['煙','川','天'],
+bg:'李白遊覽廬山時，看到香爐峰瀑布雄偉壯觀，豪興大發寫下此詩。',
+rhet:[{t:'誇張',d:'「飛流直下三千尺」用誇張手法寫瀑布之高'},{t:'比喻',d:'把瀑布比作銀河，從天而降'}],
+keywords:['香爐峰','紫煙','瀑布','銀河'],
+text:'日照香爐生紫煙，<br>遙看瀑布掛前川。<br>飛流直下三千尺，<br>疑是銀河落九天。',
+img:'https://gips2.baidu.com/it/u=3452864097,277564023&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'🌊',color:'#3A7CA5',
+authorBio:`李白（701-762），字太白，號青蓮居士，是中國最偉大的浪漫主義詩人，人們稱他為「詩仙」。他的詩大膽誇張、想像奇特，這首廬山瀑布詩是他的代表作之一。`,emotionDetail:`詩人以<b>驚人的想像力和豪邁氣魄</b>描寫廬山瀑布從天而降的雄偉景象，表達了<b>對祖國大好河山的熱愛與讚嘆</b>，也展現了李白豪放灑脫的性格。`,famous:`飛流直下三千尺，疑是銀河落九天`,theme:`詩人以<b>驚人的想像力和豪邁氣魄</b>描寫廬山瀑布從天而降的雄偉景象，表達了<b>對祖國大好河山的熱愛與讚嘆</b>，也展現了李白豪放灑脫的性格。`,games:[
+{type:'view',name:'🏞️ 多角度觀瀑',desc:'點按按鈕，看看不同角度的廬山瀑布',
+views:[
+{id:'v1',label:'① 香爐峰全景',angle:'全景',poem:'日照香爐生紫煙',desc:'從遠處看，香爐峰在陽光下升起紫色煙霧，像一個大香爐！',img:'https://gips0.baidu.com/it/u=2254481265,3371286001&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'v2',label:'② 遠望瀑布',angle:'遠景',poem:'遙看瀑布掛前川',desc:'站在山腰遠望，瀑布像一塊大白絹掛在青山之前！',img:'https://gips3.baidu.com/it/u=999423827,3951335713&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'v3',label:'③ 仰視飛流',angle:'仰視',poem:'飛流直下三千尺',desc:'從瀑布腳下抬頭仰望，瀑布從高處飛奔而下，水花四濺！',img:'https://gips0.baidu.com/it/u=2437805344,1577020034&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'v4',label:'④ 銀河落九天',angle:'想像',poem:'疑是銀河落九天',desc:'李白想像，這瀑布是不是天上的銀河從九天傾瀉下來？',img:'https://gips1.baidu.com/it/u=2686121468,3718462397&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'}]},
+{type:'theater',name:'🎭 觀瀑小劇場',desc:'點擊景物，感受瀑布的壯觀',
+hotspots:[
+{id:'h1',label:'香爐峰',x:35,y:20,text:'看！山頂雲霧在陽光下變成紫色，像香爐冒紫煙！'},
+{id:'h2',label:'瀑布',x:55,y:45,text:'哇！瀑布從高山飛流直下，好像有三千尺那麼長！'},
+{id:'h3',label:'銀河',x:55,y:10,text:'瀑布像天上的銀河落到人間，太神奇了！'},
+{id:'h4',label:'李白',x:15,y:72,text:'我是李白！看到這麼壯觀的瀑布，忍不住寫詩啦！'}]}]},
+{id:'p4',title:'七步詩',author:'曹植',dynasty:'三國',form:'五言古體詩',
+rhyme:'押 i 韻',rhymes:['泣','急'],
+bg:'曹丕嫉妒弟弟曹植才華，命他七步內作詩，否則殺頭，曹植應聲作出此詩。',
+rhet:[{t:'比喻',d:'用豆和豆萁比喻同胞兄弟相殘'},{t:'擬人',d:'「豆在釜中泣」豆子像人一樣哭泣'}],
+keywords:['豆子','豆萁','相煎','兄弟'],
+text:'煮豆燃豆萁，豆在釜中泣。<br>本是同根生，相煎何太急？',
+img:'https://gips2.baidu.com/it/u=548419068,2956721061&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'🫘',color:'#8C6B3C',
+authorBio:`曹植（192-232），字子建，三國時代曹操的兒子，是著名的文學家。他從小聰明，才華橫溢，謝靈運說「天下才有一石，曹子建獨占八斗」。但被哥哥曹丕妒忌。`,emotionDetail:`詩人用<b>豆萁煮豆的比喻</b>，沉痛控訴<b>親兄弟之間為了權力互相殘害</b>，字裏行間充滿悲憤與無奈，勸告後人珍惜手足之情。`,famous:`本是同根生，相煎何太急`,theme:`詩人用<b>豆萁煮豆的比喻</b>，沉痛控訴<b>親兄弟之間為了權力互相殘害</b>，字裏行間充滿悲憤與無奈，勸告後人珍惜手足之情。`,games:[
+{type:'qibu',name:'🚶 七步成詩闖關',desc:'幫曹植走七步，每一步答對一個問題',
+steps:[
+{step:1,q:'曹丕命令曹植：「在七步之內___」',opts:[['作出一首詩',true],['喝一杯酒',false],['跳舞給我看',false]],explain:'對！曹丕命令曹植七步內作詩，作不出就要殺頭！'},
+{step:2,q:'煮豆子用甚麼當柴火？',opts:[['豆的莖（豆萁）',true],['木頭',false],['煤炭',false]],explain:'煮豆燃豆萁——用豆自己的莖來煮豆子，就像兄弟相殘！'},
+{step:3,q:'豆子在鍋裏怎麼了？',opts:[['快樂地唱歌',false],['在哭泣',true],['在睡覺',false]],explain:'豆在釜中泣——豆子在鍋裏難過地哭了！'},
+{step:4,q:'豆子和豆萁原本是甚麼關係？',opts:[['敵人',false],['同一個根長出來的兄弟',true],['互不相識',false]],explain:'本是同根生——豆子和豆萁是同一個根長出來的，就像親兄弟！'},
+{step:5,q:'「相煎何太急」是豆子對誰說的？',opts:[['對豆萁（哥哥）',true],['對農夫',false],['對鍋子',false]],explain:'豆子哭着問豆萁：我們本是兄弟，你為甚麼這麼急迫地迫害我？'},
+{step:6,q:'這首詩的真正意思是甚麼？',opts:[['教我們煮豆子',false],['告訴哥哥不要傷害親弟弟',true],['描寫廚房',false]],explain:'曹植用豆子比喻自己，勸哥哥曹丕不要骨肉相殘！'},
+{step:7,q:'曹植最後有沒有在七步內寫完詩？',opts:[['寫完了，曹丕感動又慚愧',true],['沒有，被殺了',false],['跑掉了',false]],explain:'曹丕聽完詩非常慚愧，放過了曹植，這首詩流傳千古！'}]},
+{type:'theater',name:'🎭 煮豆小劇場',desc:'點擊豆子、豆萁、曹植，聽他們的心聲',
+hotspots:[
+{id:'h1',label:'豆子',x:50,y:48,text:'嗚嗚～我是豆子，我好難過，被自己兄弟煮了…'},
+{id:'h2',label:'豆萁',x:35,y:78,text:'（嘆氣）我是豆萁，我也不想燒自己的兄弟呀…'},
+{id:'h3',label:'曹植',x:20,y:58,text:'我是曹植，哥哥為甚麼要這樣逼我…'},
+{id:'h4',label:'爐火',x:38,y:68,text:'豆和萁本是同根生，為甚麼要互相傷害呢？'}]}]},
+{id:'p5',title:'贈汪倫',author:'李白',dynasty:'唐代',form:'七言絕句（近體詩）',
+rhyme:'押 ing/eng 韻',rhymes:['行','聲','情'],
+bg:'李白遊涇縣桃花潭，好友汪倫熱情報答、踏歌送行，李白感動寫下此詩。',
+rhet:[{t:'誇張',d:'「桃花潭水深千尺」用誇張形容潭水極深'},{t:'襯托',d:'用千尺深的潭水反襯汪倫的友情比潭水還要深厚'}],
+keywords:['桃花潭','汪倫','踏歌','友情'],
+text:'李白乘舟將欲行，<br>忽聞岸上踏歌聲。<br>桃花潭水深千尺，<br>不及汪倫送我情。',
+img:'https://gips3.baidu.com/it/u=124660741,1631532794&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'🌸',color:'#D4708E',
+authorBio:`李白（701-762），字太白，唐代最偉大的詩人，人稱「詩仙」。他遊歷天下，寫下無數豪放詩篇。這首詩是他遊涇縣桃花潭時，為感謝好友汪倫熱情送行而作。`,emotionDetail:`詩人用<b>千尺深潭反襯友情</b>，表達<b>對好友汪倫深厚友情的感動與珍惜</b>，鄉親們踏歌送行的熱鬧場面，成為千古送別的佳話。`,famous:`桃花潭水深千尺，不及汪倫送我情`,theme:`詩人用<b>千尺深潭反襯友情</b>，表達<b>對好友汪倫深厚友情的感動與珍惜</b>，鄉親們踏歌送行的熱鬧場面，成為千古送別的佳話。`,games:[
+{type:'tage',name:'🎵 踏歌節拍拍',desc:'跟着節拍點村民腳下，一起踏歌送別',
+bg:'https://gips1.baidu.com/it/u=1258379363,3988046135&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+sailed:'https://gips3.baidu.com/it/u=1951890027,2221916329&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+beats:[{x:18,y:80,t:'李'},{x:30,y:76,t:'白'},{x:42,y:78,t:'乘'},{x:54,y:75,t:'舟'},{x:66,y:77,t:'將'},{x:78,y:80,t:'行'}]},
+{type:'theater',name:'🎭 送別小劇場',desc:'點擊畫面人物景物，聽他們說話',
+hotspots:[
+{id:'h1',label:'小船',x:28,y:58,text:'李白坐着小船正要離開，忽然聽到岸上傳來歌聲！'},
+{id:'h2',label:'汪倫',x:82,y:66,text:'我是汪倫！李白是我的好朋友，帶着鄉親踏歌送他！'},
+{id:'h3',label:'桃花潭',x:50,y:78,text:'我的水有千尺深，但汪倫對李白的友情比我還要深！'},
+{id:'h4',label:'桃花',x:75,y:35,text:'我盛開在岸邊，見證兩位詩人的友情～'}]}]},
+{id:'p6',title:'黃鶴樓送孟浩然之廣陵',author:'李白',dynasty:'唐代',form:'七言絕句（近體詩）',
+rhyme:'押 ong 韻',rhymes:['樓','州','流'],
+bg:'李白在黃鶴樓送好友孟浩然去揚州（廣陵），望着船帆漸漸遠去寫下此詩。',
+rhet:[{t:'借景抒情',d:'以孤帆、長江天際的景色，表達目送友人遠去的依依不捨'}],
+keywords:['黃鶴樓','煙花','孤帆','長江'],
+text:'故人西辭黃鶴樓，<br>煙花三月下揚州。<br>孤帆遠影碧空盡，<br>唯見長江天際流。',
+img:'https://gips0.baidu.com/it/u=59247189,1877054063&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'⛵',color:'#4A7CA5',
+authorBio:`李白（701-762），字太白，唐代偉大詩人，人稱「詩仙」。孟浩然是比他年長12歲的好友，兩人友誼深厚。這首詩是李白在黃鶴樓送孟浩然去揚州時寫的。`,emotionDetail:`詩人藉由<b>孤帆漸漸遠去、長江流向天際</b>的遼闊景色，寄託<b>目送友人遠去的依依不捨</b>，以及對揚州煙花三月、好友即將抵達美好之地的美好祝願。`,famous:`孤帆遠影碧空盡，唯見長江天際流`,theme:`詩人藉由<b>孤帆漸漸遠去、長江流向天際</b>的遼闊景色，寄託<b>目送友人遠去的依依不捨</b>，以及對揚州煙花三月、好友即將抵達美好之地的美好祝願。`,games:[
+{type:'blow',name:'💨 吹風送友',desc:'點畫面吹風，把孟浩然的帆船送向廣陵',
+bg:'https://gips1.baidu.com/it/u=3269736636,1579621084&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+arrived:'https://gips0.baidu.com/it/u=245230461,2467940915&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{type:'voyage',name:'⛵ 孟浩然下揚州',desc:'跟着孟浩然一站一站下揚州',
+points:[
+{id:'v1',label:'黃鶴樓送別',text:'李白在黃鶴樓前，與即將去揚州的好友孟浩然握手告別，依依不捨。',img:'https://gips0.baidu.com/it/u=1195741039,2471824199&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'v2',label:'煙花三月',text:'帆船剛剛離岸，兩岸楊花紛飛如煙，桃花盛開，正是最美的煙花三月！',img:'https://gips3.baidu.com/it/u=3736839507,2572548275&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'v3',label:'孤帆遠影',text:'帆船越行越遠，在長江中只剩下一個小小的白影，黃鶴樓也變得模糊了。',img:'https://gips3.baidu.com/it/u=581641533,253548130&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'v4',label:'長江天際',text:'長江滾滾向東流，一直流到天邊，天空和江水藍成一片，帆影已經消失在天際線。',img:'https://gips1.baidu.com/it/u=3964343270,3749790706&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'v5',label:'抵達廣陵',text:'孟浩然終於抵達繁華的揚州（廣陵），岸邊酒旗飄揚、楊柳依依，好一片熱鬧景象！',img:'https://gips0.baidu.com/it/u=1046097861,1236648537&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'}]}
+]},
+{id:'p7',title:'鳥鳴澗',author:'王維',dynasty:'唐代',form:'五言絕句（近體詩）',
+rhyme:'押 ong 韻',rhymes:['空','中'],
+bg:'王維晚年隱居輞川，描寫春山夜晚幽靜美麗的景色。',
+rhet:[{t:'以動襯靜',d:'用桂花落、月出、鳥鳴這些細微動態，反襯山的寂靜'},{t:'對仗',d:'人閒對夜靜，桂花對春山'}],
+keywords:['桂花','明月','山鳥','春澗'],
+text:'人閒桂花落，<br>夜靜春山空。<br>月出驚山鳥，<br>時鳴春澗中。',
+img:'https://gips2.baidu.com/it/u=508657098,3966104786&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'🌙',color:'#5A6B8C',
+authorBio:`王維（701-761），字摩詰，唐代詩人、畫家，人稱「詩佛」。他晚年隱居在輞川別墅，專心寫山水詩。他的詩「詩中有畫，畫中有詩」，非常寧靜優美。`,emotionDetail:`詩人透過<b>桂花輕落、月亮升起、小鳥被驚飛、偶爾鳴叫</b>這些細微的動態，反襯出<b>春山夜晚異常幽靜的意境</b>，表達了詩人寧靜閒適、與自然融為一體的心境。`,famous:`月出驚山鳥，時鳴春澗中`,theme:`詩人透過<b>桂花輕落、月亮升起、小鳥被驚飛、偶爾鳴叫</b>這些細微的動態，反襯出<b>春山夜晚異常幽靜的意境</b>，表達了詩人寧靜閒適、與自然融為一體的心境。`,games:[
+{type:'quiet',name:'🌙 靜夜山澗·以動襯靜',desc:'按順序點亮畫面中的動態景物，感受以動襯靜',
+quiet:[
+{id:'q1',label:'桂花飄落',poem:'人閒桂花落',explain:'細小的桂花輕輕落下來，能聽見落瓣的聲音——可見山裏有多安靜！',img:'https://gips3.baidu.com/it/u=536401228,2264785938&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'},
+{id:'q2',label:'明月升起',poem:'夜靜春山空',explain:'夜深人靜，春山空曠，月亮悄悄爬上山頭，灑下銀白色的光。',img:'https://gips3.baidu.com/it/u=3482785434,915034786&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'},
+{id:'q3',label:'山鳥被驚',poem:'月出驚山鳥',explain:'月光突然照亮樹林，把熟睡的小鳥驚醒了——這一點小動靜也能聽到！',img:'https://gips3.baidu.com/it/u=2808417997,4155421069&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'},
+{id:'q4',label:'時鳴春澗',poem:'時鳴春澗中',explain:'小鳥不時在山澗裏叫幾聲，叫聲在空山中迴盪，反而顯得山林更安靜。',img:'https://gips3.baidu.com/it/u=2808417997,4155421069&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024'}]},
+{type:'theater',name:'🎭 靜夜小劇場',desc:'點擊山林景物，感受夜的寧靜',
+hotspots:[
+{id:'h1',label:'桂花',x:30,y:35,text:'桂花靜靜地落下來，一點聲音都沒有～'},
+{id:'h2',label:'月亮',x:72,y:22,text:'月亮升起來了，照亮整個山間，太安靜了！'},
+{id:'h3',label:'小鳥',x:55,y:75,text:'小鳥被月光驚醒，飛到澗邊唱歌～'},
+{id:'h4',label:'山澗',x:35,y:82,text:'澗水嘩嘩流，鳥叫聲在空山中迴響'}]}]},
+{id:'p8',title:'金縷衣',author:'杜秋娘',dynasty:'唐代',form:'七言樂府（古體詩）',
+rhyme:'押 i 韻',rhymes:['衣','時','枝'],
+bg:'杜秋娘是唐代江南才女，這首詩勸人珍惜青春少年時光，不要錯過好時機。',
+rhet:[{t:'反復',d:'「勸君」出現兩次，像大人在耳邊再三叮囑，非常親切'},{t:'借物喻理',d:'用「花開須及時摘」的道理，勸大家珍惜少年時光'}],
+keywords:['金縷衣','少年時','折花','空枝'],
+text:'勸君莫惜金縷衣，<br>勸君惜取少年時。<br>花開堪折直須折，<br>莫待無花空折枝。',
+img:'https://gips0.baidu.com/it/u=3293661913,2127997818&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'👗',color:'#D4A04A',
+authorBio:`杜秋娘，唐代江南著名才女，原是節度使李錡的妾，後入宮，一生經歷傳奇。這首《金縷衣》是她最著名的作品，千百年來勸勉少年人珍惜時光。`,emotionDetail:`詩人用<b>「花開當折及時折」作比喻</b>，反復勸勉人們<b>不要貪圖昂貴的金縷衣，要珍惜寶貴的少年時光</b>，該努力的時候要努力，不要等到錯過機會才後悔。`,famous:`花開堪折直須折，莫待無花空折枝`,theme:`詩人用<b>「花開當折及時折」作比喻</b>，反復勸勉人們<b>不要貪圖昂貴的金縷衣，要珍惜寶貴的少年時光</b>，該努力的時候要努力，不要等到錯過機會才後悔。`,games:[
+{type:'timewheel',name:'⏳ 時光齒輪',desc:'轉動時光，看看花開花落的變化',
+stages:[
+{id:'s1',label:'少年時',emoji:'🌸',flower:'盛開粉紅花',girl:'少女讀書',tip:'花開堪折直須折——少年時光要好好珍惜！',text:'花開滿枝，少年時光最寶貴，要好好把握！',img:'https://gips1.baidu.com/it/u=264725005,1889973512&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'s2',label:'青年時',emoji:'🌺',flower:'花開最盛',girl:'青年努力',tip:'把握機會，努力學習！',text:'花開得最盛的時候，就是用功讀書最好的時候！',img:'https://gips1.baidu.com/it/u=781674505,2942443127&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'s3',label:'中年時',emoji:'🍂',flower:'花開始凋謝',girl:'中年後悔',tip:'機會錯過了就不會再回來！',text:'如果少年時不努力，到中年就會後悔了…',img:'https://gips3.baidu.com/it/u=1002880293,2776250268&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'s4',label:'老年時',emoji:'🥀',flower:'空無一枝',girl:'老人嘆息',tip:'莫待無花空折枝——不要等到花謝了才難過！',text:'花謝了只剩下空枝，就像光陰一去不復返…',img:'https://gips0.baidu.com/it/u=2582091012,167214679&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'}],
+moral:'少年易老學難成，一寸光陰不可輕！珍惜當下，好好學習！'},
+{type:'filldrag',name:'✏️ 填詩送花',desc:'把詞語拖進空格，完成整首詩',
+lines:[
+{html:'勸君莫惜<span class="fill-slot" data-ans="金縷衣"></span>，',words:['金縷衣']},
+{html:'勸君惜取<span class="fill-slot" data-ans="少年時"></span>。',words:['少年時']},
+{html:'花開堪折<span class="fill-slot" data-ans="直須折"></span>，',words:['直須折']},
+{html:'莫待無花<span class="fill-slot" data-ans="空折枝"></span>。',words:['空折枝']}]}]},
+{id:'p9',title:'絕句',author:'杜甫',dynasty:'唐代',form:'五言絕句（近體詩）',
+rhyme:'押 iang/ang 韻',rhymes:['香','鴦'],
+bg:'杜甫經歷安史之亂後，在成都草堂暫居時寫下，描寫春日明麗景色。',
+rhet:[{t:'對仗',d:'兩句兩句嚴格對仗：遲日對春風、江山對花草、泥融對沙暖、燕子對鴛鴦'},{t:'多感官',d:'從視覺、嗅覺、觸覺多角度寫春'}],
+keywords:['遲日','江山','燕子','鴛鴦'],
+text:'遲日江山麗，<br>春風花草香。<br>泥融飛燕子，<br>沙暖睡鴛鴦。',
+img:'https://gips0.baidu.com/it/u=3544130743,808696018&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'🐦',color:'#3C8C5A',
+authorBio:`杜甫（712-770），字子美，唐代最偉大的現實主義詩人，人稱「詩聖」，他的詩被稱為「詩史」。安史之亂後他在成都草堂居住，寫下這首描寫春日美景的絕句。`,emotionDetail:`詩人用<b>工整對仗</b>描寫遲日、春風、花草、燕子、鴛鴦，呈現出<b>春天萬物復蘇、溫暖和諧的明麗景象</b>，表達了歷經戰亂後短暫安居的喜悅與對和平生活的嚮往。`,famous:`泥融飛燕子，沙暖睡鴛鴦`,theme:`詩人用<b>工整對仗</b>描寫遲日、春風、花草、燕子、鴛鴦，呈現出<b>春天萬物復蘇、溫暖和諧的明麗景象</b>，表達了歷經戰亂後短暫安居的喜悅與對和平生活的嚮往。`,games:[
+{type:'wake',name:'🌸 喚醒春天',desc:'點畫面亮點，把春天景物一個個喚醒',
+bg:'https://gips1.baidu.com/it/u=3332033850,1993547696&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+spots:[
+{x:20,y:38,ei:'https://gips1.baidu.com/it/u=2746965614,3130290883&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024',t:'燕子銜泥'},
+{x:72,y:72,ei:'https://gips2.baidu.com/it/u=3918689941,38881246&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024',t:'鴛鴦安睡'},
+{x:25,y:68,ei:'https://gips1.baidu.com/it/u=2114079832,1230104484&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024',t:'花開飄香'},
+{x:82,y:28,ei:'https://gips1.baidu.com/it/u=3355021652,4152602041&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024',t:'陽光普照'},
+{x:55,y:25,ei:'https://gips0.baidu.com/it/u=3770475758,2391280832&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024',t:'蝴蝶飛舞'}]},
+{type:'pairing',name:'🎨 對仗小畫家',desc:'把右邊詩句拖到左邊，組成對仗的詩句',
+pairs:[
+{left:'遲日 江山',right:'春風 花草',poem:'遲日江山麗，春風花草香',mean:'春日江山美麗，春風吹來花草香氣'},
+{left:'泥融 燕子',right:'沙暖 鴛鴦',poem:'泥融飛燕子，沙暖睡鴛鴦',mean:'濕泥上燕子銜泥築巢，暖沙上鴛鴦成雙睡覺'}]}]},
+{id:'p10',title:'昔孟母，擇鄰處',author:'《三字經》',dynasty:'南宋',form:'三字經（蒙學韻文）',
+rhyme:'押 u/ü 韻',rhymes:['處','杼'],
+bg:'孟子小時候調皮好學，孟母為教育兒子三遷擇鄰，並用剪斷織布來教他讀書不能半途而廢。',
+rhet:[{t:'用典／故事',d:'用孟母斷織的故事告訴我們學習要堅持'},{t:'類比',d:'讀書像織布，中斷了就接不上'}],
+keywords:['孟母','擇鄰','斷機','教子'],
+text:'昔孟母，擇鄰處。<br>子不學，斷機杼。',
+img:'https://gips1.baidu.com/it/u=2311973953,4123881375&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+icon:'✂️',color:'#6B4A3C',
+authorBio:`《三字經》相傳是南宋學者王應麟編寫，是中國古代最著名的啟蒙讀物，三字一句，押韻好記，教小朋友讀書做人的道理。「孟母三遷」是其中最有名的故事。`,emotionDetail:`詩句用<b>孟母三次搬家、剪斷織布機</b>的故事，告訴小朋友<b>讀書要持之以恆、不能半途而廢</b>，環境對學習很重要，父母的教誨要珍惜。`,famous:`昔孟母，擇鄰處。子不學，斷機杼`,theme:`詩句用<b>孟母三次搬家、剪斷織布機</b>的故事，告訴小朋友<b>讀書要持之以恆、不能半途而廢</b>，環境對學習很重要，父母的教誨要珍惜。`,games:[
+{type:'neighbor',name:'🏘️ 孟母三遷選鄰居',desc:'幫小孟子選一個好鄰居，看看不同環境的影響',
+choices:[
+{id:'c1',emoji:'⚰️',title:'住在墓地旁邊',result:'小孟子學着大人跪拜、哭嚎，玩起辦理喪事的遊戲。',good:false,tip:'❌ 不好！這裏的環境不適合讀書。',img:'https://gips0.baidu.com/it/u=2078911985,2283809317&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'c2',emoji:'🛒',title:'住在集市旁邊',result:'小孟子學着商人叫賣，還學屠夫殺豬宰羊。',good:false,tip:'❌ 也不好！熱鬧是熱鬧，但不是讀書的好地方。',img:'https://gips0.baidu.com/it/u=1680071074,1434362641&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'},
+{id:'c3',emoji:'🏫',title:'住在學堂旁邊',result:'小孟子跟着學生讀書、學禮貌、愛學習，孟母很高興！',good:true,tip:'✅ 這就是「孟母三遷」！好環境才能培養好習慣！',img:'https://gips3.baidu.com/it/u=2988198668,4063694804&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'}],
+story:'孟母為了給小孟子找好環境，搬了三次家。前兩次環境不好，第三次終於選到了學堂旁邊！'},
+{type:'lesson',name:'📖 孟母斷機的教誨',desc:'按順序點擊，看看孟母怎樣教子',
+steps:[
+{id:'s1',label:'① 先點孟母',hotspot:{label:'孟母',x:38,y:38},text:'讀書就像織布，一旦剪斷就再也接不上了！'},
+{id:'s2',label:'② 再點剪刀',hotspot:{label:'剪刀',x:48,y:48},text:'（咔擦！）布被剪斷了，就像讀書中斷，之前的努力都白費了。'},
+{id:'s3',label:'③ 最後點小孟子',hotspot:{label:'小孟子',x:72,y:68},text:'我明白了！讀書一定要堅持到底，不能半途而廢！'}]}
+]
+}
+];
+
+/* ========== 首頁渲染 ========== */
+const shelf=document.getElementById('bookshelf');
+poems.forEach((p,i)=>{
+const b=document.createElement('div');b.className='book';
+b.innerHTML=`<div class="book-cover" style="background-image:url('${U(p.img)}')"><div class="icon">${p.icon}</div></div>
+<div class="book-info"><div class="title">${p.title}</div><div class="author">${p.dynasty}·${p.author}</div></div>`;
+b.onclick=()=>openPoem(i);
+shelf.appendChild(b);
+});
+document.getElementById('goRule').onclick=()=>{sfxClick();showPage('rulePage');document.getElementById('topTitle').textContent='📏 認識詩歌格律';initMeterGame()};
+document.getElementById('backBtn').onclick=()=>{sfxClick();goHome()};
+
+function goHome(){showPage('homePage');document.getElementById('topTitle').textContent='🌸 古詩樂園 🌸';document.getElementById('backBtn').style.display='none';document.getElementById('nextPoemBtn').style.display='none'}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.getElementById('backBtn').style.display=id==='homePage'?'none':'block';
+const nxt=document.getElementById('nextPoemBtn');if(id==='poemPage'&&curPoemIdx<poems.length-1){nxt.style.display='inline-block'}else{nxt.style.display='none'}
+window.scrollTo(0,0)}
+function goNextPoem(){sfxClick();if(curPoemIdx<0||curPoemIdx>=poems.length-1){return}openPoem(curPoemIdx+1);window.scrollTo(0,0)}
+
+/* ========== 詩歌詳情 ========== */
+let curPoem=null;let curPoemIdx=-1;
+function openPoem(i){
+sfxClick();curPoem=poems[i];curPoemIdx=i;showPage('poemPage');
+document.getElementById('topTitle').textContent=curPoem.icon+' '+curPoem.title;
+const nxt=document.getElementById('nextPoemBtn');
+if(i>=poems.length-1){nxt.style.display='none'}else{nxt.style.display='inline-block';nxt.style.opacity='1';nxt.disabled=false}
+document.getElementById('poemImg').src=curPoem.img;
+document.getElementById('poemText').innerHTML=curPoem.text;
+const tags=document.getElementById('poemTags');tags.innerHTML='';
+[curPoem.form,curPoem.rhyme,...curPoem.keywords].forEach(t=>{
+const tag=document.createElement('span');tag.className='tag'+(t===curPoem.form?' gold':t===curPoem.rhyme?' blue':'');tag.textContent=t;tags.appendChild(tag)
+});
+
+// 渲染四大知識卡片
+const ks=document.getElementById('knowSection');ks.innerHTML='';
+const qk=p2k[curPoem.id];const qd=poemsQuiz[qk];
+if(qd){
+  // 作者卡
+  const a=document.createElement('div');a.className='kcard';
+  a.innerHTML=`<div class="kcard-h"><img class="av" src="${U(author_avatars[curPoem.id])}"><div><h4>👤 作者簡介</h4><div class="sub">${curPoem.author} · ${curPoem.dynasty}</div></div></div>
+  <div class="kcard-b"><p>${curPoem.authorBio}</p>${judgeGameHTML(qd.author)}</div>`;
+  ks.appendChild(a);
+  // 背景卡
+  const b=document.createElement('div');b.className='kcard';
+  b.innerHTML=`<div class="kcard-h"><img class="av" src="${U(bg_imgs[curPoem.id])}"><div><h4>📜 創作背景</h4><div class="sub">一首詩背後的故事</div></div></div>
+  <div class="kcard-b"><p>${curPoem.bgDetail}</p>${storyGameHTML(qd.bg_steps)}</div>`;
+  ks.appendChild(b);
+  // 修辭卡
+  const r=document.createElement('div');r.className='kcard';
+  let rhetHTML=curPoem.rhet.map(x=>`<div class="rhet-line"><b>◆ ${x.t}：</b>${x.d}</div>`).join('');
+  const rhetGroups=buildRhetGroups(curPoem, qd);
+  // 修辭：單修辭用「印章蓋一蓋」（mode=seal）或舊的「點點亮」，多修辭用「魔法寶盒拖拽」
+  let rhetGameHTML='';
+  if(rhetGroups.length===1 && rhetGroups[0].mode==='seal'){
+    rhetGameHTML=sealGameHTML(curPoem, rhetGroups);
+  }else if(rhetGroups.length===1 && rhetGroups[0].mode==='match'){
+    rhetGameHTML=renderRhetoricMatch(rhetGroups[0].config, curPoem.id);
+  }else if(rhetGroups.length<=1){
+    rhetGameHTML=spotGameHTML(curPoem, rhetGroups);
+  }else{
+    rhetGameHTML=boxGameHTML(curPoem, rhetGroups);
+  }
+  r.innerHTML=`<div class="kcard-h"><img class="av" src="${U(rhet_icon)}"><div><h4>🎨 修辭手法</h4><div class="sub">詩中的寫作小魔法</div></div></div>
+  <div class="kcard-b">${rhetHTML}${rhetGameHTML}</div>`;
+  ks.appendChild(r);
+  // 格律卡
+  const m=document.createElement('div');m.className='kcard';
+  const isAnc=curPoem.form.includes('古')||curPoem.form.includes('樂府')||curPoem.form.includes('蒙學');
+  const meterTxt=isAnc?'古體詩形式比較自由，字數句數不限，押韻可換，不講究平仄對仗。':'近體詩（絕句/律詩）字數、句數、押韻、平仄、對仗都有嚴格規定，讀起來朗朗上口。';
+  m.innerHTML=`<div class="kcard-h"><img class="av" src="${U(meter_icon)}"><div><h4>📏 格律分析</h4><div class="sub">${curPoem.form} · ${curPoem.rhyme}</div></div></div>
+  <div class="kcard-b"><div class="meter-box"><p>🌟 韻腳字：<span class="rhyme-words-wrap" style="display:none">${curPoem.rhymes.map(w=>`<span class="rhyme-word">${w}</span>`).join('')}</span><span class="rhyme-hint-text" style="color:#A08060;font-size:13px">👇 玩玩下面圈韻腳遊戲，找齊了就顯示答案～</span></p><p style="margin-top:8px;font-size:15px">${meterTxt}</p></div>${rhymeGameHTML(curPoem, qd.rhymes)}</div>`;
+  ks.appendChild(m);
+  // 初始化遊戲
+  initJudgeGame(a, qd.author);
+  initStoryGame(b, qd.bg_steps);
+  if(rhetGroups.length===1 && rhetGroups[0].mode==='seal'){
+    initSealGame(r, curPoem, rhetGroups);
+  }else if(rhetGroups.length===1 && rhetGroups[0].mode==='match'){
+    // 配對遊戲在 renderRhetoricMatch 內部已 setTimeout 綁定事件，不需要額外 init
+  }else if(rhetGroups.length<=1){
+    initSpotGame(r, curPoem, rhetGroups);
+  }else{
+    initBoxGame(r, curPoem, rhetGroups);
+  }
+  initRhymeGame(m, curPoem, qd.rhymes);
+}
+
+drawConcept(curPoem);
+// 遊戲入口
+const ge=document.getElementById('gameEntries');ge.innerHTML='';
+curPoem.games.forEach((g,gi)=>{
+const c=document.createElement('div');c.className='game-card';
+c.innerHTML=`<div class="gic">${g.name.split(' ')[0]}</div><div class="gt">${g.name.split(' ').slice(1).join(' ')}</div><div class="gd">${g.desc}</div>`;
+c.onclick=()=>{sfxClick();openGame(gi)};ge.appendChild(c);
+});
+}
+
+/* 擴充每首詩詳細資料 */
+(function(){
+const bios={
+"p1":"王維（701-761），唐代著名詩人、畫家，人稱「詩佛」。他特別擅長描寫山水田園的美麗景色，蘇軾曾稱讚他「詩中有畫，畫中有詩」。",
+"p2":"白居易（772-846），字樂天，唐代大詩人。他寫詩講究淺白易懂，據說會把詩讀給老婆婆聽，直到老婆婆聽懂才定稿。",
+"p3":"李白（701-762），字太白，號青蓮居士，是中國最偉大的浪漫主義詩人，人稱「詩仙」。他的詩豪邁奔放、想像力豐富。",
+"p4":"曹植（192-232），字子建，三國時期曹操的兒子。從小非常聰明，十歲就能寫詩，是「建安文學」最重要的作家之一，人稱「才高八斗」。",
+"p5":"李白（701-762），字太白，人稱「詩仙」。一生遊歷天下，結交許多好友，與汪倫的友情成為千古佳話。",
+"p6":"李白（701-762），字太白，人稱「詩仙」。與孟浩然是好友，孟浩然比他大12歲，李白非常敬重他。",
+"p7":"王維（701-761），人稱「詩佛」。晚年隱居在陝西藍田的輞川別墅，那裏山清水秀，他寫了很多有名的山水詩。",
+"p8":"杜秋娘，唐代金陵（今南京）女子，原是節度使李錡的妾，後入宮。她寫的《金縷衣》是唐代非常流行的歌曲。",
+"p9":"杜甫（712-770），字子美，人稱「詩聖」。他的詩真實記錄了唐代社會，被稱為「詩史」。經歷安史之亂後在成都草堂度過一段安穩時光。",
+"p10":"《三字經》相傳為南宋學者王應麟（1223-1296）編寫，是中國古代最著名的兒童啟蒙讀物之一，三字一句，押韻好讀。"
+};
+const bgds={
+"p1":"王維十七歲就離開家鄉蒲州（今山西），獨自一人到長安、洛陽求學。重陽節那天，別人家都團聚登高，他卻孤單一人，望着遠方，非常想念家鄉的父母兄弟，於是寫下這首千古名作。",
+"p2":"白居易十六歲時，到長安參加科舉考試，他帶着自己的詩去拜見當時的大詩人顧況。顧況看到「白居易」這個名字，開玩笑說：「長安物價這麼高，想『居』住可不容『易』啊！」但當他讀到「野火燒不盡，春風吹又生」，大為驚嘆，連忙說：「能寫出這樣的詩，居天下也不難！」",
+"p3":"李白五十歲左右遊覽廬山，被香爐峰瀑布的雄偉景象震撼。傳說他當時喝醉了酒，望着奔騰的瀑布，詩興大發，揮筆寫下這首詩。",
+"p4":"曹丕當上皇帝後，一直嫉妒弟弟曹植的才華。有一天，他命令曹植在走七步的時間內作出一首詩，如果做不到就處死。曹植剛走了幾步就吟出了這首《七步詩》，曹丕聽了非常慚愧。",
+"p5":"涇縣（今安徽涇縣）有位叫汪倫的人，非常崇拜李白。他聽說李白要來，就寫信邀請：「先生喜歡遊玩嗎？這裏有十里桃花；先生喜歡喝酒嗎？這裏有萬家酒店。」李白高興地去了，才發現「桃花」是潭水名，「萬家」是酒店老闆姓萬。兩人一見如故，成為好友。",
+"p6":"唐玄宗開元盛世，孟浩然要從武昌沿長江東下，去繁華的揚州（古稱廣陵）。李白親自送他到黃鶴樓，看着帆船一點點消失在天邊，心中滿是不捨，於是寫下這首送別名篇。",
+"p7":"王維晚年隱居輞川，信奉佛教，心境寧靜。一個春天的夜晚，他獨自坐在山澗邊，欣賞桂花悄悄落下、月光驚醒小鳥的美景，感受到一種極度安靜祥和的意境。",
+"p8":"金縷衣是用金線織成的華麗衣裳，非常貴重。杜秋娘用這首詩告訴人們：金縷衣雖貴，還可以再買；但少年時光一旦過去，就再也回不來了。要珍惜青春，把握機會好好學習。",
+"p9":"杜甫經歷安史之亂後，輾轉來到成都，在朋友幫助下蓋了一間「浣花草堂」。這是他一生中難得的安定時光。春天來了，他望着門前秀麗的景色，寫下這首描寫春天的小詩。",
+"p10":"孟子是繼孔子之後儒家最偉大的思想家，人稱「亞聖」。他小時候非常調皮，母親仉氏為了教育好他，三次搬家、剪斷織布，終於讓孟子明白讀書的重要性。這個故事記載在《三字經》裏，成為千古佳話。"
+};
+const emotions={
+"p1":"這首詩表達了詩人<b>獨在異鄉的孤獨</b>和<b>對家鄉兄弟的深切思念</b>。「每逢佳節倍思親」更是成為後人思鄉時最常引用的名句。",
+"p2":"詩人前半部分歌頌<b>小草頑強的生命力</b>（野火燒不盡，春風吹又生），後半部分借春草連天，表達<b>送別友人時的依依不捨</b>之情。",
+"p3":"詩人通過描寫廬山瀑布的雄偉壯觀，表達對<b>祖國大好河山的熱愛</b>，也展示了詩人<b>豪邁奔放、想像天開</b>的浪漫情懷。",
+"p4":"曹植借豆子與豆萁的故事，哀怨地質問哥哥曹丕：<b>我們本是同胞兄弟，為甚麼要這麼急迫地迫害我呢？</b>詩中充滿了無奈、悲傷與憤慨。",
+"p5":"詩人用「桃花潭水深千尺」反襯<b>汪倫友情的深厚</b>，表達對友人<b>真誠熱情報答的深深感動</b>。這是李白最真誠動人的友情詩。",
+"p6":"詩人目送朋友的帆船遠去，直到看不見為止，表達了<b>對好友孟浩然依依不捨的深情</b>。詩人沒有直接說「我想你」，而是通過景物寄託感情，含蓄動人。",
+"p7":"這首詩通過細微的聲音和動作（花落、月出、鳥鳴），突出<b>春山夜晚的幽靜</b>，表達詩人<b>寧靜、悠閒、超然物外</b>的禪意心境。",
+"p8":"這首詩勸告人們<b>珍惜少年時光</b>，不要等到錯過了才後悔。金縷衣雖貴，但光陰比黃金更寶貴——<b>一寸光陰一寸金</b>！",
+"p9":"這首詩描繪了春天明麗溫暖的景象，表達詩人<b>在歷經戰亂後對和平寧靜生活的熱愛與珍惜</b>，詩中充滿了安詳和喜悅。",
+"p10":"這段文字通過孟母三遷和斷機教子的故事，告訴小朋友<b>環境對學習的重要</b>，以及<b>讀書要堅持不懈、不能半途而廢</b>的道理。"
+};
+const qzs={
+"p1":{q:"重陽節人們會做甚麼事？",correct:"登高、插茱萸",wrong:["游泳", "放風箏"],exp:"重陽節人們會登高望遠、插戴茱萸、喝菊花酒，用來祈福辟邪、思念親人。"},
+"p2":{q:"「野火燒不盡」的下一句是甚麼？",correct:"春風吹又生",wrong:["春風吹不動", "秋風吹又落"],exp:"「野火燒不盡，春風吹又生」說明小草生命力頑強，春天一到就會再長出來。"},
+"p3":{q:"李白把瀑布比作甚麼？",correct:"天上的銀河",wrong:["一條白布", "一條大蛇"],exp:"「疑是銀河落九天」——李白用浪漫的想像，把瀑布想像成從九重天落下的銀河！"},
+"p4":{q:"「豆萁」指的是甚麼？",correct:"豆子的莖（豆稈）",wrong:["豆子的葉子", "鍋子"],exp:"豆萁是豆子的莖，晒乾後可當柴火煮豆子，就像兄弟迫害親兄弟。"},
+"p5":{q:"桃花潭水真有千尺深嗎？",correct:"沒有，這是誇張手法",wrong:["是的，真的千尺深"],exp:"「桃花潭水深千尺」是誇張修辭，用來說汪倫對李白的友情比千尺潭水還要深厚！"},
+"p6":{q:"「煙花三月」是指哪個季節？",correct:"春天（三月）",wrong:["夏天", "冬天"],exp:"農曆三月正是春天，柳絮飄飛如煙、花兒盛開，所以叫「煙花三月」。"},
+"p7":{q:"為甚麼聽得到桂花落和鳥叫聲？",correct:"因為山裏太安靜了",wrong:["因為桂花很大聲", "因為鳥叫很大聲"],exp:"這就是「以動襯靜」！因為山裏非常安靜，所以連細微的聲音都聽得到，反襯出山林更寂靜。"},
+"p8":{q:"詩中勸我們珍惜甚麼？",correct:"少年時光（讀書時光）",wrong:["昂貴的金縷衣", "漂亮的花"],exp:"金縷衣雖然貴重，但少年時光比甚麼都寶貴！要好好把握時間用功讀書。"},
+"p9":{q:"詩中的「鴛鴦」在做甚麼？",correct:"在暖沙上睡覺",wrong:["在天上飛", "在水裏游泳"],exp:"「沙暖睡鴛鴦」——沙子被太陽曬得暖暖的，鴛鴦舒服地在沙上成雙入睡。"},
+"p10":{q:"孟母為甚麼要剪斷織布？",correct:"告訴孟子讀書不能中斷",wrong:["布織壞了", "她生氣了"],exp:"孟母用剪斷織布比喻讀書半途而廢，讓孟子明白學習要堅持到底，就像織布不能剪斷一樣。"},
+}
+;
+poems.forEach(p=>{
+p.authorBio=bios[p.id]||'';
+p.bgDetail=bgds[p.id]||p.bg;
+p.emotionDetail=emotions[p.id]||'';
+p.quiz=qzs[p.id]||null;
+});
+})();
+
+function bindQuiz(){
+const qb=document.querySelector('.quiz-box');if(!qb||!curPoem||!curPoem.quiz)return;
+const qz=curPoem.quiz;
+qb.innerHTML=`<div class="qz-title">🤔 小小挑戰</div>
+<div class="qz-q">${qz.q}</div>
+<div class="qz-opts"></div>
+<div class="qz-result"></div>`;
+const optDiv=qb.querySelector('.qz-opts');
+const all=[qz.correct,...qz.wrong].sort(()=>Math.random()-.5);
+all.forEach(o=>{
+  const b=document.createElement('button');
+  b.className='qz-btn';b.textContent=o;
+  b.onclick=()=>{
+    sfxClick();
+    optDiv.querySelectorAll('.qz-btn').forEach(x=>{x.disabled=true;x.style.opacity='.6'});
+    const res=qb.querySelector('.qz-result');res.style.display='block';
+    if(o===qz.correct){
+      b.style.background='#4A8C3C';b.style.color='#fff';b.style.opacity='1';sfxRight();
+      res.innerHTML=`<div style="background:#E8F5E0;border:2px solid #4A8C3C;padding:12px 16px;border-radius:10px;font-size:16px;line-height:1.8;margin-top:8px">✅ <b>答對了！真棒！</b><br>${qz.exp}</div>`;
+    }else{
+      b.style.background='#C94A3A';b.style.color='#fff';
+      optDiv.querySelectorAll('.qz-btn').forEach(x=>{if(x.textContent===qz.correct){x.style.background='#4A8C3C';x.style.color='#fff';x.style.opacity='1'}});
+      sfxWrong();
+      res.innerHTML=`<div style="background:#FDECEC;border:2px solid #C94A3A;padding:12px 16px;border-radius:10px;font-size:16px;line-height:1.8;margin-top:8px">❌ <b>再想一想～</b><br>正確答案是：<b style="color:#4A8C3C">${qz.correct}</b><br>${qz.exp}</div>`;
+    }
+  };
+  optDiv.appendChild(b);
+});
+}
+
+/* 概念圖 */
+function drawConcept(p){
+const svg=document.getElementById('conceptSvg');
+const W=520,H=340;
+const CX=260,CY=170;
+svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+// 節點位置調整避免溢出
+const nodes=[
+{x:CX,y:CY,t:p.title,t2:'點我看主題',center:true,col:p.color,w:120,h:88,desc:`<b style="font-size:20px;color:${p.color}">《${p.title}》</b><br><span style="font-size:15px;color:#5a3a1f">${p.dynasty}·${p.author} 所作</span><br><br><div style="font-size:15px;line-height:1.7;background:rgba(255,248,232,.6);padding:10px;border-radius:10px">📖 <b>詩歌主題</b>：${p.theme||p.bg}</div>`},
+{x:60,y:55,t:'👤',t2:'作者',t3:p.author,col:'#E56A54',w:95,h:95,desc:`<b style="color:#E56A54;font-size:18px">👤 作者：${p.author}</b><br><span style="color:#8B6B3C">${p.dynasty}</span><br><br><span style="font-size:16px;line-height:1.7">${p.authorBio||''}</span>`},
+{x:460,y:55,t:'📜',t2:'背景',t3:'創作故事',col:'#5BA4C9',w:95,h:95,desc:`<b style="color:#5BA4C9;font-size:18px">📜 創作背景</b><br><br><span style="font-size:16px;line-height:1.7">${p.bgDetail||p.bg}</span>`},
+{x:60,y:285,t:'❤️',t2:'情感',t3:'詩中情意',col:'#E05B7A',w:95,h:95,desc:`<b style="color:#E05B7A;font-size:18px">❤️ 詩人想表達</b><br><br><span style="font-size:16px;line-height:1.7">${p.emotionDetail||''}</span>`},
+{x:460,y:285,t:'🎨',t2:'手法',t3:p.rhet[0].t,col:'#6CB068',w:95,h:95,desc:`<b style="color:#6CB068;font-size:18px">🎨 修辭手法</b><br><br>`+p.rhet.map(r=>`<div style="font-size:15px;line-height:1.7;margin-bottom:6px"><b>◆ ${r.t}</b>：${r.d}</div>`).join('')},
+{x:CX,y:35,t:'✨',t2:'名句',t3:p.famous?((p.famous.length<=8)?p.famous:p.famous.slice(0,7)+'…'):'千古名句',col:'#E6B84D',w:160,h:76,desc:`<b style="color:#E6B84D;font-size:18px">✨ 千古名句</b><br><br><div style="font-size:22px;color:#8B2B1F;font-weight:bold;text-align:center;display:block;font-family:'Ma Shan Zheng','ZCOOL KuaiLe',cursive;line-height:1.5;padding:8px 4px;background:rgba(255,248,232,.5);border-radius:10px;border:2px dashed #E6B84D">${p.famous||'……'}</div><br><span style="font-size:15px;color:#8B6B3C;line-height:1.6">上面這句是這首詩最有名的句子，點選其他卡片認識作者、背景、情感和手法吧！</span>`}
+];
+let s=`<defs>
+<radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+  <stop offset="0%" stop-color="#FFF4D8" stop-opacity=".95"/>
+  <stop offset="100%" stop-color="#F5E8CC" stop-opacity="0"/>
+</radialGradient>
+<filter id="nodeSh" x="-50%" y="-50%" width="200%" height="200%">
+  <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity=".22"/>
+</filter>
+<filter id="gGlow" x="-50%" y="-50%" width="200%" height="200%">
+  <feGaussianBlur stdDeviation="3" result="b"/>
+  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+</defs>`;
+s+=`<circle cx="${CX}" cy="${CY}" r="220" fill="url(#bgGlow)"/>`;
+nodes.forEach((n,i)=>{
+  if(i===0)return;
+  const mx=(CX+n.x)/2,my=(CY+n.y)/2-10;
+  s+=`<path d="M ${CX} ${CY} Q ${mx} ${my} ${n.x+(n.x<CX?n.w/2+2:-n.w/2-2)} ${n.y}" stroke="#D4A04A" stroke-width="2.5" fill="none" stroke-dasharray="6,4" opacity=".6"/>`;
+  s+=`<circle cx="${n.x}" cy="${n.y}" r="5" fill="#E6B84D" filter="url(#gGlow)"/>`;
+});
+s+=`<circle cx="${CX}" cy="${CY}" r="8" fill="#E6B84D" filter="url(#gGlow)"/>`;
+// 繪製圓角方形卡片節點
+function rounded(x,y,w,h,r){return `M${x+r},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h-r} Q${x+w},${y+h} ${x+w-r},${y+h} L${x+r},${y+h} Q${x},${y+h} ${x},${y+h-r} L${x},${y+r} Q${x},${y} ${x+r},${y} Z`}
+nodes.forEach((n,i)=>{
+  const isCenter=n.center, w=n.w, h=n.h, x=n.x-w/2, y=n.y-h/2, cr=isCenter?22:20;
+  if(isCenter){
+    s+=`<g class="concept-node" data-i="${i}" style="cursor:pointer" filter="url(#nodeSh)">
+      <path d="${rounded(x,y,w,h,cr)}" fill="${n.col}" stroke="#E6B84D" stroke-width="4"/>
+      <path d="${rounded(x+6,y+6,w-12,h-12,cr-4)}" fill="none" stroke="#FFE8B0" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="${n.x}" y="${n.y-6}" text-anchor="middle" fill="#FFE8B0" font-size="21" font-weight="bold" font-family:"Ma Shan Zheng","ZCOOL KuaiLe",cursive>${n.t.length>8?n.t.slice(0,7)+'…':n.t}</text>
+      <text x="${n.x}" y="${n.y+18}" text-anchor="middle" fill="#FFF8E0" font-size="14">${n.t2}</text>
+    </g>`;
+  }else{
+    s+=`<g class="concept-node" data-i="${i}" style="cursor:pointer" filter="url(#nodeSh)">
+      <path d="${rounded(x,y,w,h,cr)}" fill="${n.col}" stroke="#FFE8B0" stroke-width="3"/>
+      <path d="${rounded(x+5,y+5,w-10,h-10,cr-3)}" fill="rgba(255,255,255,.15)"/>
+      <text x="${n.x}" y="${n.y-10}" text-anchor="middle" font-size="28">${n.t}</text>
+      <text x="${n.x}" y="${n.y+14}" text-anchor="middle" fill="#FFF" font-size="16" font-weight="bold" font-family:"ZCOOL KuaiLe","Ma Shan Zheng",cursive>${n.t2}</text>
+      <text x="${n.x}" y="${n.y+32}" text-anchor="middle" fill="#FFF8E0" font-size="12">${n.t3.length>5?n.t3.slice(0,4)+'…':n.t3}</text>
+    </g>`;
+  }
+});
+svg.innerHTML=s;
+svg.querySelectorAll('.concept-node').forEach(g=>{
+  g.style.transition='transform .25s, filter .25s';
+  g.addEventListener('mouseenter',()=>{g.style.transform='scale(1.08) rotate(-1deg)';g.style.filter='url(#nodeSh) brightness(1.08)'});
+  g.addEventListener('mouseleave',()=>{g.style.transform='scale(1) rotate(0deg)';g.style.filter='url(#nodeSh)'});
+  g.onclick=()=>{
+    sfxClick();
+    const n=nodes[+g.dataset.i];
+    openModal(n.center?'📖 全詩主題':n.t2+n.t,`<div style="font-size:17px;line-height:1.9;padding:14px 8px;color:#3a2a15">${n.desc}</div>`);
+  };
+});
+}
+
+/* ========== 模態框 ========== */
+function openModal(title,html){
+document.getElementById('modalContent').innerHTML=`<h3>${title}</h3>${html}`;
+document.getElementById('modal').classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+document.getElementById('modal').onclick=function(e){if(e.target===this)closeModal()};
+
+/* ========== 遊戲系統 ========== */
+function openGame(gi){
+const g=curPoem.games[gi];
+let title=g.name,body='';
+if(g.type==='theater')body=buildTheater(g);
+else if(g.type==='find')body=buildFind(g);
+else if(g.type==='scene')body=buildScene(g);
+else if(g.type==='connect')body=buildConnect(g);
+else if(g.type==='coloring')body=buildColoring(g);
+else if(g.type==='journey')body=buildJourney(g);
+else if(g.type==='voyage')body=buildVoyage(g);
+else if(g.type==='filldrag')body=buildFill(g);
+else if(g.type==='pairing')body=buildPairing(g);
+else if(g.type==='lesson')body=buildLesson(g);
+else if(g.type==='view')body=buildView(g);
+else if(g.type==='qibu')body=buildQibu(g);
+else if(g.type==='quiet')body=buildQuiet(g);
+else if(g.type==='timewheel')body=buildTimewheel(g);
+else if(g.type==='neighbor')body=buildNeighbor(g);
+else if(g.type==='grow')body=buildGrow(g);
+else if(g.type==='tage')body=buildTage(g);
+else if(g.type==='blow')body=buildBlow(g);
+else if(g.type==='wake')body=buildWake(g);
+openModal(title,`<div class="game-hint">${g.desc}</div>${body}<div style="text-align:center;margin-top:12px"><button class="journey-next sec" onclick="closeModal();sfxClick()">關閉</button> <button class="journey-next" onclick="openGame(${gi})">🔄 重玩</button></div>`);
+}
+function showReward(title,desc,medal='🏆'){
+document.getElementById('modalContent').innerHTML+=`<div class="reward"><div class="medal">${medal}</div><h3>${title}</h3><p>${desc}</p><button class="sec" onclick="closeModal();sfxClick()">繼續學習</button></div>`;
+sfxWin();
+}
+function showToast(msg,type='info'){
+  let box=document.getElementById('toastBox');
+  if(!box){box=document.createElement('div');box.id='toastBox';Object.assign(box.style,{position:'fixed',top:'20px',left:'50%',transform:'translateX(-50%)',zIndex:9999,pointerEvents:'none'});document.body.appendChild(box);}
+  const t=document.createElement('div');
+  const colors={'win':'#c8a24a','correct':'#4A8C3C','info':'#8b4513','wrong':'#c0392b'};
+  const bg=colors[type]||'#8b4513';
+  Object.assign(t.style,{background:'#fffbf0',color:'#3a2a15',border:`3px solid ${bg}`,borderRadius:'16px',padding:'14px 24px',marginBottom:'10px',fontSize:'18px',fontWeight:'bold',boxShadow:'0 6px 20px rgba(0,0,0,.2)',fontFamily:'inherit',minWidth:'240px',textAlign:'center',animation:'toastIn .4s ease-out'});
+  t.textContent=msg;box.appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .4s,transform .4s';t.style.opacity='0';t.style.transform='translateY(-20px)';setTimeout(()=>t.remove(),400);},2400);
+}
+const toastStyle=document.createElement('style');
+toastStyle.textContent=`@keyframes toastIn{from{opacity:0;transform:translateY(-30px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}`;
+document.head.appendChild(toastStyle);
+
+/* 小劇場 */
+function buildTheater(g){
+let hs=g.hotspots.map(h=>`<div class="theater-hot" data-text="${h.text}" data-label="${h.label}" style="left:${h.x}%;top:${h.y}%"><div class="ring"></div><div class="tip">👆 點我</div></div>`).join('');
+setTimeout(()=>{
+const area=document.getElementById('theaterArea');if(!area)return;
+let clicked=new Set();
+area.querySelectorAll('.theater-hot').forEach(el=>{
+el.onclick=function(ev){
+ev.stopPropagation();
+if(clicked.has(this))return;
+sfxClick();clicked.add(this);this.querySelector('.ring').style.borderColor='#4A8C3C';this.querySelector('.ring').style.animation='none';this.querySelector('.tip').style.display='none';
+const b=document.createElement('div');b.className='bubble';b.textContent=this.dataset.text;
+const areaRect=area.getBoundingClientRect();
+const hotRect=this.getBoundingClientRect();
+const hotY=this.offsetTop;
+const hotX=this.offsetLeft;
+b.style.left=hotX+'px';
+b.style.position='absolute';
+const areaTop = area.offsetTop;  // 50px padding top
+// 熱點太靠上時顯示在下方，太靠下時顯示在上方
+if(hotY < 90){
+  b.style.top=(areaTop+hotY+70)+'px';
+  b.classList.add('bottom');
+}else{
+  // 自動計算：讓氣泡完全顯示，不溢出區域外
+  const bubbleHeight=80;
+  let topY = areaTop+hotY-bubbleHeight-20;
+  if(topY < 0){ topY=10; b.style.transform='translateX(-30%)'; }
+  b.style.top=topY+'px';
+  b.classList.add('top');
+}
+// 防止左右溢出
+setTimeout(()=>{
+  const bW=b.offsetWidth;
+  if(hotX+bW > areaRect.width+30){
+    b.style.left=(areaRect.width-bW+10)+'px';
+    b.style.transform='translateX(0)';
+  }
+},10);
+area.parentElement.appendChild(b);
+b.style.position='absolute';
+setTimeout(()=>b.remove(),3500);
+if(clicked.size===g.hotspots.length){setTimeout(()=>showReward('🎉 你讀懂這首詩啦！','所有人物都和你說過話了～','⭐'),800)}
+}
+});
+area.onclick=e=>{area.parentElement.querySelectorAll('.bubble').forEach(b=>b.remove())};
+},100);
+return `<div style="position:relative;padding:50px 0 30px"><div class="game-area" id="theaterArea" style=""><img class="bg" src="${U(curPoem.img)}">${hs}</div></div>`;
+}
+
+/* 找一找 */
+function buildFind(g){
+let chips=g.targets.map(t=>`<div class="find-chip" data-id="${t.id}" id="chip-${t.id}">🔍 ${t.label}</div>`).join('');
+let hs=g.targets.map(t=>`<div class="find-hot" data-id="${t.id}" style="left:${t.x}%;top:${t.y}%" onclick="findClick(this)"></div>`).join('');
+hs+=`<div class="find-hot" data-id="decoy" style="left:${g.decoy.x}%;top:${g.decoy.y}%" onclick="findDecoy(this)"></div>`;
+setTimeout(()=>{window._findFound=new Set();window._findTotal=g.targets.length},100);
+return `<div class="find-list">${chips}</div><div class="game-area" style=""><img class="bg" src="${U(curPoem.img)}">${hs}</div>`;
+}
+function findClick(el){
+if(el.classList.contains('found'))return;
+const id=el.dataset.id;if(window._findFound.has(id))return;
+window._findFound.add(id);el.classList.add('found');
+const chip=document.getElementById('chip-'+id);if(chip)chip.classList.add('done');
+sfxRight();
+if(window._findFound.size===window._findTotal){setTimeout(()=>showReward('🔍 觀察力超棒！','詩裏的景物都被你找到了！','👀'),500)}
+}
+function findDecoy(el){
+if(el.classList.contains('found'))return;
+sfxWrong();el.animate([{transform:'translate(-50%,-50%) translateX(-6px)'},{transform:'translate(-50%,-50%) translateX(6px)'},{transform:'translate(-50%,-50%)'}],{duration:300});
+}
+
+/* 場景布置 */
+function buildScene(g){
+// 計算每個投放區尺寸：根據數量動態調整，避免過大
+const zw=Math.max(80,Math.min(120,320/g.zones.length));
+const zh=zw;
+let zones=g.zones.map(z=>`<div class="scene-zone" data-accept="${z.accept}" style="left:${z.x}%;top:${z.y}%;width:${zw}px;height:${zh}px"><span class="zone-label">${z.label}</span></div>`).join('');
+let items=g.items.map((it,i)=>`<div class="drag-item" draggable="true" data-id="${it.id}" data-label="${it.label||''}"><img src="${U(it.img)}" alt="${it.id}"></div>`).join('');
+setTimeout(()=>initDragDrop(g),100);
+return `<div class="game-area" id="sceneArea" style=""><img class="bg" src="${U(curPoem.img)}">${zones}</div><div class="item-tray" id="itemTray">${items}</div>`;
+}
+function initDragDrop(g){
+const area=document.getElementById('sceneArea');if(!area)return;
+let placed=new Set();const total=g.zones.length;
+document.querySelectorAll('#itemTray .drag-item').forEach(it=>{
+it.ondragstart=e=>{e.dataTransfer.setData('text',it.dataset.id);it.classList.add('dragging')};
+it.ondragend=()=>it.classList.remove('dragging');
+// touch
+it.addEventListener('touchstart',handleTouchStart,{passive:false});
+});
+area.querySelectorAll('.scene-zone').forEach(z=>{
+z.ondragover=e=>e.preventDefault();
+z.ondrop=e=>{e.preventDefault();const id=e.dataTransfer.getData('text');checkDrop(id,z,g)};
+});
+function checkDrop(id,z,g){
+if(z.classList.contains('filled'))return;
+if(z.dataset.accept===id){
+z.classList.add('filled');placed.add(id);
+const img=document.querySelector(`#itemTray .drag-item[data-id="${id}"]`);
+if(img){
+img.classList.add('placed');
+// 創建縮小版圖片放入投放區，不覆蓋整個畫面
+const placedImg=document.createElement('img');
+placedImg.src=img.querySelector('img').src;
+placedImg.alt=id;
+z.appendChild(placedImg);
+}
+sfxRight();
+if(placed.size===total)setTimeout(()=>showReward('🌿 場景布置完成！','你了解詩裏的事物了！','🎨'),500);
+}else{
+sfxWrong();
+const zone=z;zone.animate([{transform:'translate(-50%,-50%) translateX(-6px)'},{transform:'translate(-50%,-50%) translateX(6px)'},{transform:'translate(-50%,-50%)'}],{duration:300});
+}
+}
+// Touch 拖拽
+let dragEl=null,ghost=null;
+function handleTouchStart(e){
+e.preventDefault();
+dragEl=this;
+const touch=e.touches[0];
+ghost=this.cloneNode(true);ghost.style.position='fixed';ghost.style.zIndex=999;ghost.style.pointerEvents='none';ghost.style.opacity='.8';ghost.style.width=this.offsetWidth+'px';ghost.style.height=this.offsetHeight+'px';
+document.body.appendChild(ghost);
+moveGhost(touch.clientX,touch.clientY);
+document.addEventListener('touchmove',handleTouchMove,{passive:false});
+document.addEventListener('touchend',handleTouchEnd);
+}
+function moveGhost(x,y){if(!ghost)return;ghost.style.left=(x-ghost.offsetWidth/2)+'px';ghost.style.top=(y-ghost.offsetHeight/2)+'px'}
+function handleTouchMove(e){e.preventDefault();const t=e.touches[0];moveGhost(t.clientX,t.clientY)}
+function handleTouchEnd(e){
+const t=e.changedTouches[0];
+ghost.remove();ghost=null;
+document.removeEventListener('touchmove',handleTouchMove);
+document.removeEventListener('touchend',handleTouchEnd);
+const el=document.elementFromPoint(t.clientX,t.clientY);
+if(!el)return;
+let zone=el.closest('.scene-zone');
+if(!zone)zone=el.closest && el.closest('.scene-zone');
+if(zone){checkDrop(dragEl.dataset.id,zone,g)}
+}
+}
+
+/* 連連看 */
+function buildConnect(g){
+setTimeout(()=>initConnect(g),100);
+const ls=g.lefts.map(l=>`<div class="connect-item" data-id="${l.id}" data-side="left">${l.text}</div>`).join('');
+const rs=g.rights.map(r=>`<div class="connect-item" data-id="${r.id}" data-side="right" data-match="${r.match}">${r.text}</div>`).join('');
+return `<div class="connect-board" id="connectBoard"><div class="connect-col" id="connLeft">${ls}</div><svg class="connect-svg" id="connSvg"></svg><div class="connect-col" id="connRight">${rs}</div></div>`;
+}
+function initConnect(g){
+const board=document.getElementById('connectBoard');if(!board)return;
+let selectedLeft=null;let done=0;
+board.querySelectorAll('.connect-item[data-side="left"]').forEach(l=>{
+l.onclick=()=>{
+if(l.classList.contains('done'))return;sfxClick();
+board.querySelectorAll('.connect-item.selected').forEach(x=>x.classList.remove('selected'));
+l.classList.add('selected');selectedLeft=l;
+}
+});
+board.querySelectorAll('.connect-item[data-side="right"]').forEach(r=>{
+r.onclick=()=>{
+if(r.classList.contains('done')||!selectedLeft)return;
+if(r.dataset.match===selectedLeft.dataset.id){
+selectedLeft.classList.remove('selected');selectedLeft.classList.add('done');r.classList.add('done');
+drawLine(selectedLeft,r);done++;sfxRight();selectedLeft=null;
+if(done===g.lefts.length)setTimeout(()=>showReward('🔗 全部連對了！','你理解了詩裏的意思！','💡'),400);
+}else{
+sfxWrong();r.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:300});
+selectedLeft.classList.remove('selected');selectedLeft=null;
+}
+}
+});
+function drawLine(a,b){
+const svg=document.getElementById('connSvg');
+const ar=a.getBoundingClientRect(),br=b.getBoundingClientRect(),pr=board.getBoundingClientRect();
+const x1=ar.right-pr.left,y1=ar.top+ar.height/2-pr.top;
+const x2=br.left-pr.left,y2=br.top+br.height/2-pr.top;
+svg.innerHTML+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#4A8C3C" stroke-width="3" stroke-linecap="round"/>`;
+}
+}
+
+/* 塗色 */
+function buildColoring(g){
+const palette=g.palette.map((c,i)=>`<div class="color-btn ${i===0?'active':''}" data-color="${c}" style="background:${c}" onclick="pickColor(this,'${c}')"></div>`).join('');
+const ts=g.targets.map(t=>`<div class="color-target" data-id="${t.id}" data-target="${t.label}" data-done="0" style="left:${t.x}%;top:${t.y}%;width:${t.w}%;height:${t.h}%" onclick="paintTarget(this,'${t.label}')"></div>`).join('');
+setTimeout(()=>{window._curColor=g.palette[0];window._painted=0;window._totalTargets=g.targets.length},100);
+return `<div class="color-palette">${palette}</div><div class="game-area" style="" id="colorArea"><img class="bg" src="${U(curPoem.img)}">${ts}</div>`;
+}
+function pickColor(el,c){sfxClick();document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');window._curColor=c}
+function paintTarget(el,label){
+if(el.dataset.done==='1')return;
+el.style.background=window._curColor;el.dataset.done='1';el.classList.add('done');window._painted++;sfxRight();
+if(window._painted===window._totalTargets)setTimeout(()=>showReward('🎨 美麗的畫完成啦！','你把詩裏的景色畫得好漂亮！','🖌️'),400);
+}
+
+/* 旅程 */
+function buildJourney(g){
+setTimeout(()=>{window._curStop=0},100);
+const stops=g.stops.map((s,i)=>{
+const opts=s.opts.map((o,oi)=>`<button class="journey-opt" data-idx="${i}" data-correct="${o[1]}" onclick="journeyAnswer(this,${i})">${o[0]}</button>`).join('');
+return `<div class="journey-stop" id="jstop-${i}"><div class="dot">${i+1}</div><div class="box"><div class="verse">「${s.verse}」</div><div class="journey-q">${s.q}</div><div class="journey-opts" id="jopts-${i}">${opts}</div></div></div>`;
+}).join('');
+return `<div class="journey"><div class="journey-path" id="journeyPath">${stops}</div></div>`;
+}
+function journeyAnswer(btn,i){
+const correct=btn.dataset.correct==='true';
+if(correct){
+btn.classList.add('correct');sfxRight();
+document.getElementById('jstop-'+i).classList.add('done');
+const next=i+1;const total=curPoem.games.find(g=>g.type==='journey').stops.length;
+if(next===total)setTimeout(()=>showReward('🌱 送別旅程完成！','你跟着小草讀懂了整首詩！','🌿'),600);
+else setTimeout(()=>document.getElementById('jstop-'+next).scrollIntoView({behavior:'smooth',block:'center'}),400);
+}else{
+btn.classList.add('wrong');sfxWrong();
+setTimeout(()=>btn.classList.remove('wrong'),800);
+}
+}
+
+/* 遠行 */
+function buildVoyage(g){
+setTimeout(()=>initVoyage(g),100);
+const s0=g.points[0];
+return `<div class="voyage-wrap">
+  <div class="voyage-scene" id="vScene">
+    <img class="voyage-scene-img" id="vImg" src="${U(s0.img)}">
+    <div class="v-stage-label" id="vLabel">📍 第1站：${s0.label}</div>
+  </div>
+  <div class="v-text" id="vText">${s0.text}</div>
+  <div style="text-align:center;margin-top:10px"><button class="v-next-btn" id="vNext">${g.points.length>1?'出發去下一站 →':'🎉 抵達廣陵！'}</button></div>
+  <div class="v-progress" id="vProg"></div>
+</div>`;
+}
+function initVoyage(g){
+window._vStep=0;
+// 進度點
+const prog=g.points.map((p,i)=>`<div class="v-prog-dot${i===0?' cur':''}" data-i="${i}">${i+1}</div>`).join('<div class="v-prog-line"></div>');
+document.getElementById('vProg').innerHTML=prog;
+document.getElementById('vNext').onclick=function(){
+  sfxClick();
+  window._vStep++;
+  if(window._vStep>=g.points.length){return;}
+  const p=g.points[window._vStep];
+  const img=document.getElementById('vImg');
+  img.style.opacity='0';
+  setTimeout(function(){img.src=U(p.img);img.style.opacity='1';},250);
+  document.getElementById('vLabel').textContent='📍 第'+(window._vStep+1)+'站：'+p.label;
+  document.getElementById('vText').textContent=p.text;
+  document.querySelectorAll('.v-prog-dot').forEach(function(d,i){
+    d.classList.toggle('cur',i===window._vStep);
+    d.classList.toggle('done',i<window._vStep);
+  });
+  if(window._vStep===g.points.length-1){
+    document.getElementById('vNext').textContent='🎉 恭喜抵達廣陵！';
+    document.getElementById('vNext').onclick=function(){showReward('⛵ 送別小達人！','你跟着孟浩然走完了長江送別路，體會到了李白的深情！','🏅');};
+    setTimeout(function(){playSound('win');},500);
+  }
+};
+}
+
+/* 填詩 */
+function buildFill(g){
+let linesHtml='',wordsArr=[];
+g.lines.forEach(l=>{linesHtml+=`<div class="fill-line">${l.html}</div>`;wordsArr=wordsArr.concat(l.words)});
+// shuffle
+wordsArr.sort(()=>Math.random()-.5);
+const wordsHtml=wordsArr.map(w=>`<div class="fill-word" draggable="true" data-word="${w}">${w}</div>`).join('');
+setTimeout(()=>initFillDrag(),100);
+return `<div id="fillArea">${linesHtml}<div class="fill-words" id="fillWords">${wordsHtml}</div></div>`;
+}
+function initFillDrag(){
+let total=document.querySelectorAll('.fill-slot').length,filled=0;
+document.querySelectorAll('.fill-word').forEach(w=>{
+w.ondragstart=e=>{e.dataTransfer.setData('text',w.dataset.word);w.classList.add('dragging')};
+w.ondragend=()=>w.classList.remove('dragging');
+});
+document.querySelectorAll('.fill-slot').forEach(s=>{
+s.ondragover=e=>e.preventDefault();
+s.ondrop=e=>{e.preventDefault();if(s.classList.contains('filled'))return;
+const w=e.dataTransfer.getData('text');
+if(s.dataset.ans===w){
+s.textContent=w;s.classList.add('filled');filled++;sfxRight();
+const wd=document.querySelector(`.fill-word[data-word="${w}"]`);if(wd)wd.classList.add('used');
+if(filled===total)setTimeout(()=>showReward('🌸 花開啦！','你完成了整首《金縷衣》！送你一朵盛開的花，記得「花開堪折直須折，莫待無花空折枝」，珍惜少年時光哦！','<img src="'+U('https://gips2.baidu.com/it/u=673043419,1815775207&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024')+'" style="width:180px;border-radius:14px;margin-top:8px;box-shadow:0 4px 12px rgba(139,43,31,.25)">'),400);
+}else{
+sfxWrong();s.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:300});
+}
+};
+});
+// touch support
+let dragW=null,cloneW=null;
+document.querySelectorAll('.fill-word').forEach(w=>{
+w.addEventListener('touchstart',function(e){
+e.preventDefault();
+dragW=this;
+const t=e.touches[0];
+cloneW=this.cloneNode(true);cloneW.style.position='fixed';cloneW.style.zIndex=999;cloneW.style.pointerEvents='none';cloneW.style.opacity='.85';
+document.body.appendChild(cloneW);
+moveCW(t.clientX,t.clientY);
+document.addEventListener('touchmove',mvCW,{passive:false});
+document.addEventListener('touchend',endCW);
+},{passive:false});
+});
+function moveCW(x,y){cloneW.style.left=(x-40)+'px';cloneW.style.top=(y-20)+'px'}
+function mvCW(e){e.preventDefault();moveCW(e.touches[0].clientX,e.touches[0].clientY)}
+function endCW(e){
+const t=e.changedTouches[0];cloneW.remove();cloneW=null;
+document.removeEventListener('touchmove',mvCW);document.removeEventListener('touchend',endCW);
+const el=document.elementFromPoint(t.clientX,t.clientY);if(!el)return;
+const slot=el.closest?el.closest('.fill-slot'):null;
+if(slot&&!slot.classList.contains('filled')){
+if(slot.dataset.ans===dragW.dataset.word){
+slot.textContent=dragW.dataset.word;slot.classList.add('filled');filled++;sfxRight();dragW.classList.add('used');
+if(filled===total)setTimeout(()=>showReward('🌸 花開啦！','你完成了整首《金縷衣》！送你一朵盛開的花，記得「花開堪折直須折，莫待無花空折枝」，珍惜少年時光哦！','<img src="'+U('https://gips2.baidu.com/it/u=673043419,1815775207&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024')+'" style="width:180px;border-radius:14px;margin-top:8px;box-shadow:0 4px 12px rgba(139,43,31,.25)">'),400);
+}else{sfxWrong()}
+}
+}
+}
+
+/* 對仗 */
+function buildPairing(g){
+setTimeout(()=>initPair(g),100);
+let lefts=g.pairs.map((p,i)=>`<div class="pair-item left-item" data-idx="${i}" data-side="left">${p.left}</div>`).join('');
+let eq='↔';
+let rights=g.pairs.map(p=>p.right).sort(()=>Math.random()-.5).map((r,i)=>{
+const orig=g.pairs.findIndex(p=>p.right===r);
+return `<div class="pair-item right-item" data-match="${orig}" data-side="right">${r}</div>`}).join('');
+return `<div class="pair-board" id="pairBoard"><div class="pair-left">${lefts}</div><div class="pair-equals">${eq}</div><div class="pair-right">${rights}</div></div><div id="pairMsg" style="text-align:center;margin-top:10px;min-height:40px"></div>`;
+}
+function initPair(g){
+const board=document.getElementById('pairBoard');if(!board)return;
+let selL=null;let done=0;
+board.querySelectorAll('.left-item').forEach(l=>{
+l.onclick=()=>{
+if(l.classList.contains('done'))return;sfxClick();
+board.querySelectorAll('.pair-item.selected').forEach(x=>x.classList.remove('selected'));
+l.classList.add('selected');selL=l;
+}
+});
+board.querySelectorAll('.right-item').forEach(r=>{
+r.onclick=()=>{
+if(r.classList.contains('done')||!selL)return;
+const li=parseInt(selL.dataset.idx);
+if(parseInt(r.dataset.match)===li){
+selL.classList.remove('selected');selL.classList.add('done');r.classList.add('done');done++;sfxRight();
+const p=g.pairs[li];
+document.getElementById('pairMsg').innerHTML=`<div style="background:#E9F5E4;border:2px solid #4A8C3C;border-radius:10px;padding:8px;margin:4px 0"><b style="color:#2F6B24">${p.poem}</b><br><span style="font-size:13px">${p.mean}</span></div>`;
+if(done===g.pairs.length)setTimeout(()=>showReward('🎨 對仗小畫家！','你學會了古詩對仗的技巧！','🖼️'),600);
+selL=null;
+}else{sfxWrong();selL.classList.remove('selected');selL=null;r.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:300})}
+}
+});
+}
+
+/* 孟母教誨 */
+function buildLesson(g){
+const steps=g.steps;
+let hs=steps.map((s,i)=>`<div class="lesson-hot" data-step="${i}" id="lh-${i}" style="left:${s.hotspot.x}%;top:${s.hotspot.y}%"><div class="ring"></div><div class="tip">👆 點我</div></div>`).join('');
+let labels=steps.map((s,i)=>`<span id="ls-${i}">${s.label}</span>`).join(' → ');
+setTimeout(()=>initLesson(g),100);
+return `<div class="lesson-step">按順序點擊：${labels}</div><div class="game-area" id="lessonArea" style=""><img class="bg" src="${U(curPoem.img)}">${hs}</div>`;
+}
+function initLesson(g){
+let cur=0;
+const area=document.getElementById('lessonArea');if(!area)return;
+g.steps.forEach((s,i)=>{
+const el=document.getElementById('lh-'+i);
+el.onclick=function(ev){
+ev.stopPropagation();
+if(i!==cur){sfxWrong();this.animate([{transform:'translate(-50%,-50%) scale(.9)'},{transform:'translate(-50%,-50%) scale(1.1)'},{transform:'translate(-50%,-50%) scale(1)'}],{duration:300});return}
+sfxRight();
+this.classList.add('done');document.getElementById('ls-'+i).classList.add('step-done');
+const b=document.createElement('div');b.className='bubble';b.textContent=s.text;
+b.style.left=this.offsetLeft+'px';b.style.top=(this.offsetTop-90)+'px';
+area.parentElement.appendChild(b);
+b.style.position='absolute';setTimeout(()=>b.remove(),3000);
+cur++;
+if(cur===g.steps.length)setTimeout(()=>showReward('📖 好學小書生！','學習要堅持到底，不能半途而廢！','📚'),800);
+};
+});
+}
+
+/* ========== 多角度觀瀑（切換不同角度真實繪本圖片） ========== */
+function buildView(g){
+setTimeout(()=>initView(g),100);
+const tabs=g.views.map((v,i)=>`<button class="view-tab${i===0?' active':''}" data-idx="${i}">${v.label}</button>`).join('');
+const dots=g.views.map((v,i)=>`<div class="view-dot${i===0?' active':''}" data-idx="${i}"></div>`).join('');
+const v0=g.views[0];
+return `<div class="view-tabs">${tabs}</div>
+<div class="view-frame" id="viewFrame">
+  <img id="viewImg" src="${U(v0.img)}" style="opacity:1">
+  <img id="viewImgNext" src="" style="opacity:0">
+  <div class="view-info" id="viewInfo">
+    <div class="poem-line">${v0.poem}</div>
+    <div>${v0.desc}</div>
+  </div>
+</div>
+<div class="view-progress">${dots}</div>
+<div style="text-align:center;margin-top:8px;font-size:15px;color:#6B4A3C">💡 點按上方按鈕，從不同角度欣賞真實的廬山瀑布！</div>`;
+}
+function initView(g){
+const img=document.getElementById('viewImg');
+const info=document.getElementById('viewInfo');
+let cur=0,visited=new Set([0]);
+function goTo(i){
+  if(i<0||i>=g.views.length)return;
+  const v=g.views[i];cur=i;visited.add(i);
+  // 淡入淡出切換不同圖片
+  img.style.opacity='0';
+  setTimeout(()=>{img.src=U(v.img);img.style.opacity='1';},250);
+  info.innerHTML=`<div class="poem-line">${v.poem}</div><div>${v.desc}</div>`;
+  document.querySelectorAll('.view-tab').forEach((t,ti)=>t.classList.toggle('active',ti===i));
+  document.querySelectorAll('.view-dot').forEach((d,di)=>d.classList.toggle('active',di===i));
+  sfxClick();
+  if(visited.size===g.views.length){
+    setTimeout(()=>showReward('🏞️ 觀瀑達人！','你從四個角度看過了瀑布，懂了整首詩！','🌊'),600);
+  }
+}
+document.querySelectorAll('.view-tab').forEach(t=>t.onclick=()=>goTo(parseInt(t.dataset.idx)));
+document.querySelectorAll('.view-dot').forEach(d=>d.onclick=()=>goTo(parseInt(d.dataset.idx)));
+}
+
+/* ========== 七步成詩闖關 ========== */
+function buildQibu(g){
+setTimeout(()=>initQibu(g),100);
+const stepsHtml=g.steps.map((s,i)=>`<div class="qb-step" id="qb-step-${i}">${i+1}</div>`).join('');
+const s0=g.steps[0];
+const opts=s0.opts.map(o=>`<button class="qb-opt" data-correct="${o[1]}" data-idx="${g.steps.indexOf(s0)}">${o[0]}</button>`).join('');
+return `<div class="qibu-road" id="qibuRoad">
+  <div class="qibu-steps" id="qbSteps">${stepsHtml}</div>
+  <div class="qb-q" id="qbQ"><b>第1步：</b>${s0.q}</div>
+  <div class="qb-opts" id="qbOpts">${opts}</div>
+  <div class="qb-explain" id="qbExplain"></div>
+</div>
+<div style="text-align:center;margin-top:10px"><span style="color:#8B2B1F;font-size:16px">🚶 幫曹植走完七步，每一步答對一個問題！</span></div>`;
+}
+function initQibu(g){
+let cur=0;
+const total=g.steps.length;
+document.getElementById('qb-step-0').classList.add('current');
+function renderStep(){
+  const s=g.steps[cur];
+  document.getElementById('qbQ').innerHTML=`<b>第${s.step}步：</b>${s.q}`;
+  const opts=s.opts.map(o=>`<button class="qb-opt" data-correct="${o[1]}">${o[0]}</button>`).join('');
+  document.getElementById('qbOpts').innerHTML=opts;
+  document.getElementById('qbExplain').classList.remove('show');
+  document.querySelectorAll('#qbOpts .qb-opt').forEach(b=>{
+    b.onclick=function(){
+      const correct=this.dataset.correct==='true';
+      if(correct){
+        this.classList.add('correct');sfxRight();
+        document.getElementById('qb-step-'+cur).classList.remove('current');
+        document.getElementById('qb-step-'+cur).classList.add('done');
+        document.getElementById('qbExplain').innerHTML=`💡 ${s.explain}`;
+        document.getElementById('qbExplain').classList.add('show');
+        cur++;
+        if(cur>=total){
+          setTimeout(()=>showReward('🎉 七步成詩！','你幫曹植走完七步、答對全部問題，太厲害了！','🫘'),800);
+          return;
+        }
+        setTimeout(()=>{
+          document.getElementById('qb-step-'+cur).classList.add('current');
+          renderStep();
+        },1800);
+      }else{
+        this.classList.add('wrong');sfxWrong();
+        setTimeout(()=>this.classList.remove('wrong'),500);
+      }
+    };
+  });
+}
+renderStep();
+}
+/* ========== 靜夜山澗·以動襯靜（新） ========== */
+function buildQuiet(g){
+setTimeout(()=>initQuiet(g),120);
+const dots=g.quiet.map((q,i)=>`<div class="quiet-pdot" data-idx="${i}">${i+1}</div>`).join('');
+const positions=[{x:22,y:58},{x:50,y:22},{x:72,y:48},{x:60,y:78}];
+const hots=g.quiet.map((q,i)=>{
+  const pos=positions[i];
+  return `<div class="quiet-hot" data-idx="${i}" style="left:${pos.x}%;top:${pos.y}%" data-num="${i+1}">
+    <div class="q-spot"></div>
+    <div class="q-tip">✨ ${q.label}</div>
+  </div>`;
+}).join('');
+return `<div class="quiet-hint">✨ 按順序點亮畫面中的 4 個閃光點，感受「以動襯靜」的奇妙！</div>
+<div class="quiet-area" id="quietArea">
+  <img class="quiet-bg" src="${U(curPoem.img)}">
+  <div class="quiet-progress">${dots}</div>
+  ${hots}
+  <div class="quiet-moral" id="quietMoral">
+    <b style="font-size:22px;color:#FFE8B0">🌟 這就是「以動襯靜」！</b><br>
+    <span style="font-size:16px">桂花落下、月亮升起、小鳥被驚、鳴叫山澗——這些小小的動靜，反而讓夜晚的山林顯得更加安靜！</span>
+  </div>
+</div>`;
+}
+function initQuiet(g){
+const area=document.getElementById('quietArea');if(!area)return;
+let cur=0;const total=g.quiet.length;let found=new Set();
+area.style.filter='brightness(.35)';
+area.querySelectorAll('.quiet-hot').forEach(el=>{
+el.onclick=function(ev){
+  ev.stopPropagation();
+  const idx=+this.dataset.idx;
+  if(found.has(idx))return;
+  if(idx!==cur){showToast('從第①個開始，按順序點亮喔～','info');sfxWrong();return;}
+  found.add(idx);cur++;
+  sfxRight();
+  this.classList.add('done');
+  const dot=area.querySelector(`.quiet-pdot[data-idx="${idx}"]`);if(dot)dot.classList.add('done');
+  const item=g.quiet[idx];
+  const pop=document.createElement('div');pop.className='quiet-pop';
+  pop.innerHTML=`<img src="${U(item.img)}" alt="${item.label}"><div class="qp-poem">${item.poem}</div><div class="qp-text">${item.explain}</div>`;
+  pop.style.left=this.style.left;pop.style.top=this.style.top;
+  area.appendChild(pop);
+  requestAnimationFrame(()=>pop.classList.add('show'));
+  setTimeout(()=>{pop.style.opacity='0';pop.style.transform='translate(-50%,-50%) scale(.8)'},2800);
+  setTimeout(()=>pop.remove(),3400);
+  area.style.filter=`brightness(${(0.35+0.65*(cur/total)).toFixed(2)})`;
+  if(cur===total){
+    area.classList.add('lit');
+    setTimeout(()=>{
+      const m=document.getElementById('quietMoral');if(m)m.classList.add('show');
+      setTimeout(()=>showReward('🌙 你讀懂這首詩啦！','你找到了詩中所有細微的動靜，體會到「以動襯靜」的寫作妙法！','🌟'),1200);
+    },600);
+  }
+};
+});
+}
+
+
+/* ========== 時光齒輪（用四張真實繪本場景圖切換） ========== */
+function buildTimewheel(g){
+setTimeout(()=>initTimewheel(g),100);
+const s0=g.stages[0];
+return `<div class="timewheel-wrap">
+  <div class="tw-scene" id="twScene">
+    <img class="tw-scene-img" id="twImg" src="${U(s0.img)}">
+    <div class="tw-poem" id="twPoem">花開堪折直須折</div>
+    <div class="tw-label" id="twLabel">🌸 ${s0.label}</div>
+  </div>
+  <div class="tw-text" id="twText">${s0.text}</div>
+  <div class="tw-tip" id="twTip" style="color:#4A8C3C;font-size:16px;font-weight:bold;margin-bottom:10px">💡 ${s0.tip}</div>
+  <div class="tw-controls">
+    <button class="tw-btn" id="twPrev" disabled>◀</button>
+    <div class="tw-stage" id="twStage">1 / 4 ${s0.label}</div>
+    <button class="tw-btn" id="twNext">▶</button>
+  </div>
+  <div class="tw-moral" id="twMoral"><b>✨ 詩中道理：</b>${g.moral}</div>
+</div>`;
+}
+function initTimewheel(g){
+let cur=0;
+const poems=['花開堪折直須折','花開堪折直須折','莫待無花空折枝','莫待無花空折枝'];
+function show(){
+  const s=g.stages[cur];
+  const img=document.getElementById('twImg');
+  img.style.opacity='0';
+  setTimeout(()=>{img.src=U(s.img);img.style.opacity='1';},250);
+  document.getElementById('twPoem').textContent=poems[cur];
+  document.getElementById('twLabel').textContent=s.emoji+' '+s.label;
+  document.getElementById('twText').textContent=s.text;
+  document.getElementById('twTip').innerHTML='💡 '+s.tip;
+  document.getElementById('twStage').textContent=`${cur+1} / 4 ${s.label}`;
+  document.getElementById('twPrev').disabled=cur===0;
+  document.getElementById('twNext').disabled=cur===g.stages.length-1;
+  sfxClick();
+  if(cur===g.stages.length-1){
+    setTimeout(()=>{
+      document.getElementById('twMoral').classList.add('show');
+      showReward('⏳ 你看懂時光流轉了！','珍惜少年時光，好好學習才不會後悔！','⏰');
+    },800);
+  }
+}
+document.getElementById('twPrev').onclick=()=>{if(cur>0){cur--;show()}};
+document.getElementById('twNext').onclick=()=>{if(cur<g.stages.length-1){cur++;show()}};
+}
+
+/* ========== 孟母三遷選鄰居（用三張古風繪本場景圖） ========== */
+function buildNeighbor(g){
+setTimeout(()=>initNeighbor(g),100);
+const cards=g.choices.map(c=>`<div class="nb-card" data-id="${c.id}" data-good="${c.good}">
+  <img class="nb-img" src="${U(c.img)}" alt="${c.title}">
+  <div class="nb-title">${c.emoji} ${c.title}</div>
+</div>`).join('');
+return `<div class="nb-story">📖 ${g.story}</div>
+<div style="text-align:center;font-size:18px;color:#8B2B1F;margin-bottom:10px;font-weight:bold">🤔 點擊看看三個地方，幫小孟子選一個合適的家！</div>
+<div class="nb-grid">${cards}</div>
+<div class="nb-result" id="nbResult"></div>
+<div style="text-align:center"><button class="nb-next" id="nbNext">👉 換下一家</button></div>`;
+}
+function buildGrow(g){
+  var h='<div class="grow-scene" style="position:relative;background:no-repeat center/cover url('+U(g.bg)+');border-radius:18px;overflow:hidden;aspect-ratio:16/9;width:100%;">'
+    +'<div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(255,250,240,.92);padding:6px 18px;border-radius:20px;font-size:20px;font-weight:700;color:#2b8a3e;z-index:5;">🌿 已種 <span id="gcnt">0</span> / '+g.spots.length+' 株小草</div>'
+    +'<div id="growarea" style="position:absolute;inset:0;cursor:pointer;"></div></div>'
+    +'<p style="text-align:center;margin-top:14px;color:#8b6f47;font-size:17px;">💡 點草原上閃動的空地，一棵棵小草就會冒出來！</p>';
+  setTimeout(function(){
+    var cnt=0; var area=document.getElementById('growarea');
+    if(!area)return;
+    g.spots.forEach(function(s){
+      var spt=document.createElement('div');
+      spt.style.cssText='position:absolute;left:'+s.x+'%;top:'+s.y+'%;width:56px;height:56px;transform:translate(-50%,-50%);border-radius:50%;border:3px dashed #8bc34a;cursor:pointer;animation:pulse 1.2s infinite;display:flex;align-items:center;justify-content:center;font-size:28px;';
+      spt.innerHTML='➕';
+      spt.onclick=function(){
+        playSound('correct');
+        var g2=document.createElement('div');
+        g2.style.cssText='position:absolute;left:'+s.x+'%;top:'+s.y+'%;transform:translate(-50%,-50%) scale(0);font-size:52px;transition:transform .5s cubic-bezier(.34,1.56,.64,1);pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));';
+        g2.textContent='🌱';
+        area.appendChild(g2);
+        requestAnimationFrame(function(){g2.style.transform='translate(-50%,-50%) scale(1)';});
+        spt.remove();
+        cnt++;
+        document.getElementById('gcnt').textContent=cnt;
+        if(cnt===g.spots.length){
+          // 草原變茂盛：替換背景為茂盛草原圖
+          var scene=area.parentElement;
+          scene.style.transition='background .8s';
+          scene.style.backgroundImage='url('+U(g.bloomed)+')';
+          // 小草emoji淡入消失
+          area.querySelectorAll('div').forEach(function(gr){gr.style.transition='opacity .8s';gr.style.opacity='0';});
+          setTimeout(function(){showToast('🎉 春風吹又生！草原變得好茂盛～','win');playSound('win');},800);
+        }
+      };
+      area.appendChild(spt);
+    });
+  },100);
+  return h;
+}
+
+function buildTage(g){
+  var h='<div class="tage-scene" style="position:relative;background:no-repeat center/cover url('+U(g.bg)+');border-radius:18px;overflow:hidden;aspect-ratio:16/9;width:100%;">'
+    +'<div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(255,250,240,.92);padding:6px 18px;border-radius:20px;font-size:20px;font-weight:700;color:#c2185b;z-index:5;">🎵 踏了 <span id="bcnt">0</span> / '+g.beats.length+' 拍</div>'
+    +'<div id="beatarea" style="position:absolute;inset:0;"></div></div>'
+    +'<p style="text-align:center;margin-top:14px;color:#8b6f47;font-size:17px;">💡 跟着順序按閃動的圓圈，村民一起踏歌送行！</p>';
+  setTimeout(function(){
+    var cnt=0, idx=0; var area=document.getElementById('beatarea');
+    if(!area)return;
+    function showBeat(){
+      if(idx>=g.beats.length){
+        // 完成後切換為李白乘船遠去的圖片
+        var scene=document.getElementById('beatarea').parentElement;
+        scene.style.transition='background .8s';
+        scene.style.backgroundImage='url('+U(g.sailed)+')';
+        setTimeout(function(){playSound('win');showToast('🎉 桃花潭水深千尺，不及汪倫送我情！','win');},800);
+        return;
+      }
+      var b=g.beats[idx];
+      var beat=document.createElement('div');
+      beat.style.cssText='position:absolute;left:'+b.x+'%;top:'+b.y+'%;width:72px;height:72px;transform:translate(-50%,-50%) scale(0);border-radius:50%;background:radial-gradient(circle,#ffd54f,#ff9800);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:#fff;cursor:pointer;box-shadow:0 0 20px #ff9800;animation:pulse .6s infinite;transition:transform .3s;';
+      beat.textContent=b.t;
+      beat.onclick=function(){
+        playSound('correct');
+        beat.style.transform='translate(-50%,-50%) scale(1.3)';
+        beat.style.background='radial-gradient(circle,#81c784,#43a047)';
+        beat.style.animation='none';
+        beat.onclick=null;
+        cnt++; idx++;
+        document.getElementById('bcnt').textContent=cnt;
+        setTimeout(showBeat,280);
+      };
+      area.appendChild(beat);
+      requestAnimationFrame(function(){beat.style.transform='translate(-50%,-50%) scale(1)';});
+    }
+    setTimeout(showBeat,500);
+  },100);
+  return h;
+}
+
+function buildBlow(g){
+  var h='<div class="blow-scene" id="blowScene" style="position:relative;background:no-repeat center/cover url('+U(g.bg)+');border-radius:18px;overflow:hidden;aspect-ratio:16/9;width:100%;cursor:pointer;">'
+    +'<div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(255,250,240,.92);padding:6px 18px;border-radius:20px;font-size:20px;font-weight:700;color:#1976d2;z-index:5;">💨 已吹 <span id="blcnt">0</span> / 10 下</div>'
+    +'<div id="boat" style="position:absolute;left:18%;top:68%;width:110px;height:90px;transform:translate(-50%,-50%);font-size:76px;transition:left .6s ease-out;filter:drop-shadow(0 4px 6px rgba(0,0,0,.3));">⛵</div>'
+    +'<div id="windFx" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;"></div></div>'
+    +'<p style="text-align:center;margin-top:14px;color:#8b6f47;font-size:17px;">💡 按一下畫面吹風，把孟浩然的帆船送向廣陵！</p>';
+  setTimeout(function(){
+    var bl=0; var boat=document.getElementById('boat'),fx=document.getElementById('windFx');
+    var sc=document.getElementById('blowScene');
+    if(!sc)return;
+    sc.onclick=function(){
+      if(bl>=10)return;
+      bl++;
+      boat.style.left=(18+bl*7)+'%';
+      document.getElementById('blcnt').textContent=bl;
+      var w=document.createElement('div');
+      w.style.cssText='position:absolute;left:8%;top:'+(30+Math.random()*50)+'%;font-size:42px;opacity:.8;';
+      w.textContent='💨';
+      w.animate([{transform:'translateX(0) scale(1)',opacity:.8},{transform:'translateX(700px) scale(1.6)',opacity:0}],{duration:1200,easing:'linear'});
+      fx.appendChild(w);
+      setTimeout(function(){w.remove();},1200);
+      playSound('click');
+      if(bl===10){
+        boat.style.opacity='0';
+        document.getElementById('windFx').parentElement.style.transition='background .8s';
+        document.getElementById('windFx').parentElement.style.backgroundImage='url('+U(g.arrived)+')';
+        setTimeout(function(){playSound('win');showToast('🎉 孤帆遠影碧空盡，唯見長江天際流！船到廣陵～','win');},800);
+      }
+    };
+  },100);
+  return h;
+}
+
+function buildWake(g){
+  var h='<div class="wake-scene" style="position:relative;background:no-repeat center/cover url('+U(g.bg)+');border-radius:18px;overflow:hidden;aspect-ratio:16/9;width:100%;">'
+    +'<div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(255,250,240,.92);padding:6px 18px;border-radius:20px;font-size:20px;font-weight:700;color:#e91e63;z-index:5;">🌸 已喚醒 <span id="wcnt">0</span> / '+g.spots.length+' 處春光</div>'
+    +'<div id="wakearea" style="position:absolute;inset:0;"></div></div>'
+    +'<p style="text-align:center;margin-top:14px;color:#8b6f47;font-size:17px;">💡 按閃亮的光點，把春天景物一個個喚醒！</p>';
+  setTimeout(function(){
+    var cnt=0; var area=document.getElementById('wakearea');
+    if(!area)return;
+    g.spots.forEach(function(s){
+      var sp=document.createElement('div');
+      sp.style.cssText='position:absolute;left:'+s.x+'%;top:'+s.y+'%;width:60px;height:60px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,235,59,.9),rgba(255,193,7,.2));border:3px dashed #ffc107;cursor:pointer;animation:pulse 1s infinite;display:flex;align-items:center;justify-content:center;font-size:28px;';
+      sp.textContent='✨';
+      sp.onclick=function(){
+        playSound('correct');
+        var e=document.createElement('div');
+        e.style.cssText='position:absolute;left:'+s.x+'%;top:'+s.y+'%;transform:translate(-50%,-50%) scale(0);display:flex;flex-direction:column;align-items:center;transition:transform .5s cubic-bezier(.34,1.56,.64,1);pointer-events:none;';
+        e.innerHTML='<img src="'+U(s.ei)+'" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));border-radius:50%;background:rgba(255,255,255,.5);padding:6px;"><div style="margin-top:4px;background:rgba(255,255,255,.95);padding:4px 14px;border-radius:12px;font-size:17px;font-weight:700;color:#c2185b;white-space:nowrap;">'+s.t+'</div>';
+        area.appendChild(e);
+        requestAnimationFrame(function(){e.style.transform='translate(-50%,-50%) scale(1)';});
+        sp.remove();
+        cnt++;
+        document.getElementById('wcnt').textContent=cnt;
+        if(cnt===g.spots.length){
+          setTimeout(function(){showToast('🎉 遲日江山麗，春風花草香！春天真美麗～','win');playSound('win');},500);
+        }
+      };
+      area.appendChild(sp);
+    });
+  },100);
+  return h;
+}
+
+function initNeighbor(g){
+const result=document.getElementById('nbResult');
+const next=document.getElementById('nbNext');
+let tried=0;
+document.querySelectorAll('.nb-card').forEach(c=>{
+  c.onclick=function(){
+    if(this.classList.contains('selected-good'))return;
+    const id=this.dataset.id;
+    const good=this.dataset.good==='true';
+    const ch=g.choices.find(x=>x.id===id);
+    document.querySelectorAll('.nb-card').forEach(x=>x.classList.remove('selected-bad','selected-good'));
+    if(good){
+      this.classList.add('selected-good');sfxRight();
+      result.className='nb-result good';
+      result.innerHTML=`<b>${ch.emoji} ${ch.result}</b><br><br>✅ ${ch.tip}`;
+      next.style.display='none';
+      setTimeout(()=>showReward('🏫 孟母三遷成功！','環境對學習很重要，和好人為伍才能進步！','🏆'),600);
+    }else{
+      this.classList.add('selected-bad');sfxWrong();
+      result.className='nb-result bad';
+      result.innerHTML=`<b>${ch.emoji} ${ch.result}</b><br><br>${ch.tip}`;
+      tried++;
+      if(tried>=2){
+        next.textContent='👉 去看看最後一家（學堂）';
+      }else{
+        next.textContent='👉 再換一家試試';
+      }
+      next.classList.add('show');
+    }
+  };
+});
+next.onclick=()=>{sfxClick();result.className='nb-result';result.innerHTML='';document.querySelectorAll('.nb-card').forEach(x=>x.classList.remove('selected-bad'));next.classList.remove('show')};
+}
+
+/* ========== 格律小博士問答闖關 ========== */
+const METER_QUIZ=[
+ {q:'「遲日江山麗，春風花草香」，每行有幾個字？',opts:['4個字','5個字','7個字'],ans:1,tip:'每行五個字的詩叫「五言詩」。'},
+ {q:'「誰言寸草心，報得三春暉」，每行五個字，是甚麼詩？',opts:['五言詩','七言詩','長短句'],ans:0,tip:'一行五個字就是五言詩。'},
+ {q:'「桃花潭水深千尺，不及汪倫送我情」是李白的四句七字小詩，這種詩體叫甚麼？',opts:['古體長詩','五言絕句','七言絕句'],ans:2,tip:'每行七字、一共四句的詩叫「七言絕句」，短短的容易背誦。'},
+ {q:'古體詩和近體詩，哪一種講究對仗、押韻規矩多？',opts:['近體詩','一樣多','古體詩'],ans:0,tip:'近體詩是後來慢慢形成的，規矩比較嚴格，要押韻、要對仗。'},
+ {q:'「一歲一枯榮」的「榮」字，和下面哪個字押同一個韻？',opts:['花','生','草'],ans:1,tip:'「榮」讀róng、「生」讀shēng，兩個字的韻母都是後鼻音，押ong/eng韻，讀起來響亮好聽。'},
+ {q:'「野火燒不盡，春風吹又生」，上下兩句字數一樣、詞性相對，這叫甚麼？',opts:['誇張','打比方','對仗'],ans:2,tip:'對仗就是兩句像對聯一樣對齊，看起來整整齊齊。'},
+ {q:'「絕句」這種詩體一共有幾句？',opts:['四句','兩句','八句'],ans:0,tip:'絕句是短短的四句小詩。'},
+ {q:'詩句結尾讀音相近、讀起來順口的字叫甚麼？',opts:['形容詞','動詞','韻腳'],ans:2,tip:'押韻的那個字就叫「韻腳」，踩在句尾像小腳丫。'}
+];
+function initMeterGame(){
+const game=document.getElementById('meterGame');if(!game)return;
+// 清空舊格子
+game.querySelectorAll('.meter-cell').forEach(c=>c.remove());
+// 重新建構問答介面
+game.innerHTML=`
+  <div class="meter-hero">
+    <span class="meter-hero-emoji">🧒</span>
+    <span class="meter-hero-label">小書童</span>
+  </div>
+  <div class="meter-steps" id="meterSteps"></div>
+  <div class="meter-quizbox">
+    <div class="meter-qnum" id="meterQnum">第 1 題 / 8</div>
+    <div class="meter-question" id="meterQuestion"></div>
+    <div class="meter-options" id="meterOptions"></div>
+    <div class="meter-feedback" id="meterFeedback"></div>
+    <button class="meter-next" id="meterNext" style="display:none;">下一題 ➜</button>
+    <button class="meter-reset" id="meterReset">🔄 再挑戰一次</button>
+  </div>`;
+// 插入樣式
+if(!document.getElementById('meterQuizStyle')){
+const s=document.createElement('style');s.id='meterQuizStyle';
+s.textContent=`
+.meter-hero{position:absolute;left:10px;bottom:10px;font-size:38px;text-align:center;z-index:5;transition:all .6s cubic-bezier(.34,1.56,.64,1);}
+.meter-hero-emoji{display:block;filter:drop-shadow(0 3px 4px rgba(0,0,0,.15));}
+.meter-hero-label{display:block;font-family:"ZCOOL KuaiLe",sans-serif;font-size:12px;color:#8b4513;background:#fff8e7;border:1.5px solid #d4a76a;border-radius:10px;padding:1px 6px;margin-top:-2px;}
+.meter-steps{position:absolute;bottom:20px;left:90px;right:30px;height:46px;display:flex;gap:6px;align-items:flex-end;z-index:3;}
+.meter-step{flex:1;height:18px;background:rgba(255,255,255,.55);border:2px solid #c9a87c;border-radius:6px 6px 0 0;position:relative;transition:all .4s;}
+.meter-step.done{background:linear-gradient(180deg,#8fd19e,#5ba86d);border-color:#3e8a52;height:40px;}
+.meter-step.done::after{content:'⭐';position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:16px;animation:meterStar .5s ease;}
+.meter-step.missed{background:linear-gradient(180deg,#f5c58a,#d9944e);border-color:#b36d2b;height:28px;}
+.meter-step.missed::after{content:'✗';position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:13px;color:#b36d2b;font-weight:bold;}
+@keyframes meterStar{0%{transform:translateX(-50%) scale(0) rotate(-30deg);}60%{transform:translateX(-50%) scale(1.3) rotate(10deg);}100%{transform:translateX(-50%) scale(1) rotate(0);}}
+.meter-quizbox{position:absolute;top:14px;left:24px;right:24px;bottom:90px;background:linear-gradient(180deg,#fffdf5,#fff3d8);border:3px solid #c9a87c;border-radius:18px;padding:18px 22px;box-shadow:0 6px 18px rgba(139,69,19,.15) inset,0 4px 12px rgba(0,0,0,.12);overflow-y:auto;z-index:4;}
+.meter-qnum{display:inline-block;font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#fff;background:#c23a2b;padding:3px 12px;border-radius:20px;margin-bottom:10px;}
+.meter-question{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;color:#5a3a1a;line-height:1.6;margin-bottom:14px;min-height:30px;}
+.meter-options{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+.meter-opt{font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;padding:10px 16px;background:#fff;border:2.5px solid #d4a76a;border-radius:14px;cursor:pointer;text-align:left;transition:all .2s;color:#5a3a1a;box-shadow:0 2px 0 #b58750;}
+.meter-opt:hover{transform:translateY(-2px);box-shadow:0 4px 0 #b58750;}
+.meter-opt:active{transform:translateY(1px);box-shadow:0 1px 0 #b58750;}
+.meter-opt.correct{background:#d9f2de;border-color:#3e8a52;color:#255d32;box-shadow:0 2px 0 #3e8a52;pointer-events:none;animation:meterPop .3s ease;}
+.meter-opt.wrong{background:#fde0e0;border-color:#c23a2b;color:#8a1f11;box-shadow:0 2px 0 #c23a2b;animation:meterShake .4s ease;}
+.meter-opt[disabled]{opacity:.7;cursor:not-allowed;}
+@keyframes meterPop{0%{transform:scale(1);}50%{transform:scale(1.08);}100%{transform:scale(1);}}
+@keyframes meterShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.meter-feedback{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;padding:10px 14px;border-radius:12px;min-height:20px;line-height:1.5;display:none;}
+.meter-feedback.show{display:block;animation:meterFade .3s ease;}
+.meter-feedback.good{background:#d9f2de;color:#255d32;border:2px dashed #3e8a52;}
+.meter-feedback.bad{background:#fde0e0;color:#8a1f11;border:2px dashed #c23a2b;}
+@keyframes meterFade{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.meter-next{font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;padding:8px 20px;background:linear-gradient(180deg,#e84a3c,#c23a2b);color:#fff;border:none;border-radius:20px;cursor:pointer;box-shadow:0 3px 0 #8a1f11;margin-top:6px;transition:all .2s;}
+.meter-next:hover{transform:translateY(-2px);box-shadow:0 5px 0 #8a1f11;}
+.meter-next:active{transform:translateY(1px);}
+.meter-reset{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;padding:6px 16px;background:#fff8e7;border:2px solid #d4a76a;border-radius:16px;cursor:pointer;color:#8b4513;margin-top:10px;display:none;}
+.meter-reset:hover{background:#fff3d8;}
+.meter-win{text-align:center;padding:20px 10px;}
+.meter-win .big{font-size:42px;margin-bottom:10px;animation:meterPop .6s ease;}
+.meter-win .t1{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;color:#c23a2b;margin-bottom:8px;}
+.meter-win .t2{font-size:15px;color:#5a3a1a;line-height:1.7;}
+@media(max-width:600px){
+  .meter-quizbox{padding:14px 14px;top:8px;left:12px;right:12px;bottom:80px;}
+  .meter-question{font-size:17px;}
+  .meter-opt{font-size:15px;padding:8px 12px;}
+  .meter-steps{left:70px;height:36px;}
+  .meter-hero{font-size:28px;}
+}
+`;document.head.appendChild(s);}
+// 狀態
+let qIdx=0,correct=0,shuffled=[...METER_QUIZ].sort(()=>Math.random()-.5);
+const qn=document.getElementById('meterQnum');
+const qq=document.getElementById('meterQuestion');
+const qo=document.getElementById('meterOptions');
+const fb=document.getElementById('meterFeedback');
+const next=document.getElementById('meterNext');
+const reset=document.getElementById('meterReset');
+const steps=document.getElementById('meterSteps');
+const hero=game.querySelector('.meter-hero');
+// 繪8級台階
+for(let i=0;i<8;i++){const s=document.createElement('div');s.className='meter-step';steps.appendChild(s);}
+function moveHero(i){
+  // i從0~8，對應steps位置
+  const totalW=steps.offsetWidth;
+  const pct=(i/8)*(totalW-30);
+  hero.style.left=(90+pct)+'px';
+  hero.style.bottom='58px';
+}
+function showQ(){
+  const cur=shuffled[qIdx];
+  qn.textContent=`第 ${qIdx+1} 題 / 8`;
+  qq.textContent=cur.q;
+  qo.innerHTML='';fb.className='meter-feedback';fb.innerHTML='';fb.classList.remove('show');
+  next.style.display='none';
+  cur.opts.forEach((opt,idx)=>{
+    const b=document.createElement('button');b.className='meter-opt';b.textContent=String.fromCharCode(65+idx)+'. '+opt;
+    b.onclick=()=>{
+      if(qo.classList.contains('locked'))return;
+      qo.classList.add('locked');
+      qo.querySelectorAll('.meter-opt').forEach(x=>x.disabled=true);
+      if(idx===cur.ans){
+        sfxRight();b.classList.add('correct');
+        fb.className='meter-feedback good show';
+        fb.innerHTML='✅答對了！真棒～'+cur.tip;
+        correct++;steps.children[qIdx].classList.add('done');
+        moveHero(qIdx+1);
+        if(qIdx<shuffled.length-1){
+          next.style.display='inline-block';
+        }else{
+          // 通關
+          setTimeout(()=>{
+            qn.style.display='none';qq.innerHTML=`<div class="meter-win"><div class="big">🏆</div><div class="t1">格律小博士！</div><div class="t2">你學會了五言七言、押韻對仗、古體近體的區別，<br>答對 ${correct}/8 題，真棒！</div></div>`;
+            qo.innerHTML='';fb.className='meter-feedback';fb.innerHTML='';next.style.display='none';reset.style.display='inline-block';
+          },600);
+        }
+      }else{
+        sfxWrong();b.classList.add('wrong');
+        // 高亮正確答案，所有按鈕禁用，直接顯示下一題（不讓卡死在一題）
+        const correctBtn=qo.querySelectorAll('.meter-opt')[cur.ans];
+        correctBtn.classList.add('correct');
+        qo.querySelectorAll('.meter-opt').forEach(x=>x.disabled=true);
+        fb.className='meter-feedback bad show';
+        fb.innerHTML='❌答錯了～正確答案是 '+String.fromCharCode(65+cur.ans)+'。'+cur.tip;
+        // 不加分、台階變紅色（表示錯過），顯示下一題
+        steps.children[qIdx].classList.add('missed');
+        if(qIdx<shuffled.length-1){
+          next.style.display='inline-block';
+        }else{
+          // 通關（不管對錯都結束）
+          setTimeout(()=>{
+            qn.style.display='none';qq.innerHTML=`<div class="meter-win"><div class="big">🏆</div><div class="t1">闖關完成！</div><div class="t2">你學會了五言七言、押韻對仗、古體近體的區別，<br>答對 ${correct}/8 題，繼續加油哦！</div></div>`;
+            qo.innerHTML='';fb.className='meter-feedback';fb.innerHTML='';next.style.display='none';reset.style.display='inline-block';
+          },800);
+        }
+      }
+    };
+    qo.appendChild(b);
+  });
+}
+next.onclick=()=>{sfxClick();qIdx++;qo.classList.remove('locked');showQ();};
+reset.onclick=()=>{sfxClick();
+  qIdx=0;correct=0;shuffled=[...METER_QUIZ].sort(()=>Math.random()-.5);
+  steps.querySelectorAll('.meter-step').forEach(s=>s.classList.remove('done'));
+  hero.style.left='10px';hero.style.bottom='10px';
+  qn.style.display='inline-block';reset.style.display='none';qo.classList.remove('locked');showQ();
+};
+moveHero(0);
+showQ();
+}
+
+/* ========== 花瓣 ========== */
+function spawnPetals(){
+const n=12;
+for(let i=0;i<n;i++){
+const p=document.createElement('div');p.className='petal';
+p.style.left=Math.random()*100+'vw';
+p.style.animationDuration=(8+Math.random()*8)+'s';
+p.style.animationDelay=(Math.random()*10)+'s';
+p.style.transform=`scale(${.6+Math.random()*.6})`;
+document.body.appendChild(p);
+}
+}
+spawnPetals();
+
+/* 防止iOS默認滾動*/
+document.addEventListener('touchmove',e=>{if(e.target.closest('.game-area'))return;},{passive:true});
+</script>
+</body>
+</html>

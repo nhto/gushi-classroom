@@ -1,0 +1,4162 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古詩文情景互動樂園</title>
+<script src="https://aisearch-task.bj.bcebos.com/static/tailwindcss-3.4.17.js"></script>
+<style>
+/* 自由香港楷書（Free HK Kai）字體引入 */
+@font-face {
+  font-family: 'Free HK Kai';
+  src: url('https://cdn.jsdelivr.net/gh/otherdaniel/freehkfonts@v1.04/FreeHKKai-Regular.otf') format('opentype');
+  font-display: swap;
+}
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+
+:root {
+  --paper: #fdf8f0;
+  --paper-dark: #f5ecd9;
+  --ink: #3d2b1f;
+  --ink-light: #6b4f3a;
+  --red: #c83c3c;
+  --gold: #d4a84b;
+  --green: #5a8c5a;
+  --blue: #4a7ba8;
+  --peach: #e8a890;
+}
+
+* { box-sizing: border-box; }
+
+html { font-size: 20px; }
+
+body {
+  font-family: 'Free HK Kai', 'BiauKai', 'DFKai-SB', 'KaiTi', 'STKaiti', 'Microsoft JhengHei', 'PingFang HK', serif;
+  background: var(--paper);
+  color: var(--ink);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(212,168,75,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(200,60,60,0.06) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a84b' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.font-brush { font-family: 'Free HK Kai', 'Ma Shan Zheng', 'BiauKai', 'KaiTi', cursive; }
+.font-cute { font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif; }
+
+/* 統一正文文字大小 */
+p, li, span, div, label, td, th, a { font-family: inherit; }
+
+/* 正文大區塊文字 */
+.section-text { font-size: 1.2rem; line-height: 2; }
+
+.paper-card {
+  background: linear-gradient(135deg, #fffdf7 0%, #faf3e3 100%);
+  border: 2px solid rgba(212,168,75,0.3);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(61,43,31,0.1), 0 2px 8px rgba(61,43,31,0.06);
+  position: relative;
+  overflow: hidden;
+  font-size: 1.15rem;
+}
+
+.paper-card::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+  border: 1px dashed rgba(212,168,75,0.2);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.btn-ancient {
+  background: linear-gradient(135deg, var(--red) 0%, #a82c2c 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-size: 1.15rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(200,60,60,0.3);
+  font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif;
+}
+
+.btn-ancient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200,60,60,0.4);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold) 0%, #b8923f 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(212,168,75,0.3);
+}
+.btn-gold:hover { box-shadow: 0 6px 20px rgba(212,168,75,0.4); }
+
+.btn-green {
+  background: linear-gradient(135deg, var(--green) 0%, #467046 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(90,140,90,0.3);
+}
+
+.poem-card {
+  background: linear-gradient(135deg, #fffdf7 0%, #faf3e3 100%);
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.poem-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--gold);
+  box-shadow: 0 12px 30px rgba(212,168,75,0.2);
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  border-radius: 12px 12px 0 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  border: 2px solid transparent;
+  border-bottom: none;
+  font-size: 1.15rem;
+  font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #fffdf7 0%, #faf3e3 100%);
+  border-color: rgba(212,168,75,0.4);
+  color: var(--red);
+}
+
+.hidden { display: none !important; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.float-anim { animation: float 3s ease-in-out infinite; }
+.fade-in { animation: fadeInUp 0.5s ease-out; }
+.bounce { animation: bounce 0.5s ease; }
+.shake { animation: shake 0.4s ease; }
+
+.drag-item {
+  cursor: grab;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+.drag-item:active { cursor: grabbing; }
+.drag-item.dragging { opacity: 0.5; transform: scale(1.05); }
+.drop-zone {
+  border: 3px dashed rgba(212,168,75,0.5);
+  border-radius: 12px;
+  min-height: 60px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.drop-zone.drag-over {
+  border-color: var(--green);
+  background: rgba(90,140,90,0.1);
+}
+.drop-zone.correct { border-color: var(--green); background: rgba(90,140,90,0.15); }
+.drop-zone.wrong { border-color: var(--red); background: rgba(200,60,60,0.1); }
+
+.game-btn {
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 2px solid rgba(212,168,75,0.4);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.15rem;
+  font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif;
+}
+.game-btn:hover { border-color: var(--gold); background: #fff9ed; transform: scale(1.03); }
+.game-btn.correct { background: #d4edda; border-color: var(--green); color: #285328; }
+.game-btn.wrong { background: #f8d7da; border-color: var(--red); color: #722; }
+
+.stamp {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 3px solid var(--red);
+  color: var(--red);
+  border-radius: 8px;
+  font-family: 'Free HK Kai', 'Ma Shan Zheng', 'BiauKai', 'KaiTi', cursive;
+  font-size: 1.6rem;
+  transform: rotate(-5deg);
+  background: rgba(255,255,255,0.8);
+}
+
+.seal {
+  width: 68px;
+  height: 68px;
+  background: var(--red);
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Free HK Kai', 'Ma Shan Zheng', 'BiauKai', 'KaiTi', cursive;
+  font-size: 1.4rem;
+  transform: rotate(-8deg);
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+}
+
+.concept-map-node {
+  background: white;
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 14px 18px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+.concept-map-node:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(212,168,75,0.3); }
+
+.progress-bar {
+  height: 12px;
+  background: var(--paper-dark);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--red));
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.star {
+  font-size: 32px;
+  color: #ddd;
+  transition: all 0.3s ease;
+}
+.star.earned { color: var(--gold); text-shadow: 0 0 10px rgba(212,168,75,0.5); }
+
+.cloud-decor {
+  position: absolute;
+  opacity: 0.15;
+  font-size: 80px;
+  pointer-events: none;
+}
+
+
+.caption-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.caption-box {
+  background: rgba(255,255,255,0.95);
+  border: 2px solid rgba(74,123,168,0.3);
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #3d2b1f;
+  position: relative;
+}
+.caption-box .panel-num {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  line-height: 22px;
+  border-radius: 50%;
+  background: #4a7ba8;
+  color: white;
+  font-weight: bold;
+  font-size: 0.95rem;
+  border: 2px solid white;
+  margin-bottom: 4px;
+}
+.caption-box .poem-line {
+  font-family: 'Free HK Kai','Ma Shan Zheng',serif;
+  font-size: 1.05rem;
+  color: #8B2323;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.fill-blank-input {
+  border: none;
+  border-bottom: 3px dashed var(--red);
+  background: transparent;
+  width: 60px;
+  text-align: center;
+  font-size: 1.3rem;
+  font-family: 'Free HK Kai','Ma Shan Zheng',serif;
+  color: var(--red);
+  font-weight: bold;
+  outline: none;
+  margin: 0 4px;
+}
+/* === 內容大意 · 概念流程圖（古風兒童繪本長卷背景） === */
+.summary-scroll-wrap {
+  position: relative;
+  background-color: #fdf6e3;
+  border: 2px solid #b8860b;
+  border-radius: 6px;
+  padding: 22px 28px 20px;
+  margin: 8px 0 4px;
+  min-height: 340px;
+  box-shadow:
+    inset 0 0 30px rgba(139,90,43,0.20),
+    0 6px 14px rgba(80,50,20,0.18);
+}
+/* 卷軸兩端木軸 */
+.summary-scroll-wrap::before,
+.summary-scroll-wrap::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  width: 18px;
+  background:
+    linear-gradient(180deg,#8b5a2b 0%,#a0704a 20%,#6b3f1d 50%,#a0704a 80%,#8b5a2b 100%);
+  border-radius: 9px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 0 4px rgba(0,0,0,0.3);
+  border: 1px solid #5c3a1a;
+  z-index: 3;
+}
+.summary-scroll-wrap::before { left: -10px; }
+.summary-scroll-wrap::after  { right: -10px; }
+/* 卷軸端金色箍 */
+.summary-scroll-wrap .scroll-cap-l,
+.summary-scroll-wrap .scroll-cap-r {
+  position: absolute;
+  top: -8px; bottom: -8px;
+  width: 8px;
+  background: linear-gradient(180deg,#e6c56b,#b8860b,#e6c56b);
+  border-radius: 4px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  z-index: 3;
+}
+.summary-scroll-wrap .scroll-cap-l { left: -4px; }
+.summary-scroll-wrap .scroll-cap-r { right: -4px; }
+/* 卷軸標題（加白描邊與半透明底，讓其在圖片背景上清晰可讀） */
+.scroll-title {
+  text-align: center;
+  font-family: "Free HK Kai","KaiTi",serif;
+  font-size: 1.5rem;
+  color: #5a1010;
+  margin-bottom: 14px;
+  letter-spacing: 6px;
+  position: relative;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 24px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(212,168,75,0.7);
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  z-index: 2;
+}
+.scroll-title::before,
+.scroll-title::after {
+  content: '❖';
+  color: #d4a84b;
+  margin: 0 10px;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.summary-flow {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  padding: 8px 4px 4px;
+  position: relative;
+  flex-wrap: wrap;
+  z-index: 2;
+}
+.summary-node {
+  flex: 1;
+  min-width: 140px;
+  max-width: 200px;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid #8B2323;
+  border-radius: 10px;
+  padding: 14px 10px 12px;
+  text-align: center;
+  position: relative;
+  box-shadow: 2px 3px 0 rgba(139,35,35,0.15), 0 4px 10px rgba(80,50,20,0.20);
+  margin: 6px 4px;
+  transform: rotate(-0.3deg);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.summary-node:hover {
+  transform: rotate(0) translateY(-3px) scale(1.03);
+  box-shadow: 3px 5px 0 rgba(139,35,35,0.2), 0 8px 16px rgba(80,50,20,0.25);
+}
+.summary-node:nth-child(even) { transform: rotate(0.3deg); }
+.summary-node:nth-child(even):hover { transform: rotate(0) translateY(-3px) scale(1.03); }
+/* 朱砂印章角飾 */
+.summary-node::before {
+  content: attr(data-seal);
+  position: absolute;
+  top: -10px; right: -10px;
+  width: 28px; height: 28px;
+  background: #c83c3c;
+  color: #fff9e6;
+  font-family: "Free HK Kai","KaiTi",serif;
+  font-size: 0.9rem;
+  line-height: 28px;
+  text-align: center;
+  border-radius: 4px;
+  border: 1.5px solid #8B2323;
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+  transform: rotate(-8deg);
+  z-index: 3;
+}
+.summary-node .node-icon {
+  font-size: 2.6rem;
+  margin-bottom: 6px;
+  filter: drop-shadow(1px 2px 2px rgba(139,35,35,0.25));
+}
+.summary-node .node-title {
+  font-family: "Free HK Kai","KaiTi",serif;
+  font-weight: bold;
+  color: #5a1010;
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+  border-bottom: 1px dashed #b8860b;
+  padding-bottom: 4px;
+  display: inline-block;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+}
+.summary-node .node-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #2a1a0f;
+  font-family: "Free HK Kai","KaiTi",serif;
+  font-weight: 500;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.7);
+}
+.summary-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #fff;
+  min-width: 34px;
+  flex-shrink: 0;
+  text-shadow:
+    -1px -1px 0 #8B2323, 1px -1px 0 #8B2323,
+    -1px 1px 0 #8B2323, 1px 1px 0 #8B2323,
+    0 2px 4px rgba(0,0,0,0.3);
+  font-family: "Free HK Kai",serif;
+  z-index: 2;
+}
+/* 四個節點不同色系邊框（對應背景，但保留白色毛玻璃底） */
+.summary-node.n1 { border-color: #2e5c8a; }
+.summary-node.n1::before { background:#2e5c8a; border-color:#1d3e60; }
+.summary-node.n2 { border-color: #b8860b; }
+.summary-node.n2::before { background:#b8860b; border-color:#8a6408; }
+.summary-node.n3 { border-color: #8B2323; }
+.summary-node.n3::before { background:#8B2323; border-color:#5c1515; }
+.summary-node.n4 { border-color: #3d6b3d; }
+.summary-node.n4::before { background:#3d6b3d; border-color:#264d26; }
+
+/* 雲紋裝飾（半透明白底托住，在圖上清晰可見） */
+.scroll-cloud {
+  text-align: center;
+  color: #5a1010;
+  font-size: 1rem;
+  margin-top: 8px;
+  letter-spacing: 8px;
+  opacity: 0.85;
+  background: rgba(255,255,255,0.5);
+  display: inline-block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 18px;
+  border-radius: 12px;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.9);
+  z-index: 2;
+}
+
+@media (max-width: 640px) {
+  .caption-strip { grid-template-columns: repeat(2,1fr); }
+  .summary-flow { flex-direction: column; align-items: center; }
+  .summary-arrow { transform: rotate(90deg); min-height: 24px; min-width: auto; }
+  .summary-node { transform: none !important; max-width: 320px; width: 100%; }
+  .summary-scroll-wrap { padding: 22px 18px 16px; }
+}
+
+/* === 作品特色 · 字卡拼拼樂（替換填空） === */
+.word-slot {
+  display: inline-block;
+  min-width: 88px;
+  height: 42px;
+  line-height: 38px;
+  border: 2px dashed #c83c3c;
+  border-radius: 8px;
+  background: rgba(250,235,205,0.6);
+  text-align: center;
+  margin: 0 6px;
+  padding: 0 10px;
+  font-family: "Free HK Kai","KaiTi",serif;
+  font-size: 1.25rem;
+  color: #8B2323;
+  font-weight: bold;
+  vertical-align: middle;
+  letter-spacing: 4px;
+}
+.word-slot.filled { border-style: solid; background: #fff9e6; }
+.word-slot.correct { border-color: #3d8b3d; background: #eaf5ea; color: #2d6b2d; }
+.word-slot.wrong   { border-color: #c83c3c; background: #fbeaea; color: #8B2323; animation: shake 0.4s; }
+@keyframes shake {
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-5px);} 75%{transform:translateX(5px);}
+}
+.word-chip-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 14px 0 8px; }
+.word-chip {
+  min-width: 42px;
+  height: 42px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: linear-gradient(180deg,#fff9e6,#f5e8c8);
+  border: 2px solid #b8860b;
+  color: #8B2323;
+  font-family: "Free HK Kai","KaiTi",serif;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 1px 2px 0 rgba(139,90,43,0.25);
+  transition: transform 0.15s, box-shadow 0.15s;
+  line-height: 38px;
+}
+.word-chip:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 1px 4px 0 rgba(139,90,43,0.3); }
+.word-chip:active:not(:disabled) { transform: translateY(0); }
+.word-chip:disabled { opacity: 0.3; cursor: not-allowed; background: #e8e0cc; border-color: #aaa; color: #888; }
+.word-chip.picked { opacity: 0.3; cursor: not-allowed; }
+
+
+.sound-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), #b8923f);
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(212,168,75,0.3);
+  transition: all 0.3s ease;
+}
+.sound-btn:hover { transform: scale(1.1); }
+
+.vr-scene {
+  background: linear-gradient(180deg, #87CEEB 0%, #98D8C8 50%, #7BC47F 100%);
+  border-radius: 16px;
+  position: relative;
+  min-height: 280px;
+  overflow: hidden;
+}
+.vr-character {
+  position: absolute;
+  font-size: 60px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.vr-character:hover { transform: scale(1.2); }
+
+.meter-box {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  margin: 3px;
+  font-size: 1.25rem;
+  font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif;
+}
+.ping { background: #e8f5e9; color: #2e7d32; border: 2px solid #81c784; }
+.ze { background: #ffebee; color: #c62828; border: 2px solid #ef9a9a; }
+
+/* 卡片標題與區塊標題 */
+h1, h2, h3, h4 { font-family: 'Free HK Kai', 'Ma Shan Zheng', 'BiauKai', 'KaiTi', serif; }
+
+/* 詩文卡片（首頁）文字放大 */
+.poem-card-title { font-size: 1.35rem; font-weight: bold; }
+.poem-card-sub { font-size: 1rem; }
+
+/* 標籤徽章 */
+.tag-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 1rem;
+  background: rgba(212,168,75,0.15);
+  color: #8a6d2b;
+  margin: 2px;
+}
+
+/* 作者/背景/解釋/修辭等正文區塊 */
+.info-block { font-size: 1.2rem; line-height: 2; }
+.info-block h4 { font-size: 1.35rem; }
+
+/* 遊戲說明文字 */
+.game-instruction { font-size: 1.2rem; line-height: 1.9; }
+
+/* 下拉/輸入/選擇字體 */
+input, select, textarea, button {
+  font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif;
+}
+
+/* 補充：統一動態內容字體與大小 */
+.poem-card p, .poem-card h3 { font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif !important; }
+button, .game-btn, .tab-btn, .btn-ancient { font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif !important; }
+.paper-card, .paper-card p, .paper-card div, .paper-card span, .paper-card li, .paper-card button,
+.paper-card h3, .paper-card h4 { font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif; }
+.font-brush { font-family: 'Free HK Kai', 'Ma Shan Zheng', 'BiauKai', 'KaiTi', serif !important; }
+.font-cute { font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif !important; }
+nav, nav * { font-family: 'Free HK Kai', 'BiauKai', 'KaiTi', serif !important; }
+</style>
+</head>
+<body>
+
+<!-- 頂部導航 -->
+<nav class="sticky top-0 z-50 bg-gradient-to-r from-[#8B2323] via-[#a03030] to-[#8B2323] text-white shadow-lg">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+    <div class="flex items-center gap-3 cursor-pointer" onclick="showHome()">
+      <span class="text-4xl">📜</span>
+      <h1 class="font-brush text-4xl md:text-5xl">古詩文情景互動樂園</h1>
+    </div>
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1 bg-white/20 rounded-full px-3 py-1">
+        <span>⭐</span>
+        <span id="totalStars" class="font-bold">0</span>
+        <span class="text-base">/63</span>
+      </div>
+      <button class="sound-btn" onclick="toggleSound()" title="音效開關">
+        <span id="soundIcon">🔊</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- 主頁 - 詩文選擇 -->
+<div id="homePage" class="max-w-6xl mx-auto px-4 py-6">
+  <div class="text-center mb-8 fade-in">
+    <div class="inline-block relative">
+      <h2 class="font-brush text-5xl md:text-6xl text-[#8B2323] mb-2">詩文樂園</h2>
+      <div class="seal absolute -right-8 -top-2">詩</div>
+    </div>
+    <p class="text-[#6b4f3a] text-2xl mt-4 font-cute">點擊卡片，開始古詩文探索之旅！</p>
+  </div>
+
+  <div class="poem-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+  </div>
+
+  <!-- 格律知識區入口 -->
+  <div class="paper-card p-5 text-center cursor-pointer hover:shadow-xl transition-all" onclick="showMeter()">
+    <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+      <img src="https://gips3.baidu.com/it/u=3454173250,1312669588&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152" class="w-20 h-20 object-cover rounded-xl shadow">
+      <div class="text-center md:text-left">
+        <h3 class="font-brush text-3xl text-[#8B2323]">🎋 詩歌格律小學堂</h3>
+        <p class="text-[#6b4f3a] text-lg mt-1">認識古體詩、近體詩、平仄押韻</p>
+      </div>
+      <div class="md:ml-auto">
+        <span class="btn-ancient btn-gold">進入學習 →</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 詩文詳情頁 -->
+<div id="poemPage" class="hidden max-w-6xl mx-auto px-4 py-4">
+  <button onclick="showHome()" class="mb-4 flex items-center gap-2 text-[#8B2323] font-bold hover:gap-3 transition-all">
+    <span class="text-xl">←</span> 返回詩文列表
+  </button>
+  <div id="poemContent"></div>
+</div>
+
+<!-- 格律知識頁 -->
+<div id="meterPage" class="hidden max-w-6xl mx-auto px-4 py-4">
+  <button onclick="showHome()" class="mb-4 flex items-center gap-2 text-[#8B2323] font-bold hover:gap-3 transition-all">
+    <span class="text-xl">←</span> 返回首頁
+  </button>
+  <div id="meterContent"></div>
+</div>
+
+<script>
+// 音效用 Web Audio API 生成簡單音效，不依賴外部音頻文件
+let soundEnabled = true;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+  if (!soundEnabled) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  
+  switch(type) {
+    case 'click':
+      osc.frequency.value = 600;
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+      break;
+    case 'correct':
+      osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+      osc.frequency.setValueAtTime(784, audioCtx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+      break;
+    case 'wrong':
+      osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(200, audioCtx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+      break;
+    case 'win':
+      [523, 587, 659, 784, 880, 1047].forEach((f, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.value = f;
+        g.gain.setValueAtTime(0.1, audioCtx.currentTime + i*0.08);
+        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i*0.08 + 0.2);
+        o.start(audioCtx.currentTime + i*0.08);
+        o.stop(audioCtx.currentTime + i*0.08 + 0.2);
+      });
+      break;
+  }
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+  playSound('click');
+}
+
+// 詩文數據
+const poems = [
+  {
+    id: 0,
+    title: '二子學弈',
+    author: '孟子',
+    dynasty: '先秦',
+    type: '文言文寓言',
+    img: 'https://gips1.baidu.com/it/u=377635596,56061321&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips1.baidu.com/it/u=3049791732,2882964665&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips0.baidu.com/it/u=1910173739,230639457&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    authorIntro: '孟子（約前372—前289），戰國鄒人。儒家大師，人稱「亞聖」，善用寓言說理。',
+    background: '選自《孟子·告子上》，告訴我們學習要專心。',
+    content: [
+      '弈秋，通國之善弈者也。',
+      '使弈秋誨二人弈，其一人專心致志，惟弈秋之為聽。',
+      '一人雖聽之，一心以為有鴻鵠將至，思援弓繳而射之，',
+      '雖與之俱學，弗若之矣。',
+      '為是其智弗若與？曰：「非然也。」'
+    ],
+    explanation: '弈秋教兩人下棋：一人專心，一人老想射天鵝。後者學不好，不是笨，是不專心！',
+    rhetoric: [
+      { name: '對比', desc: '兩個學生一專心一分心，道理一看就懂。' },
+      { name: '設問', desc: '先問「是不夠聰明嗎？」再自答，引人思考。' },
+      { name: '寓言', desc: '用小故事講大道理，好懂又好記。' }
+    ],
+    meter: '先秦諸子散文，長短句結合，節奏明快。',
+    keywords: ['專心致志', '三心二意', '學習', '弈秋', '鴻鵠']
+  },
+  {
+    id: 1,
+    title: '鄭人買履',
+    author: '韓非子',
+    dynasty: '先秦',
+    type: '文言文寓言',
+    img: 'https://gips2.baidu.com/it/u=2686626095,4121209142&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips1.baidu.com/it/u=1046848521,2755988870&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips2.baidu.com/it/u=1148670718,2296570477&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    authorIntro: '韓非子（約前280—前233），戰國法家集大成者，愛用寓言諷刺說理。',
+    background: '選自《韓非子》，諷刺死守教條、不懂變通的人。',
+    content: [
+      '鄭人有且置履者，先自度其足而置之其坐。',
+      '至之市，而忘操之，已得履，乃曰：「吾忘持度。」',
+      '反歸取之，及反，市罷，遂不得履。',
+      '人曰：「何不試之以足？」',
+      '曰：「寧信度，無自信也。」'
+    ],
+    explanation: '鄭人買鞋，忘了帶尺碼就寧願回家拿，不肯用腳試穿。結果市集散了，買不到鞋。',
+    rhetoric: [
+      { name: '諷刺', desc: '用誇張情節，笑罵死板教條的人。' },
+      { name: '對白', desc: '「寧信度，無自信也」一句話刻出固執性格。' },
+      { name: '以小見大', desc: '買鞋小事，告訴我們要靈活變通。' }
+    ],
+    meter: '先秦寓言散文，語言精煉，對話生動。',
+    keywords: ['靈活變通', '墨守成規', '尺碼', '買鞋']
+  },
+  {
+    id: 2,
+    title: '山中送別',
+    author: '王維',
+    dynasty: '唐',
+    type: '五言絕句（近體詩）',
+    img: 'https://gips3.baidu.com/it/u=3292955336,1493799614&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips1.baidu.com/it/u=2839483186,3076359848&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips1.baidu.com/it/u=1677630921,608954999&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    authorIntro: '王維（701—761），字摩詰，盛唐山水詩人。詩中有畫、畫中有詩，人稱「詩佛」。',
+    background: '山中送別朋友後，寫下對重逢的期盼。',
+    content: [
+      '山中相送罷，',
+      '日暮掩柴扉。',
+      '春草明年綠，',
+      '王孫歸不歸？'
+    ],
+    explanation: '送走朋友，黃昏關上柴門。明年春草再綠時，朋友你會回來嗎？',
+    rhetoric: [
+      { name: '留白', desc: '不寫送別傷心，只寫關門與期盼，更顯情深。' },
+      { name: '問句收尾', desc: '「歸不歸」問得溫柔，牽掛悠長。' },
+      { name: '借景抒情', desc: '春草年年綠，反襯相逢未定的惆悵。' }
+    ],
+    meter: '五言絕句，押 ei/ui 韻（扉、歸）。',
+    keywords: ['送別', '柴扉', '春草', '思友']
+  },
+  {
+    id: 3,
+    title: '出塞',
+    author: '王昌齡',
+    dynasty: '唐',
+    type: '七言絕句（近體詩）',
+    img: 'https://gips0.baidu.com/it/u=3710766794,348936810&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips2.baidu.com/it/u=1862183161,1458296029&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips1.baidu.com/it/u=785772715,24510575&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    authorIntro: '王昌齡（698—757），盛唐邊塞詩人，人稱「七絕聖手」，詩風雄壯。',
+    background: '感嘆邊疆戰事不斷，盼望良將保國。',
+    content: [
+      '秦時明月漢時關，',
+      '萬里長征人未還。',
+      '但使龍城飛將在，',
+      '不教胡馬度陰山。'
+    ],
+    explanation: '秦漢以來明月照著關塞，戰士們還沒回家。只要飛將軍李廣在，絕不讓敵人越過陰山！',
+    rhetoric: [
+      { name: '互文', desc: '「秦時明月漢時關」指秦漢時的明月和關塞，互相補足。' },
+      { name: '用典', desc: '借李廣（飛將軍）典故，盼望良將。' },
+      { name: '氣勢開闊', desc: '從千年秦漢寫到萬里邊疆，境界宏大。' }
+    ],
+    meter: '七言絕句，押 an 韻（關、還、山）。',
+    keywords: ['邊塞', '飛將軍', '明月', '愛國']
+  },
+  {
+    id: 4,
+    title: '客至',
+    author: '杜甫',
+    dynasty: '唐',
+    type: '七言律詩（近體詩）',
+    img: 'https://gips0.baidu.com/it/u=849176253,3434635570&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips3.baidu.com/it/u=1584844405,1118477382&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips1.baidu.com/it/u=3302410274,1960373190&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    authorIntro: '杜甫（712—770），字子美，唐代大詩人，人稱「詩聖」，詩作記錄歷史，號稱「詩史」。',
+    background: '居成都草堂時，寫朋友來訪的喜悅，生活氣息濃厚。',
+    content: [
+      '舍南舍北皆春水，但見羣鷗日日來。',
+      '花徑不曾緣客掃，蓬門今始為君開。',
+      '盤飧市遠無兼味，樽酒家貧只舊醅。',
+      '肯與鄰翁相對飲，隔籬呼取盡餘杯。'
+    ],
+    explanation: '草堂春水環繞，平日只有鷗鳥。今天特地為你開門、打掃！菜少酒陳，若不嫌棄，叫鄰翁一起喝個痛快！',
+    rhetoric: [
+      { name: '細節傳神', desc: '掃花徑、開蓬門、呼鄰翁，寫出待客熱情。' },
+      { name: '對仗工整', desc: '「花徑」對「蓬門」、「盤飧」對「樽酒」。' },
+      { name: '口吻親切', desc: '像和朋友聊天，自然溫暖。' }
+    ],
+    meter: '七言律詩，八句，中間兩聯對仗，押 ai/ei 韻。',
+    keywords: ['待客', '草堂', '春水', '熱情']
+  },
+  {
+    id: 5,
+    title: '山行',
+    author: '杜牧',
+    dynasty: '唐',
+    type: '七言絕句（近體詩）',
+    img: 'https://gips2.baidu.com/it/u=542782085,1209975824&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips3.baidu.com/it/u=1658095100,2863697110&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips2.baidu.com/it/u=1134496930,96553705&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    authorIntro: '杜牧（803—852），字牧之，晚唐詩人。七絕清麗俊爽，與李商隱並稱「小李杜」。',
+    background: '深秋遊山，被美麗楓林深深吸引。',
+    content: [
+      '遠上寒山石徑斜，',
+      '白雲生處有人家。',
+      '停車坐愛楓林晚，',
+      '霜葉紅於二月花。'
+    ],
+    explanation: '石路斜斜伸向寒山，白雲深處有住家。停下車，只為看楓林——秋霜打過的楓葉，比二月春花還要紅！',
+    rhetoric: [
+      { name: '對比', desc: '「霜葉紅於二月花」，秋楓勝春花，讚美秋天生命力。' },
+      { name: '由遠及近', desc: '寒山→白雲→人家→楓林，層次分明。' },
+      { name: '煉字', desc: '「斜」「生」「紅」，字字傳神。' }
+    ],
+    meter: '七言絕句，押 a 韻（斜、家、花，古音斜讀 xiá）。',
+    keywords: ['楓葉', '寒山', '白雲', '深秋']
+  },
+  {
+    id: 6,
+    title: '曉出淨慈寺送林子方',
+    author: '楊萬里',
+    dynasty: '宋',
+    type: '七言絕句（近體詩）',
+    img: 'https://gips0.baidu.com/it/u=4040958038,1679389668&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips1.baidu.com/it/u=3006772003,901104492&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips2.baidu.com/it/u=997305211,3220299412&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    authorIntro: '楊萬里（1127—1206），號誠齋，南宋詩人。詩風淺白活潑，人稱「誠齋體」。',
+    background: '送別朋友時，為六月西湖荷花盛開之美而驚歎。',
+    content: [
+      '畢竟西湖六月中，',
+      '風光不與四時同。',
+      '接天蓮葉無窮碧，',
+      '映日荷花別樣紅。'
+    ],
+    explanation: '六月的西湖就是不一樣！蓮葉碧綠連天，荷花在陽光下紅得格外嬌豔！',
+    rhetoric: [
+      { name: '誇張', desc: '「接天」「無窮」寫出蓮葉無邊無際。' },
+      { name: '色彩對比', desc: '碧葉與紅花對比，畫面感極強。' },
+      { name: '直抒胸臆', desc: '「畢竟」二字，盡是發自內心的讚歎。' }
+    ],
+    meter: '七言絕句，押 ong 韻（中、同、紅），響亮開闊。',
+    keywords: ['西湖', '荷花', '六月', '蓮葉']
+  },
+  {
+    id: 7,
+    title: '竹里館',
+    author: '王維',
+    dynasty: '唐',
+    type: '五言絕句（近體詩）',
+    img: 'https://gips2.baidu.com/it/u=3676703329,3738869084&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips1.baidu.com/it/u=3604792376,4134202133&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips1.baidu.com/it/u=1677630921,608954999&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    authorIntro: '王維（701—761），字摩詰，盛唐山水田園詩人，精通詩書畫樂，人稱「詩佛」。',
+    background: '獨坐竹林彈琴，表現悠然自得、與自然合一的境界。',
+    content: [
+      '獨坐幽篁裏，',
+      '彈琴復長嘯。',
+      '深林人不知，',
+      '明月來相照。'
+    ],
+    explanation: '一個人坐在幽深竹林裡，彈琴、長嘯。沒人知道我在這兒，只有明月靜靜照著我。',
+    rhetoric: [
+      { name: '以動襯靜', desc: '琴聲、嘯聲反襯竹林幽靜。' },
+      { name: '擬人', desc: '「明月來相照」，把月亮當成知心朋友。' },
+      { name: '詩中有畫', desc: '幽篁、深林、明月、詩人，構成絕美月夜圖。' }
+    ],
+    meter: '五言絕句，押 ao 韻（嘯、照，古音嘯讀 shào）。',
+    keywords: ['竹林', '彈琴', '明月', '獨處']
+  },
+  {
+    id: 8,
+    title: '春江晚景',
+    author: '蘇軾',
+    dynasty: '宋',
+    type: '七言絕句（近體詩）',
+    img: 'https://gips3.baidu.com/it/u=3425028064,1614069766&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips0.baidu.com/it/u=2655594658,1516712730&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips3.baidu.com/it/u=3322180317,916676542&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    authorIntro: '蘇軾（1037—1101），號東坡居士，北宋大文豪，詩詞書畫樣樣精通，性格豁達。',
+    background: '為惠崇和尚的畫《春江晚景》題詩，寫出畫裡畫外的春天生機。',
+    content: [
+      '竹外桃花三兩枝，',
+      '春江水暖鴨先知。',
+      '蔞蒿滿地蘆芽短，',
+      '正是河豚欲上時。'
+    ],
+    explanation: '竹外桃花初開，鴨子最先感到水暖；蔞蒿蘆芽長滿岸，正是河豚逆流而上的早春！',
+    rhetoric: [
+      { name: '題畫妙筆', desc: '不僅寫畫中桃花鴨子，還想像出畫沒有的「水暖」與「河豚」。' },
+      { name: '以小見大', desc: '「春江水暖鴨先知」告訴我們：身歷其境才有真感受。' },
+      { name: '生機勃勃', desc: '桃花、鴨子、蘆芽，處處透出春天活力。' }
+    ],
+    meter: '七言絕句，押 i 韻（枝、知、時），清新活潑。',
+    keywords: ['春天', '桃花', '鴨子', '河豚', '題畫詩']
+  },
+  {
+    id: 9,
+    title: '八陣圖',
+    author: '杜甫',
+    dynasty: '唐',
+    type: '五言絕句（近體詩）',
+    img: 'https://gips0.baidu.com/it/u=2981724313,2141674885&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    comic: 'https://gips0.baidu.com/it/u=730353894,2430030551&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',
+    authorImg: 'https://gips2.baidu.com/it/u=2527100850,1792724111&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024',
+    authorIntro: '杜甫（712—770），字子美，唐代大詩人，人稱「詩聖」。',
+    background: '憑弔諸葛亮八陣圖遺跡，歌頌其功績，感歎其遺恨。',
+    content: [
+      '功蓋三分國，',
+      '名成八陣圖。',
+      '江流石不轉，',
+      '遺恨失吞吳。'
+    ],
+    explanation: '諸葛亮功蓋三國，八陣圖讓他名垂千古。江水沖不走陣石，遺憾的是劉備錯失吞吳大計，未能統一。',
+    rhetoric: [
+      { name: '對仗精工', desc: '「功蓋」對「名成」、「三分國」對「八陣圖」，氣勢十足。' },
+      { name: '借物詠懷', desc: '「石不轉」既寫石頭堅立，也象徵功績不朽。' },
+      { name: '凝練', desc: '二十字寫盡功績與遺恨，含義深遠。' }
+    ],
+    meter: '五言絕句，押 u 韻（圖、吳），沉鬱頓挫。',
+    keywords: ['諸葛亮', '八陣圖', '三分國', '懷古']
+  }
+];
+
+let earnedStars = {};
+
+// === 四格漫畫資料（每篇 4 格，左右橫版排列，每格配一句文句） ===
+const comicPanelsData = {
+  0: [
+    { img: 'https://gips0.baidu.com/it/u=2134787081,2912153135&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '弈秋是全國最會下棋的人，他教兩個學生下棋。' },
+    { img: 'https://gips1.baidu.com/it/u=3957531218,1641102374&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '一個學生專心致志，只聽弈秋的教導。' },
+    { img: 'https://gips2.baidu.com/it/u=1699203103,2185071536&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '另一個學生卻想着天鵝，想拿弓箭去射。' },
+    { img: 'https://gips3.baidu.com/it/u=3771156941,4128667769&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '兩人一起學習，分心的那個始終學不好——不是笨，是不專心。' }
+  ],
+  1: [
+    { img: 'https://gips0.baidu.com/it/u=1086217490,1240866509&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '鄭國人先量好自己的腳，把尺碼放在座位上。' },
+    { img: 'https://gips2.baidu.com/it/u=840417985,432995044&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '到了市集，才發現忘了帶尺碼。' },
+    { img: 'https://gips3.baidu.com/it/u=229133962,381050378&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '他跑回家拿尺碼，回到市集時已經散市。' },
+    { img: 'https://gips3.baidu.com/it/u=3551161198,561252383&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '別人問他為何不用腳試，他說寧可相信尺碼。' }
+  ],
+  2: [
+    { img: 'https://gips3.baidu.com/it/u=1669963120,1034881331&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '在山中送走了朋友。' },
+    { img: 'https://gips1.baidu.com/it/u=364373714,71850393&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '日暮時分，輕輕掩上柴門。' },
+    { img: 'https://gips1.baidu.com/it/u=2128132885,4160511527&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '想到明年春草又會變綠。' },
+    { img: 'https://gips0.baidu.com/it/u=3685598912,365523155&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '朋友啊，你到底會不會回來？' }
+  ],
+  3: [
+    { img: 'https://gips3.baidu.com/it/u=2713731007,3736793806&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '秦漢時的明月，照着邊關。' },
+    { img: 'https://gips1.baidu.com/it/u=2874741664,94661516&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '萬里出征的戰士，至今未歸。' },
+    { img: 'https://gips2.baidu.com/it/u=2327206075,4017704268&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '只要龍城飛將軍李廣還在。' },
+    { img: 'https://gips3.baidu.com/it/u=1669209185,4005783841&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '就不讓胡人的兵馬越過陰山。' }
+  ],
+  4: [
+    { img: 'https://gips2.baidu.com/it/u=2818788584,1126383186&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '草堂前後都是春水，只見鷗鳥日日飛來。' },
+    { img: 'https://gips0.baidu.com/it/u=2506722853,2892824888&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '花徑不曾因客打掃，蓬門今日為你打開。' },
+    { img: 'https://gips2.baidu.com/it/u=1110434489,1184347499&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '市遠菜少，家貧只有舊酒。' },
+    { img: 'https://gips2.baidu.com/it/u=421085851,8978228&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '隔籬叫來鄰翁，一起喝掉剩餘的酒。' }
+  ],
+  5: [
+    { img: 'https://gips3.baidu.com/it/u=1373123716,3974478827&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '石徑斜斜伸向寒山。' },
+    { img: 'https://gips0.baidu.com/it/u=2126124900,3067707524&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '白雲深處，隱約有人家。' },
+    { img: 'https://gips3.baidu.com/it/u=1314477397,3068386480&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '停下車，只因喜愛這片楓林晚景。' },
+    { img: 'https://gips3.baidu.com/it/u=1805681636,2774773830&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '經霜的楓葉，比二月春花還要紅。' }
+  ],
+  6: [
+    { img: 'https://gips1.baidu.com/it/u=4092099283,2850848589&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '六月的西湖，風光果然與四季不同。' },
+    { img: 'https://gips2.baidu.com/it/u=371016316,2540150757&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '蓮葉接天，無邊無際一片碧綠。' },
+    { img: 'https://gips3.baidu.com/it/u=2770418450,3832761166&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '荷花映日，紅得格外嬌豔。' },
+    { img: 'https://gips0.baidu.com/it/u=257010110,1170424225&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '如此美景，正好送別友人林子方。' }
+  ],
+  7: [
+    { img: 'https://gips2.baidu.com/it/u=2546933326,2364968696&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '獨自坐在幽深的竹林裏。' },
+    { img: 'https://gips0.baidu.com/it/u=4219755772,2699577809&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '一邊彈琴，一邊長聲吟嘯。' },
+    { img: 'https://gips0.baidu.com/it/u=2554744143,1119933386&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '深林幽靜，沒有人知道我在這裏。' },
+    { img: 'https://gips3.baidu.com/it/u=4207874009,2938669267&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '只有明月靜靜照着我。' }
+  ],
+  8: [
+    { img: 'https://gips1.baidu.com/it/u=3896961680,2567544202&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '竹林外有兩三枝桃花初開。' },
+    { img: 'https://gips2.baidu.com/it/u=2477974392,14814902&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '江水回暖，鴨子最先察覺。' },
+    { img: 'https://gips2.baidu.com/it/u=1243138658,1051346186&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '蔞蒿長滿地，蘆芽剛剛冒出。' },
+    { img: 'https://gips0.baidu.com/it/u=1876967802,55656408&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '正是河豚逆流而上的時節。' }
+  ],
+  9: [
+    { img: 'https://gips1.baidu.com/it/u=3722358922,2917723796&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '諸葛亮功業蓋過三國。' },
+    { img: 'https://gips1.baidu.com/it/u=110709106,3014069386&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '八陣圖令他名垂千古。' },
+    { img: 'https://gips2.baidu.com/it/u=195793292,828623064&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024', text: '江流沖刷，陣石依然不轉。' },
+    { img: 'https://gips2.baidu.com/it/u=979365595,1166121027&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152', text: '只遺憾未能吞吳，統一大業未成。' }
+  ]
+};
+
+// === 內容大意（精簡 1-2 句概況） ===
+const summaryData = {
+  0: '弈秋教兩個學生下棋：一人專心，一人分心。分心者學不好，不是因為笨，而是不夠專心致志。',
+  1: '鄭人買鞋忘了帶尺碼，寧可回家拿也不肯用腳試穿，結果市集散去，白跑一趟。',
+  2: '山中送別友人，日暮掩上柴門；想到明年春草再綠，不知友人能否歸來。',
+  3: '由秦漢明月寫到萬里邊關，感嘆征人未歸；盼望良將守邊，不讓胡馬越過陰山。',
+  4: '杜甫在草堂迎接客人，掃花徑、開蓬門，備上簡單酒菜，還邀鄰翁同飲，熱情又樸素。',
+  5: '深秋登山，石徑斜斜、白雲人家；只因愛那霜後楓林，紅得勝過二月春花。',
+  6: '六月的西湖風光獨好，蓮葉接天、荷花映日，一片無邊的碧綠與嬌紅。',
+  7: '獨坐幽篁，彈琴長嘯；深林無人知，唯有明月相伴，悠然自得。',
+  8: '竹外桃花、水暖鴨知、蔞蒿蘆芽，寫出早春的生機，連河豚也將逆流而上。',
+  9: '憑弔八陣圖，讚諸葛亮功蓋三國、名垂千古；江水不改其石，唯憾未能吞吳。'
+};
+
+// === 作品特色 · 文字互動題 ===
+const featureQuizData = {
+  0: { q: '文中把「專心致志」的學生與「三心二意」的學生放在一起寫，這是甚麼手法？', options: [ { t: '對比', correct: true }, { t: '誇張' }, { t: '排比' }, { t: '擬人' } ], tip: '兩個學生一正一反，一比之下道理自明——這就是「對比」。' },
+  1: { q: '「寧信度，無自信也」這一句，刻畫出鄭人怎樣的性格？', options: [ { t: '死守教條、不懂變通', correct: true }, { t: '聰明機智' }, { t: '勤勞節儉' }, { t: '勇敢果斷' } ], tip: '一句對白就把鄭人固執死板的性格寫活了，這就是「以小見大」的妙處。' },
+  2: { q: '詩中借「春草明年綠」的樂景，反襯友人未歸的惆悵，這是甚麼手法？', options: [ { t: '借景抒情', correct: true }, { t: '誇張' }, { t: '排比' }, { t: '設問' } ], tip: '景是樂景，情是悵情，以景襯情更顯牽掛——這就是「借景抒情」。' },
+  3: { q: '「秦時明月漢時關」運用了甚麼修辭手法？', options: [ { t: '互文', correct: true }, { t: '比喻' }, { t: '誇張' }, { t: '擬人' } ], tip: '意思是「秦漢時的明月、秦漢時的關塞」，前後互相補足，這叫「互文」。' },
+  4: { q: '「花徑不曾緣客掃，蓬門今始為君開」的對偶，主要表現了詩人甚麼心情？', options: [ { t: '迎接客人的熱情與欣喜', correct: true }, { t: '對客人的冷淡' }, { t: '獨居的孤獨' }, { t: '旅途的疲憊' } ], tip: '「不曾」對「今始」，打破慣例只為你一人，待客的熱情躍然紙上。' },
+  5: { q: '「霜葉紅於二月花」主要用了甚麼手法來讚美秋景？', options: [ { t: '對比', correct: true }, { t: '誇張' }, { t: '擬人' }, { t: '設問' } ], tip: '把霜葉與二月春花對比，秋景反而更勝春光——這就是「對比」。' },
+  6: { q: '「接天蓮葉無窮碧」主要用了甚麼手法？', options: [ { t: '誇張', correct: true }, { t: '擬人' }, { t: '設問' }, { t: '互文' } ], tip: '「接天」「無窮」把蓮葉寫得無邊無際——這就是「誇張」。' },
+  7: { q: '「明月來相照」把月亮寫得像知心朋友，這是甚麼手法？', options: [ { t: '擬人', correct: true }, { t: '誇張' }, { t: '對比' }, { t: '排比' } ], tip: '把明月當成會來相伴的朋友，情味十足——這就是「擬人」。' },
+  8: { q: '「春江水暖鴨先知」給我們的啟示是甚麼？', options: [ { t: '親身經歷才能有真感受', correct: true }, { t: '鴨子最聰明' }, { t: '春天很溫暖' }, { t: '江水會說話' } ], tip: '身歷其境，才有最真切的感受——這就是「以小見大」的智慧。' },
+  9: { q: '「江流石不轉」中的「石不轉」，除了寫石頭，還象徵甚麼？', options: [ { t: '諸葛亮功績不朽', correct: true }, { t: '石頭很重' }, { t: '江水很急' }, { t: '陣法很複雜' } ], tip: '借物詠懷，石頭堅立不移，正象徵諸葛亮的功績長存。' }
+};
+
+// === 四格漫畫文字描述（每格對應詩句/原文） ===
+const comicCaptionData = {
+  0: [
+    { line: '「弈秋，通國之善弈者也。」', desc: '弈秋，全國下棋最厲害的人' },
+    { line: '「其一人專心致志，惟弈秋之為聽。」', desc: '一個學生專心致志聽講' },
+    { line: '「一心以為有鴻鵠將至，思援弓繳而射之。」', desc: '另一個分心想射天鵝' },
+    { line: '「雖與之俱學，弗若之矣。」', desc: '兩人同學，後者棋藝遠不如' }
+  ],
+  1: [
+    { line: '「先自度其足而置之其坐。」', desc: '先量好腳的尺碼放座位上' },
+    { line: '「至之市，而忘操之。」', desc: '到了市集才發現忘記帶尺碼' },
+    { line: '「反歸取之，及反，市罷。」', desc: '回家取尺碼，回來市集已散' },
+    { line: '「寧信度，無自信也。」', desc: '他竟說：寧可相信尺碼' }
+  ],
+  2: [
+    { line: '「山中相送罷」', desc: '在山中送別完朋友' },
+    { line: '「日暮掩柴扉」', desc: '日暮時分關上柴門' },
+    { line: '「春草明年綠」', desc: '明年春草還會再綠' },
+    { line: '「王孫歸不歸？」', desc: '朋友你還會回來嗎' }
+  ],
+  3: [
+    { line: '「秦時明月漢時關」', desc: '秦漢明月，秦漢關塞（互文）' },
+    { line: '「萬里長征人未還」', desc: '萬里征戰的將士仍未歸來' },
+    { line: '「但使龍城飛將在」', desc: '只要飛將軍李廣鎮守' },
+    { line: '「不教胡馬度陰山」', desc: '絕不讓敵人越過陰山' }
+  ],
+  4: [
+    { line: '「舍南舍北皆春水，但見群鷗日日來。」', desc: '草堂四周春水環繞，鷗鳥日日來' },
+    { line: '「花徑不曾緣客掃，蓬門今始為君開。」', desc: '今天特意為你掃徑開門' },
+    { line: '「盤飧市遠無兼味，樽酒家貧只舊醅。」', desc: '因離市集遠只有陳酒小菜' },
+    { line: '「肯與鄰翁相對飲，隔籬呼取盡餘杯。」', desc: '隔籬叫來鄰翁共飲剩酒' }
+  ],
+  5: [
+    { line: '「遠上寒山石徑斜」', desc: '石徑斜斜伸向寒山' },
+    { line: '「白雲生處有人家」', desc: '白雲深處有幾戶人家' },
+    { line: '「停車坐愛楓林晚」', desc: '停車只因愛楓林晚景' },
+    { line: '「霜葉紅於二月花」', desc: '霜葉比二月春花更紅' }
+  ],
+  6: [
+    { line: '「畢竟西湖六月中」', desc: '六月裡的西湖畢竟不同' },
+    { line: '「風光不與四時同」', desc: '風光與其他季節不一樣' },
+    { line: '「接天蓮葉無窮碧」', desc: '蓮葉接天，碧綠無邊' },
+    { line: '「映日荷花別樣紅」', desc: '荷花映日，紅得嬌豔' }
+  ],
+  7: [
+    { line: '「獨坐幽篁裡」', desc: '獨自坐在幽深竹林中' },
+    { line: '「彈琴復長嘯」', desc: '一邊彈琴一邊長嘯' },
+    { line: '「深林人不知」', desc: '竹林深處無人知曉' },
+    { line: '「明月來相照」', desc: '只有明月前來相伴' }
+  ],
+  8: [
+    { line: '「竹外桃花三兩枝」', desc: '竹林外桃花初開幾枝' },
+    { line: '「春江水暖鴨先知」', desc: '鴨子最先感到江水回暖' },
+    { line: '「蔞蒿滿地蘆芽短」', desc: '蔞蒿滿地，蘆芽短嫩' },
+    { line: '「正是河豚欲上時」', desc: '河豚正要逆流而上' }
+  ],
+  9: [
+    { line: '「功蓋三分國」', desc: '功業蓋過三國群雄' },
+    { line: '「名成八陣圖」', desc: '八陣圖令他名垂千古' },
+    { line: '「江流石不轉」', desc: '江水沖刷陣石巋然不動' },
+    { line: '「遺恨失吞吳」', desc: '遺憾劉備錯失吞吳大計' }
+  ]
+};
+
+// === 作者簡介 · 互動測驗 ===
+const authorQuizData = {
+  0: { q: '孟子是哪一家學派的大師？', options: [{t:'儒家', correct:true},{t:'道家'},{t:'法家'},{t:'墨家'}], tip:'孟子人稱「亞聖」，僅次於孔子，是戰國時期儒家代表人物。' },
+  1: { q: '韓非子是哪一家的集大成者？', options: [{t:'法家', correct:true},{t:'儒家'},{t:'兵家'},{t:'名家'}], tip:'韓非子是戰國法家集大成者，主張以法治國。' },
+  2: { q: '王維的詩畫特色，人稱甚麼？', options: [{t:'詩中有畫，畫中有詩', correct:true},{t:'豪放飄逸'},{t:'沉鬱頓挫'},{t:'淺白通俗'}], tip:'王維精通詩書畫樂，蘇軾評價他「詩中有畫，畫中有詩」，人稱「詩佛」。' },
+  3: { q: '王昌齡被後世尊稱為甚麼？', options: [{t:'七絕聖手', correct:true},{t:'詩仙'},{t:'詩聖'},{t:'詩鬼'}], tip:'王昌齡擅長七言絕句，氣勢雄壯，人稱「七絕聖手」。' },
+  4: { q: '杜甫的詩被後世稱為甚麼？', options: [{t:'詩史', correct:true},{t:'詩仙'},{t:'詩佛'},{t:'詩豪'}], tip:'杜甫人稱「詩聖」，他的詩真實記錄了唐代由盛轉衰的歷史，被稱為「詩史」。' },
+  5: { q: '杜牧與哪位詩人並稱「小李杜」？', options: [{t:'李商隱', correct:true},{t:'李白'},{t:'李賀'},{t:'李煜'}], tip:'晚唐詩人杜牧與李商隱齊名，並稱「小李杜」，以區別於盛唐「李杜」李白、杜甫。' },
+  6: { q: '楊萬里的詩風被稱為甚麼？', options: [{t:'誠齋體', correct:true},{t:'西崑體'},{t:'田園體'},{t:'邊塞體'}], tip:'楊萬里號誠齋，詩風淺白活潑、自然清新，人稱「誠齋體」。' },
+  7: { q: '王維因甚麼特質，人稱「詩佛」？', options: [{t:'詩中充滿禪意與寧靜', correct:true},{t:'他當過和尚'},{t:'他寫了很多佛經'},{t:'他是佛教創始人'}], tip:'王維晚年信佛，詩作多寫山水田園，意境空靈幽靜，有禪味，故人稱「詩佛」。' },
+  8: { q: '蘇軾號甚麼？', options: [{t:'東坡居士', correct:true},{t:'青蓮居士'},{t:'六一居士'},{t:'易安居士'}], tip:'蘇軾號東坡居士，北宋大文豪，詩詞書畫樣樣精通，性格豁達。' },
+  9: { q: '杜甫《八陣圖》憑弔的是哪位歷史人物？', options: [{t:'諸葛亮', correct:true},{t:'曹操'},{t:'周瑜'},{t:'司馬懿'}], tip:'八陣圖相傳為諸葛亮所創，杜甫以此詩歌頌他功蓋三國，並惋惜其統一大業未成。' }
+};
+
+// === 作品特色 · 第二種互動：字卡拼拼樂（點字卡依序拼出答案） ===
+// answer：正確答案（2~4 字）； distractors：干擾字（打亂一起出現）
+const fillBlankData = {
+  0: { q: '與「專心致志」相反的成語是「____」。', answer: '三心二意', distractors: ['一','意','心','二','專','三'], tip: '兩個學生下棋，一個專心一個三心二意，結果截然不同。' },
+  1: { q: '鄭人說「寧信度，無____也」，可見他死守教條。', answer: '自信', distractors: ['信','自','腳','尺','信'], tip: '「自信」就是相信自己的腳；鄭人寧信尺碼不信自己的腳，多麼可笑。' },
+  2: { q: '「王孫歸不歸？」這是____句收尾，情味悠長。', answer: '問', distractors: ['問','答','感','嘆'], tip: '用問句收尾，不直接說想念，而是問「回不回來」，牽掛更深。' },
+  3: { q: '「秦時明月漢時關」用了____手法，前後互相補足。', answer: '互文', distractors: ['互','文','喻','誇','對'], tip: '不是「秦代的明月、漢代的關」，而是「秦漢時的明月和關塞」，互相補充。' },
+  4: { q: '律詩中間兩聯講究____，句式對稱工整。', answer: '對仗', distractors: ['對','仗','比','偶','押'], tip: '「花徑」對「蓬門」、「盤飧」對「樽酒」，字數、詞性都對稱。' },
+  5: { q: '「霜葉紅於二月花」用「霜葉」與「____」對比，突出秋景之美。', answer: '二月花', distractors: ['二','月','花','春','風','葉'], tip: '拿秋天的楓葉和春天的鮮花對比，秋楓反而更勝一等。' },
+  6: { q: '「接天」「無窮」是____手法，突出蓮葉鋪天蓋地。', answer: '誇張', distractors: ['誇','張','比','喻','寫','實'], tip: '蓮葉當然不可能真的「接天」，這樣寫是誇張地強調其遼闊。' },
+  7: { q: '「明月來相照」把月亮當成人來寫，運用了____手法。', answer: '擬人', distractors: ['擬','人','比','喻','借','代'], tip: '月亮好像專程來陪伴詩人，把無情的月寫成了知心朋友。' },
+  8: { q: '這是一首____詩，蘇軾為惠崇和尚的畫作題寫。', answer: '題畫', distractors: ['題','畫','送','別','山','水'], tip: '題畫詩不僅再現畫面，還加入詩人的想像（如「水暖」「河豚欲上」）。' },
+  9: { q: '「江流石不轉」借石陣歌頌諸葛亮的____不朽。', answer: '功績', distractors: ['功','績','智','慧','忠','誠'], tip: '借物詠懷，石頭不動象徵英雄功業長存，也寄託遺憾。' }
+};
+
+// === 作品特色 · 第三種互動：對錯題 ===
+const trueFalseData = {
+  0: { q: '那個分心的學生學不好下棋，是因為他不夠聰明。', answer: false, tip: '不是笨，是因為不專心。孟子最後說「非然也」（不是這樣的）。' },
+  1: { q: '鄭人最後用腳試穿，順利買到了鞋子。', answer: false, tip: '他沒有試穿，執意回家拿尺碼，回來時市集已散，根本買不到鞋。' },
+  2: { q: '《山中送別》表達了詩人對友人歸來的期盼。', answer: true, tip: '「春草明年綠，王孫歸不歸？」正是期盼友人明年歸來。' },
+  3: { q: '「龍城飛將」指的是三國時的張飛。', answer: false, tip: '「飛將」指西漢名將李廣，匈奴畏懼他，稱他為「飛將軍」。' },
+  4: { q: '杜甫因家貧市遠，只能用陳酒小菜招待客人，但待客心意非常真誠。', answer: true, tip: '菜少酒舊不要緊，重要的是「花徑不曾緣客掃，蓬門今始為君開」的真誠。' },
+  5: { q: '詩人停車是因為迷路了。', answer: false, tip: '詩人停車是因為「坐愛楓林晚」——被美麗的楓林晚景深深吸引。' },
+  6: { q: '這首詩寫的是冬天的西湖景色。', answer: false, tip: '「六月中」「映日荷花」，寫的是盛夏西湖荷花盛開的景色。' },
+  7: { q: '詩人在竹林裡覺得很孤單，希望有人來陪他。', answer: false, tip: '詩人有琴、有長嘯、有明月相伴，悠然自得，一點都不孤單。' },
+  8: { q: '「春江水暖鴨先知」告訴我們：親身體驗才能察覺細微變化。', answer: true, tip: '鴨子天天在水裡，最先感覺水暖——身歷其境才有真感受。' },
+  9: { q: '「遺恨失吞吳」指劉備伐吳失敗，破壞了諸葛亮統一天下的大計。', answer: true, tip: '劉備為報關羽之仇出兵東吳，結果大敗，蜀國元氣大傷，成為千古遺憾。' }
+};
+
+// === 內容大意 · 概念流程圖資料（主角→場景→事件→道理/主旨） ===
+// 每首詩對應的古風兒童繪本風長卷背景圖
+const summaryBgMap = {
+  0: 'https://gips2.baidu.com/it/u=1346977143,3670029821&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720', // 二子學弈
+  1: 'https://gips0.baidu.com/it/u=572394640,3438426759&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720', // 鄭人買履
+  2: 'https://gips0.baidu.com/it/u=614392332,1663106585&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720', // 山中送別
+  3: 'https://gips3.baidu.com/it/u=3461532450,973678170&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720', // 出塞
+  4: 'https://gips3.baidu.com/it/u=3093592156,1272518353&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720', // 客至
+  5: 'https://gips0.baidu.com/it/u=4209423947,3911726055&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720', // 山行
+  6: 'https://gips1.baidu.com/it/u=2988928057,1015492952&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720', // 曉出淨慈寺
+  7: 'https://gips3.baidu.com/it/u=1981725666,37081127&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720',  // 竹里館
+  8: 'https://gips2.baidu.com/it/u=2986920998,2271232508&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720', // 惠崇春江晚景
+  9: 'https://gips1.baidu.com/it/u=234453727,2044353608&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720'  // 八陣圖
+};
+const summaryFlowData = {
+  0: [
+    { icon:'👨‍🏫', title:'人物', text:'弈秋（全國下棋高手）教兩個學生' },
+    { icon:'🎯', title:'經過', text:'一人專心致志；一人老想射天鵝' },
+    { icon:'📉', title:'結果', text:'兩人同學，分心者棋藝遠不如' },
+    { icon:'💡', title:'道理', text:'學習貴在專心，不在聰明與否' }
+  ],
+  1: [
+    { icon:'👞', title:'起因', text:'鄭人去市集買鞋，先量好尺碼' },
+    { icon:'😱', title:'經過', text:'到了市集才發現忘帶尺碼' },
+    { icon:'🏃', title:'發展', text:'執意回家取尺碼，不肯用腳試穿' },
+    { icon:'🤦', title:'教訓', text:'死守教條不懂變通，終究一事無成' }
+  ],
+  2: [
+    { icon:'👋', title:'送別', text:'山中送走友人' },
+    { icon:'🚪', title:'日暮', text:'黃昏獨自掩上柴門' },
+    { icon:'🌱', title:'遙想', text:'明年春草又會再綠' },
+    { icon:'❓', title:'期盼', text:'友人能否歸來？思念悠長' }
+  ],
+  3: [
+    { icon:'🌕', title:'邊關', text:'秦漢以來明月照關塞' },
+    { icon:'⚔️', title:'征戰', text:'萬里長征，將士未歸' },
+    { icon:'🛡️', title:'期盼', text:'若有飛將軍李廣守邊' },
+    { icon:'🕊️', title:'願望', text:'不讓胡馬越過陰山，保家衛國' }
+  ],
+  4: [
+    { icon:'🏡', title:'環境', text:'草堂春水環繞，平日鷗鳥相伴' },
+    { icon:'🧹', title:'迎客', text:'為君掃花徑、開蓬門' },
+    { icon:'🍶', title:'招待', text:'市遠家貧，只有陳酒小菜' },
+    { icon:'👴', title:'熱情', text:'隔籬喚鄰翁同飲，真誠待客' }
+  ],
+  5: [
+    { icon:'🪨', title:'遠景', text:'石徑斜斜伸向寒山' },
+    { icon:'☁️', title:'中景', text:'白雲深處有人家' },
+    { icon:'🍁', title:'近景', text:'停車靜賞楓林晚景' },
+    { icon:'🌺', title:'感悟', text:'霜葉勝春花，秋色更勝春光' }
+  ],
+  6: [
+    { icon:'🌅', title:'時間', text:'六月盛夏的清晨' },
+    { icon:'🌊', title:'地點', text:'杭州西湖，淨慈寺前' },
+    { icon:'🪷', title:'景物', text:'接天蓮葉碧、映日荷花紅' },
+    { icon:'👋', title:'情境', text:'荷花美景中送別友人林子方' }
+  ],
+  7: [
+    { icon:'🎋', title:'地點', text:'幽深竹林之中' },
+    { icon:'🎸', title:'行動', text:'獨坐彈琴長嘯' },
+    { icon:'🌙', title:'陪伴', text:'無人知曉，唯有明月來照' },
+    { icon:'😌', title:'心境', text:'悠然獨處，與自然合一' }
+  ],
+  8: [
+    { icon:'🌸', title:'早春', text:'竹外桃花初開' },
+    { icon:'🦆', title:'觀察', text:'鴨子先知江水回暖' },
+    { icon:'🌿', title:'生機', text:'蔞蒿滿地、蘆芽短嫩' },
+    { icon:'🐡', title:'想像', text:'正是河豚逆流而上之時' }
+  ],
+  9: [
+    { icon:'👑', title:'功業', text:'功蓋三國，助劉備建蜀' },
+    { icon:'🪨', title:'遺跡', text:'八陣圖石陣名傳千古' },
+    { icon:'🌊', title:'感慨', text:'江流沖刷，陣石不轉' },
+    { icon:'😔', title:'遺恨', text:'劉備錯失吞吳，統一未成' }
+  ]
+};
+
+function renderPoemGrid() {
+  const grid = document.querySelector('.poem-grid');
+  grid.innerHTML = poems.map(p => `
+    <div class="poem-card fade-in text-center" onclick="openPoem(${p.id})" style="animation-delay: ${p.id * 0.05}s">
+      <div class="relative">
+        <img src="${p.img}" alt="${p.title}" class="w-full h-32 md:h-40 object-cover rounded-lg mb-3 shadow-md">
+        <div class="absolute top-2 right-2 seal text-base" style="width:36px;height:36px;font-size:18px; font-family:'Free HK Kai',serif;">${p.id+1}</div>
+        <img src="${p.authorImg}" alt="" class="absolute bottom-2 left-2 w-10 h-10 rounded-full object-cover border-2 border-white shadow">
+      </div>
+      <h3 class="font-brush text-3xl text-[#8B2323]">${p.title}</h3>
+      <p class="text-base text-[#6b4f3a]">${p.dynasty} · ${p.author}</p>
+      <div class="flex justify-center gap-1 mt-2">
+        ${[1,2,3,4,5,6].map(s => `<span class="star text-lg" id="star-${p.id}-${s}">☆</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateStars() {
+  let total = 0;
+  for (let pid in earnedStars) {
+    total += earnedStars[pid];
+    for (let i = 1; i <= 6; i++) {
+      const el = document.getElementById(`star-${pid}-${i}`);
+      if (el) el.textContent = i <= earnedStars[pid] ? '★' : '☆';
+      if (el) el.classList.toggle('earned', i <= earnedStars[pid]);
+    }
+  }
+  document.getElementById('totalStars').textContent = total;
+}
+
+function awardStar(poemId, count) {
+  const prev = earnedStars[poemId] || 0;
+  earnedStars[poemId] = Math.min(6, prev + count);
+  updateStars();
+  if (count >= 1) playSound('win');
+}
+
+function showHome() {
+  playSound('click');
+  document.getElementById('homePage').classList.remove('hidden');
+  document.getElementById('poemPage').classList.add('hidden');
+  document.getElementById('meterPage').classList.add('hidden');
+  window.scrollTo(0,0);
+}
+
+function showMeter() {
+  playSound('click');
+  renderMeterPage();
+  document.getElementById('homePage').classList.add('hidden');
+  document.getElementById('poemPage').classList.add('hidden');
+  document.getElementById('meterPage').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function openPoem(id) {
+  playSound('click');
+  renderPoemPage(id);
+  document.getElementById('homePage').classList.add('hidden');
+  document.getElementById('meterPage').classList.add('hidden');
+  document.getElementById('poemPage').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+
+function renderPoemPage(id) {
+  const p = poems[id];
+  document.getElementById('poemContent').innerHTML = `
+    <div class="paper-card p-4 md:p-6 mb-6 fade-in">
+      <div class="flex flex-col md:flex-row gap-4 items-center">
+        <img src="${p.img}" alt="${p.title}" class="w-full md:w-2/5 rounded-xl shadow-lg max-h-72 object-cover">
+        <div class="md:w-3/5 w-full">
+          <div class="flex items-center gap-3 mb-2 flex-wrap">
+            <span class="seal" style="width:44px;height:44px;font-size:18px; font-family:'Free HK Kai',serif;">${p.id+1}</span>
+            <h2 class="font-brush text-4xl md:text-5xl text-[#8B2323]">${p.title}</h2>
+          </div>
+          <div class="flex items-center gap-3 mb-3">
+            <img src="${p.authorImg}" alt="${p.author}" class="w-14 h-14 rounded-full object-cover border-2 border-[#d4a84b] shadow">
+            <div>
+              <p class="font-brush text-2xl text-[#6b4f3a]">${p.dynasty} · ${p.author}</p>
+              <p class="text-base text-[#8a7060]">${p.type}</p>
+            </div>
+          </div>
+          
+          <div class="flex flex-wrap gap-1 mb-3">
+            ${p.keywords.map(k => `<span class="px-2 py-1 bg-[rgba(212,168,75,0.15)] text-[#8B2323] rounded-full text-base border border-[rgba(212,168,75,0.3)]">${k}</span>`).join('')}
+          </div>
+          
+          <div class="bg-[rgba(212,168,75,0.08)] rounded-xl p-3 border-l-4 border-[#d4a84b]">
+            <p class="font-cute section-text">📖 ${p.background}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 標籤頁導航 -->
+    <div class="flex gap-1 mb-0 overflow-x-auto pb-0">
+      <button class="tab-btn active" onclick="switchTab(event, 'learn', ${id})">📖 認識作品</button>
+      <button class="tab-btn" onclick="switchTab(event, 'game1', ${id})">🎮 互動遊戲一</button>
+      <button class="tab-btn" onclick="switchTab(event, 'game2', ${id})">🎯 互動遊戲二</button>
+      <button class="tab-btn" onclick="switchTab(event, 'concept', ${id})">🗺️ 概念圖</button>
+    </div>
+    
+    <div id="tab-learn-${id}" class="tab-content paper-card p-4 md:p-6 rounded-tl-none">
+      ${renderLearnTab(id)}
+    </div>
+    <div id="tab-game1-${id}" class="tab-content paper-card p-4 md:p-6 rounded-tl-none hidden">
+      <div class="mb-4 rounded-2xl overflow-hidden border-4 border-[#f5ecd9] shadow-md bg-white">
+        <img src="https://gips3.baidu.com/it/u=1192783338,1896686885&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1152&h=864" alt="互動遊戲一" class="w-full h-32 md:h-40 object-cover">
+      </div>
+      ${renderGame1(id)}
+    </div>
+    <div id="tab-game2-${id}" class="tab-content paper-card p-4 md:p-6 rounded-tl-none hidden">
+      <div class="mb-4 rounded-2xl overflow-hidden border-4 border-[#f5ecd9] shadow-md bg-white">
+        <img src="https://gips1.baidu.com/it/u=2992738954,554062988&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1152&h=864" alt="互動遊戲二" class="w-full h-32 md:h-40 object-cover">
+      </div>
+      ${renderGame2(id)}
+    </div>
+    <div id="tab-concept-${id}" class="tab-content paper-card p-4 md:p-6 rounded-tl-none hidden">
+      ${renderConceptMap(id)}
+    </div>
+  `;
+  
+  setTimeout(() => initGameEvents(id), 100);
+}
+
+function switchTab(e, tabName, id) {
+  playSound('click');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  document.querySelectorAll(`[id^="tab-"]`).forEach(t => t.classList.add('hidden'));
+  document.getElementById(`tab-${tabName}-${id}`).classList.remove('hidden');
+  document.getElementById(`tab-${tabName}-${id}`).classList.add('fade-in');
+  // 切換標籤時自動初始化對應遊戲，避免null錯誤，確保按鈕都生成
+  setTimeout(() => {
+    if (id === 0 && tabName === 'game1') initDistractionGame(); // 專心小偵探
+    if (id === 4 && tabName === 'game1') initFoodGame(); // 杜甫家常酒菜
+    if (id === 6 && tabName === 'game1') initLotusPond(); // 荷花塘尋寶
+    if (id === 6 && tabName === 'game2') { /* 四季賞景不需要初始化 */ }
+    if (id === 9 && tabName === 'game1') initBattleFormationUI(); // 諸葛四門點兵
+    if (id === 9 && tabName === 'game2') setTimeout(initTkQuiz, 150); // 三國小達人
+    if (id === 1 && tabName === 'game2') initSituationQuiz(); // 變通小判官
+    if (id === 4 && tabName === 'game2') initHostSteps(); // 待客排序
+    if (id === 5 && tabName === 'game1') initMaplePoem(); // 楓林詩句接龍（替代迷宮）
+    if (id === 5 && tabName === 'game2') initJourney(); // 寒山行旅步移景換（替代打卡）
+    if (id === 2 && tabName === 'game1') initMemoryPuzzle(); // 送別回憶拼圖（替代填色）
+    if (id === 8 && tabName === 'game1') initSpringGame(); // 找春天
+    if (id === 8 && tabName === 'game2') initSeasonQuiz(); // 季節大風吹
+    if (id === 7 && tabName === 'game1') initBambooGame(); // 竹林靜心園
+  }, 150);
+}
+
+function renderLearnTab(id) {
+  const p = poems[id];
+  return `
+    <!-- 作者簡介 -->
+    <div class="mb-5">
+      <h3 class="font-brush text-3xl text-[#8B2323] mb-3 flex items-center gap-2">
+        <span>👤</span> 作者簡介
+      </h3>
+      <div class="flex flex-col md:flex-row items-center gap-4 bg-[rgba(90,140,90,0.08)] rounded-2xl p-4 border-l-4 border-[#5a8c5a]">
+        <img src="${p.authorImg}" alt="${p.author}" class="w-28 h-28 md:w-36 md:h-36 object-cover rounded-xl shadow-md flex-shrink-0 border-4 border-white">
+        <div class="flex-1 text-center md:text-left">
+          <p class="font-brush text-3xl text-[#5a8c5a] mb-1">${p.author}</p>
+          <p class="text-lg text-[#6b4f3a]">${p.dynasty}代</p>
+          <p class="section-text mt-2">${p.authorIntro}</p>
+        </div>
+      </div>
+      ${renderAuthorQuiz(id)}
+    </div>
+
+    <!-- 原文 -->
+    <div class="mb-5">
+      <h3 class="font-brush text-3xl text-[#8B2323] mb-3 flex items-center gap-2">
+        <span>📜</span> 原文
+      </h3>
+      <div class="relative overflow-hidden rounded-2xl border-2 border-[rgba(212,168,75,0.3)]">
+        <img src="${p.img}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-15">
+        <div class="relative text-center py-4 bg-gradient-to-br from-[#fffdf7]/85 to-[#f5ecd9]/85">
+          ${p.content.map((line, i) => `
+            <p class="font-brush text-xl md:text-2xl leading-relaxed text-[#3d2b1f] ${i > 0 ? 'mt-1' : ''}">${line}</p>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- 內容解釋（四格漫畫 · 左右橫版排列，主角形象一致） -->
+    <div class="mb-5">
+      <h3 class="font-brush text-3xl text-[#8B2323] mb-3 flex items-center gap-2">
+        <span>💡</span> 內容解釋 · 四格漫畫
+      </h3>
+      <div class="bg-[rgba(74,123,168,0.08)] rounded-2xl p-4 border-l-4 border-[#4a7ba8]">
+        <div class="bg-white rounded-xl overflow-hidden shadow-lg border-4 border-white">
+          <img src="${p.comic}" alt="${p.title} 四格漫畫" class="w-full h-auto object-cover rounded-lg">
+        </div>
+        <div class="caption-strip">
+          ${(comicCaptionData[id]||[]).map((c,i)=>`
+            <div class="caption-box">
+              <div class="panel-num">${i+1}</div>
+              <div class="poem-line">${c.line}</div>
+              <div>${c.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+        <p class="text-center text-[#6b4f3a] text-lg mt-3 font-cute">👉 從左到右看四格，每一格對應一句詩文！</p>
+      </div>
+    </div>
+
+    <!-- 作品特色 -->
+    <div class="mb-5">
+      <h3 class="font-brush text-3xl text-[#8B2323] mb-3 flex items-center gap-2">
+        <span>✨</span> 作品特色
+      </h3>
+      <div class="grid md:grid-cols-${Math.min(p.rhetoric.length, 3)} gap-3">
+        ${p.rhetoric.map((r, i) => `
+          <div class="bg-[rgba(200,60,60,0.06)] rounded-xl p-4 border-2 border-[rgba(200,60,60,0.15)] hover:shadow-md transition-all text-center">
+            <div class="text-4xl mb-2">${['🎨','📝','🔍'][i] || '💫'}</div>
+            <h4 class="font-bold text-[#8B2323] text-xl mb-1">${r.name}</h4>
+            <p class="section-text text-[#5a4438]">${r.desc}</p>
+          </div>
+        `).join('')}
+      </div>
+      ${renderFeatureQuiz(id)}
+      ${renderFillBlank(id)}
+      ${renderTrueFalse(id)}
+    </div>
+
+    <!-- 格律分析 -->
+    <div>
+      <h3 class="font-brush text-3xl text-[#8B2323] mb-3 flex items-center gap-2">
+        <span>🎵</span> 格律小知識
+      </h3>
+      <div class="bg-[rgba(232,168,144,0.12)] rounded-2xl p-4 border-l-4 border-[#e8a890] flex flex-col md:flex-row items-center gap-4">
+        <div class="text-5xl">🎼</div>
+        <div class="flex-1">
+          <p class="section-text">${p.meter}</p>
+          <p class="text-lg text-[#8a7060] mt-2">💡 想認識更多？<span class="text-[#c83c3c] font-bold cursor-pointer hover:underline" onclick="showMeter()">進入格律小學堂 →</span></p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+
+// === 作品特色 · 文字互動題 ===
+function shuffleArr(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function renderFeatureQuiz(id) {
+  const quiz = featureQuizData[id];
+  if (!quiz) return '';
+  // 打亂選項順序，避免正確答案固定在同一位置；同時記錄原始索引供答題判定
+  const shuffledOpts = shuffleArr(quiz.options.map((o, i) => ({ ...o, origIdx: i })));
+  return `
+    <div class="mt-4 bg-[rgba(212,168,75,0.12)] rounded-2xl p-4 border-2 border-dashed border-[#d4a84b]">
+      <p class="font-brush text-2xl text-[#8B2323] mb-1 flex items-center gap-2"><img src="https://gips3.baidu.com/it/u=1192783338,1896686885&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1152&h=864" alt="" class="w-14 h-10 rounded-lg object-cover border-2 border-[#d4a84b] shadow-sm flex-shrink-0">作品特色 · 文字互動題</p>
+      <p class="text-base text-[#8a7060] mb-3">讀完上面的作品特色，來挑戰一題吧！</p>
+      <p class="section-text font-bold text-[#3d2b1f] mb-3">${quiz.q}</p>
+      <div class="grid gap-2" id="featureQuiz-${id}">
+        ${shuffledOpts.map((o, i) => `
+          <button class="game-btn text-left" data-origidx="${o.origIdx}" data-correct="${o.correct ? '1':'0'}" onclick="answerFeatureShuffled(${id}, this)">${'ABCD'[i]}. ${o.t}</button>
+        `).join('')}
+      </div>
+      <div id="featureResult-${id}" class="hidden mt-3 rounded-xl p-3"></div>
+    </div>
+  `;
+}
+function answerFeatureShuffled(id, btn) {
+  const quiz = featureQuizData[id];
+  if (!quiz) return;
+  const wrap = document.getElementById(`featureQuiz-${id}`);
+  if (!wrap || wrap.dataset.done) return;
+  const btns = wrap.querySelectorAll('button');
+  if (!btns.length) return;
+  wrap.dataset.done = '1';
+  btns.forEach(b => b.disabled = true);
+  const isRight = btn.dataset.correct === '1';
+  btns.forEach(b => { if (b.dataset.correct === '1') b.classList.add('correct'); });
+  if (!isRight) btn.classList.add('wrong');
+  playSound(isRight ? 'correct' : 'wrong');
+  const res = document.getElementById(`featureResult-${id}`);
+  res.classList.remove('hidden');
+  res.className = 'mt-3 rounded-xl p-3 border-2 ' + (isRight ? 'bg-green-50 border-green-300' : 'bg-yellow-50 border-yellow-300');
+  res.innerHTML = `<p class="font-bold mb-1 ${isRight ? 'text-green-800' : 'text-yellow-800'}">${isRight ? '✓ 答對了！' : '再想想～ 正確答案已標出'}</p><p class="section-text">${quiz.tip}</p>`;
+  if (isRight) awardStar(id, 1);
+}
+
+function answerFeature(id, choice) {
+  const quiz = featureQuizData[id];
+  if (!quiz) return;
+  const wrap = document.getElementById(`featureQuiz-${id}`);
+  if (!wrap || wrap.dataset.done) return;
+  const btns = wrap.querySelectorAll('button');
+  if (!btns.length) return;
+  wrap.dataset.done = '1';
+  btns.forEach(b => b.disabled = true);
+  const isRight = !!quiz.options[choice].correct;
+  btns.forEach((b, i) => { if (quiz.options[i].correct) b.classList.add('correct'); });
+  if (!isRight) btns[choice].classList.add('wrong');
+  playSound(isRight ? 'correct' : 'wrong');
+  const res = document.getElementById(`featureResult-${id}`);
+  res.classList.remove('hidden');
+  res.className = 'mt-3 rounded-xl p-3 border-2 ' + (isRight ? 'bg-green-50 border-green-300' : 'bg-yellow-50 border-yellow-300');
+  res.innerHTML = `<p class="font-bold mb-1 ${isRight ? 'text-green-800' : 'text-yellow-800'}">${isRight ? '✓ 答對了！' : '再想想～ 正確答案已標出'}</p><p class="section-text">${quiz.tip}</p>`;
+  if (isRight) awardStar(id, 1);
+}
+
+
+// === 作者簡介 · 互動測驗 ===
+function renderAuthorQuiz(id) {
+  const q = authorQuizData[id];
+  if (!q) return '';
+  const shuffledOpts = shuffleArr(q.options.map((o, i) => ({ ...o, origIdx: i })));
+  return `
+    <div class="mt-4 bg-[rgba(90,140,90,0.12)] rounded-2xl p-4 border-2 border-dashed border-[#5a8c5a]">
+      <p class="font-brush text-2xl text-[#5a8c5a] mb-1 flex items-center gap-2"><img src="https://gips2.baidu.com/it/u=624105123,4015016574&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720" alt="" class="w-14 h-10 rounded-lg object-cover border-2 border-[#5a8c5a] shadow-sm flex-shrink-0">作者小測驗</p>
+      <p class="text-base text-[#8a7060] mb-3">讀完作者簡介，考考你！</p>
+      <p class="section-text font-bold text-[#3d2b1f] mb-3">${q.q}</p>
+      <div class="grid gap-2" id="authorQuiz-${id}">
+        ${shuffledOpts.map((o,i)=>`<button class="game-btn text-left" data-correct="${o.correct ? '1':'0'}" onclick="answerAuthorShuffled(${id},this)">${'ABCD'[i]}. ${o.t}</button>`).join('')}
+      </div>
+      <div id="authorResult-${id}" class="hidden mt-3 rounded-xl p-3"></div>
+    </div>
+  `;
+}
+function answerAuthorShuffled(id, btn) {
+  const q = authorQuizData[id]; if (!q) return;
+  const wrap = document.getElementById(`authorQuiz-${id}`);
+  if (!wrap || wrap.dataset.done) return;
+  wrap.dataset.done = '1';
+  const btns = wrap.querySelectorAll('button'); btns.forEach(b=>b.disabled=true);
+  const isRight = btn.dataset.correct === '1';
+  btns.forEach(b=>{ if (b.dataset.correct === '1') b.classList.add('correct'); });
+  if (!isRight) btn.classList.add('wrong');
+  playSound(isRight?'correct':'wrong');
+  const res = document.getElementById(`authorResult-${id}`);
+  res.classList.remove('hidden');
+  res.className = 'mt-3 rounded-xl p-3 border-2 ' + (isRight?'bg-green-50 border-green-300':'bg-yellow-50 border-yellow-300');
+  res.innerHTML = `<p class="font-bold mb-1 ${isRight?'text-green-800':'text-yellow-800'}">${isRight?'✓ 答對了！':'再想想～ 正確答案已標出'}</p><p class="section-text">${q.tip}</p>`;
+  if (isRight) awardStar(id,1);
+}
+function answerAuthor(id, choice) {
+  const q = authorQuizData[id]; if (!q) return;
+  const wrap = document.getElementById(`authorQuiz-${id}`);
+  if (!wrap || wrap.dataset.done) return;
+  wrap.dataset.done = '1';
+  const btns = wrap.querySelectorAll('button'); btns.forEach(b=>b.disabled=true);
+  const isRight = !!q.options[choice].correct;
+  btns.forEach((b,i)=>{ if (q.options[i].correct) b.classList.add('correct'); });
+  if (!isRight) btns[choice].classList.add('wrong');
+  playSound(isRight?'correct':'wrong');
+  const res = document.getElementById(`authorResult-${id}`);
+  res.classList.remove('hidden');
+  res.className = 'mt-3 rounded-xl p-3 border-2 ' + (isRight?'bg-green-50 border-green-300':'bg-yellow-50 border-yellow-300');
+  res.innerHTML = `<p class="font-bold mb-1 ${isRight?'text-green-800':'text-yellow-800'}">${isRight?'✓ 答對了！':'再想想～ 正確答案已標出'}</p><p class="section-text">${q.tip}</p>`;
+}
+
+// === 作品特色 · 字卡拼拼樂（點字卡拼答案，替換原本打字填空） ===
+let chipState = {}; // { poemId: { picked:['字',...], done:false } }
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function renderFillBlank(id) {
+  const q = fillBlankData[id]; if (!q) return '';
+  const answerLen = q.answer.length;
+  // 合併正確答案字 + 干擾字，去重打亂
+  const answerChars = q.answer.split('');
+  const allChars = Array.from(new Set([...answerChars, ...(q.distractors||[])]));
+  // 確保字數至少比答案多 2 個，方便辨認
+  while (allChars.length < answerLen + 2) allChars.push('〇');
+  const chips = shuffle(allChars);
+  chipState[id] = { picked: [], done:false };
+  const slotsHtml = Array.from({length: answerLen}).map((_,i)=>
+    `<span class="word-slot" data-slot="${i}"></span>`).join('');
+  const chipsHtml = chips.map((ch, i)=>
+    `<button class="word-chip" data-chip="${i}" data-ch="${ch}" onclick="pickChip(${id}, ${i})">${ch}</button>`).join('');
+  return `
+    <div class="mt-4 bg-[rgba(232,168,144,0.12)] rounded-2xl p-4 border-2 border-dashed border-[#e8a890]">
+      <p class="font-brush text-2xl text-[#c83c3c] mb-1 flex items-center gap-2"><img src="https://gips1.baidu.com/it/u=2992738954,554062988&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1152&h=864" alt="" class="w-14 h-10 rounded-lg object-cover border-2 border-[#e8a890] shadow-sm flex-shrink-0">字卡拼拼樂</p>
+      <p class="text-base text-[#8a7060] mb-3">點擊下方的字卡，按正確順序拼出答案！</p>
+      <div class="bg-[rgba(255,249,230,0.7)] rounded-xl p-3 text-center" id="fillQBox-${id}">
+        <p class="section-text font-bold text-[#3d2b1f] text-lg">${q.q.replace('____', slotsHtml)}</p>
+      </div>
+      <div class="word-chip-row" id="chipRow-${id}">${chipsHtml}</div>
+      <div class="flex gap-2 justify-center flex-wrap">
+        <button class="btn-ancient btn-gold text-base py-2 px-4" onclick="checkChips(${id})">✓ 拼好了</button>
+        <button class="game-btn text-base py-2 px-4" onclick="resetChips(${id})">🔄 重拼一次</button>
+        <button class="game-btn text-base py-2 px-4" onclick="showChipHint(${id})">💡 提示</button>
+      </div>
+      <div id="fillResult-${id}" class="hidden mt-3 rounded-xl p-3"></div>
+    </div>
+  `;
+}
+function pickChip(id, chipIdx) {
+  const st = chipState[id]; if (!st || st.done) return;
+  const q = fillBlankData[id];
+  if (st.picked.length >= q.answer.length) return;
+  const chipBtn = document.querySelector(`#chipRow-${id} [data-chip="${chipIdx}"]`);
+  if (!chipBtn || chipBtn.disabled) return;
+  const ch = chipBtn.dataset.ch;
+  st.picked.push(ch);
+  chipBtn.disabled = true;
+  chipBtn.classList.add('picked');
+  // 填入下一個空槽
+  const slotIdx = st.picked.length - 1;
+  const slot = document.querySelector(`#fillQBox-${id} [data-slot="${slotIdx}"]`);
+  if (slot) { slot.textContent = ch; slot.classList.add('filled'); }
+}
+function resetChips(id) {
+  const st = chipState[id]; if (!st) return;
+  st.picked = []; st.done = false;
+  document.querySelectorAll(`#fillQBox-${id} .word-slot`).forEach(s=>{
+    s.textContent = ''; s.classList.remove('filled','correct','wrong');
+  });
+  document.querySelectorAll(`#chipRow-${id} .word-chip`).forEach(b=>{
+    b.disabled = false; b.classList.remove('picked');
+  });
+  const res = document.getElementById(`fillResult-${id}`);
+  if (res) { res.classList.add('hidden'); res.className = 'hidden mt-3 rounded-xl p-3'; }
+}
+function checkChips(id) {
+  const st = chipState[id]; if (!st || st.done) return;
+  const q = fillBlankData[id];
+  if (st.picked.length < q.answer.length) {
+    const res = document.getElementById(`fillResult-${id}`);
+    res.classList.remove('hidden');
+    res.className = 'mt-3 rounded-xl p-3 border-2 bg-yellow-50 border-yellow-300';
+    res.innerHTML = `<p class="text-yellow-800">🤔 還有 ${q.answer.length - st.picked.length} 個字沒拼完哦，再想想！</p>`;
+    return;
+  }
+  st.done = true;
+  const userAns = st.picked.join('');
+  const ok = userAns === q.answer;
+  // 標記每個 slot
+  document.querySelectorAll(`#fillQBox-${id} .word-slot`).forEach((s,i)=>{
+    s.classList.add(ok?'correct':'wrong');
+  });
+  // 鎖住所有字卡
+  document.querySelectorAll(`#chipRow-${id} .word-chip`).forEach(b=>b.disabled=true);
+  playSound(ok?'correct':'wrong');
+  const res = document.getElementById(`fillResult-${id}`);
+  res.classList.remove('hidden');
+  res.className = 'mt-3 rounded-xl p-3 border-2 ' + (ok?'bg-green-50 border-green-300':'bg-yellow-50 border-yellow-300');
+  res.innerHTML = `<p class="font-bold mb-1 ${ok?'text-green-800':'text-yellow-800'}">${ok?'🎉 拼對啦！':'正確答案是「'+q.answer+'」，拼錯了再看一次～'}</p><p class="section-text">${q.tip}</p>`;
+  if (ok) awardStar(id, 1);
+}
+function showChipHint(id) {
+  const q = fillBlankData[id]; if (!q) return;
+  const res = document.getElementById(`fillResult-${id}`);
+  res.classList.remove('hidden');
+  res.className = 'mt-3 rounded-xl p-3 border-2 bg-blue-50 border-blue-300';
+  res.innerHTML = `<p class="text-blue-800">💡 提示：答案一共 <b>${q.answer.length}</b> 個字，第一個字是「<b>${q.answer[0]}</b>」。</p>`;
+}
+
+// === 作品特色 · 對錯題 ===
+function renderTrueFalse(id) {
+  const q = trueFalseData[id]; if (!q) return '';
+  return `
+    <div class="mt-4 bg-[rgba(74,123,168,0.12)] rounded-2xl p-4 border-2 border-dashed border-[#4a7ba8]">
+      <p class="font-brush text-2xl text-[#4a7ba8] mb-1 flex items-center gap-2"><img src="https://gips2.baidu.com/it/u=3665850810,3602127836&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1152&h=864" alt="" class="w-14 h-10 rounded-lg object-cover border-2 border-[#4a7ba8] shadow-sm flex-shrink-0">對錯大判斷</p>
+      <p class="text-base text-[#8a7060] mb-3">讀完作品，看看下面的說法對不對？</p>
+      <p class="section-text font-bold text-[#3d2b1f] mb-3">${q.q}</p>
+      <div class="flex gap-3" id="tfBox-${id}">
+        <button class="game-btn flex-1 text-green-700 font-bold" onclick="answerTF(${id},true)">✅ 正確</button>
+        <button class="game-btn flex-1 text-red-700 font-bold" onclick="answerTF(${id},false)">❌ 錯誤</button>
+      </div>
+      <div id="tfResult-${id}" class="hidden mt-3 rounded-xl p-3"></div>
+    </div>
+  `;
+}
+function answerTF(id, choice) {
+  const q = trueFalseData[id]; if (!q) return;
+  const wrap = document.getElementById(`tfBox-${id}`);
+  if (!wrap || wrap.dataset.done) return;
+  wrap.dataset.done='1';
+  const btns = wrap.querySelectorAll('button'); btns.forEach(b=>b.disabled=true);
+  const ok = choice === q.answer;
+  // mark correct button green
+  btns.forEach(b=>{
+    const isTrueBtn = b.textContent.includes('正確');
+    if ((isTrueBtn && q.answer===true) || (!isTrueBtn && q.answer===false)) b.classList.add('correct');
+  });
+  if (!ok) btns.forEach(b=>{
+    const isTrueBtn = b.textContent.includes('正確');
+    if ((isTrueBtn && q.answer===false) || (!isTrueBtn && q.answer===true)) b.classList.add('wrong');
+  });
+  playSound(ok?'correct':'wrong');
+  const res = document.getElementById(`tfResult-${id}`);
+  res.classList.remove('hidden');
+  res.className = 'mt-3 rounded-xl p-3 border-2 ' + (ok?'bg-green-50 border-green-300':'bg-yellow-50 border-yellow-300');
+  res.innerHTML = `<p class="font-bold mb-1 ${ok?'text-green-800':'text-yellow-800'}">${ok?'✓ 判斷正確！':'判斷錯了哦～正確答案已標出'}</p><p class="section-text">${q.tip}</p>`;
+  if (ok) awardStar(id, 1);
+}
+
+// === 內容大意 · 概念流程圖（古風繪本長卷背景） ===
+const sealChars = ['一','二','三','四'];
+function renderSummaryFlow(id) {
+  const nodes = summaryFlowData[id] || [];
+  const bg = summaryBgMap[id] || '';
+  const bgStyle = bg
+    ? `background-image: linear-gradient(rgba(253,246,227,0.15),rgba(253,246,227,0.15)), url('${bg}'); background-size: cover; background-position: center;`
+    : '';
+  return `
+    <div class="summary-scroll-wrap" style="${bgStyle}">
+      <span class="scroll-cap-l"></span><span class="scroll-cap-r"></span>
+      <div class="scroll-title">內 容 大 意 · 故 事 流 程</div>
+      <div class="summary-flow">
+        ${nodes.map((n,i)=>`
+          <div class="summary-node n${i+1}" data-seal="${sealChars[i]||(i+1)}">
+            <div class="node-icon">${n.icon}</div>
+            <div class="node-title">${n.title}</div>
+            <div class="node-text">${n.text}</div>
+          </div>
+          ${i<nodes.length-1?'<div class="summary-arrow">❯❯</div>':''}
+        `).join('')}
+      </div>
+      <div class="scroll-cloud">☁ 卷 末 雲 紋 ☁</div>
+    </div>
+  `;
+}
+
+function renderGame1(id) {
+  const games = [
+    // 0. 二子學弈 - 專心小偵探（古風兒童繪本背景：古代學堂場景，半透明小虛線按鍵）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🔍 專心小偵探</h3>
+      <p class="text-[#6b4f3a]">那個不專心的學生在想甚麼？點擊畫面中虛線圈裡讓他分心的東西，幫助他專心學習！</p>
+    </div>
+    <div class="max-w-4xl mx-auto relative rounded-2xl overflow-hidden border-4 border-[#d4a84b] shadow-lg" style="height:420px">
+      <img src="https://gips3.baidu.com/it/u=3684054114,3967154980&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720" class="w-full h-full object-cover" alt="古代學堂">
+      <!-- 半透明縮小虛線按鍵，對應背景景物 -->
+      <div id="swanContainer" class="absolute top-[8%] right-[8%] w-16 h-16 cursor-pointer rounded-full bg-white/15 border border-dashed border-amber-400/50 hover:bg-white/30 transition-all flex items-center justify-center text-xl" onclick="findDistraction(this,'🦢 大天鵝！天上飛來一隻美麗的大天鵝，太吸引人啦～趕快抬頭看！')">
+        🦢
+      </div>
+      <div id="bowContainer" class="absolute top-[22%] left-[12%] w-16 h-16 cursor-pointer rounded-full bg-white/15 border border-dashed border-amber-400/50 hover:bg-white/30 transition-all flex items-center justify-center text-xl" onclick="findDistraction(this,'弓箭：學生想著課後要去射箭打獵，心思跑走了')">
+        🏹
+      </div>
+      <div id="arrowContainer" class="absolute top-[40%] right-[20%] w-14 h-14 cursor-pointer rounded-full bg-white/15 border border-dashed border-amber-400/50 hover:bg-white/30 transition-all flex items-center justify-center text-lg" onclick="findDistraction(this,'胡思亂想：他滿腦子都是玩的念頭，根本沒聽老師講課')">
+        💭
+      </div>
+      <div class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-[rgba(253,248,240,0.95)] border-2 border-[#d4a84b] text-[#3d2b1f] px-5 py-2 rounded-xl min-w-[320px] text-center shadow-md" id="focusTip">
+        👆 點擊虛線圈圈裡讓人分心的東西
+      </div>
+    </div>
+    <p class="text-center mt-2 text-base text-[#8a7060]">🎨 古風兒童繪本風格古代學堂場景</p>
+    <div id="distractionList" class="flex justify-center gap-3 mt-3 flex-wrap"></div>
+    <div id="game1Result0" class="text-center mt-3"></div>
+    `,
+    
+    // 1. 鄭人買履 - 幫鄭人買鞋（情景判斷，古風兒童繪本風格，左圖右文布局）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">👟 幫鄭人買對鞋</h3>
+      <p class="text-[#6b4f3a]">如果你在場，你會怎麼幫這個固執的鄭人？做出正確的選擇吧！</p>
+    </div>
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-0 rounded-2xl overflow-hidden border-4 border-[#d4a84b] bg-[#fdf8f0]">
+      <!-- 左側圖片 -->
+      <div class="h-[400px]">
+        <img src="https://gips3.baidu.com/it/u=3561855084,1281730333&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1024&h=1024" class="w-full h-full object-cover" alt="古代市集鞋鋪">
+      </div>
+      <!-- 右側文字區域 -->
+      <div class="p-5 flex flex-col justify-between">
+        <div>
+          <h4 class="font-bold text-xl text-[#8B2323] mb-3">📖 故事場景</h4>
+          <div class="bg-white/80 rounded-xl p-4 border-2 border-[#d4a84b]/50 mb-4">
+            <p class="text-xl mb-1">👨 鄭人：「哎呀！我忘記帶尺碼了，怎麼辦？我要回家拿！」</p>
+            <p class="text-gray-600 text-base">這時候你應該怎麼勸他？</p>
+          </div>
+          <div class="space-y-3" id="shoeChoices">
+            <button class="game-btn w-full text-left bg-white hover:bg-[#f7efde] transition-all" onclick="shoeChoice(this, false, '不行哦，回家拿太遠了，還是回去拿吧！')">🤔 「對啊，趕快回去拿尺碼，買鞋一定要看尺碼的！」</button>
+            <button class="game-btn w-full text-left bg-white hover:bg-[#f7efde] transition-all" onclick="shoeChoice(this, true, '好聰明！用腳試穿才是最直接的方法啊！')">💡 「為甚麼不用你的腳直接試穿鞋子呢？你的腳就在這裡啊！」</button>
+            <button class="game-btn w-full text-left bg-white hover:bg-[#f7efde] transition-all" onclick="shoeChoice(this, false, '這不是好主意，這樣怎麼能確定合不合穿呢？')">📏 「不然你現場再量一次腳的大小吧，不要回家了。」</button>
+          </div>
+        </div>
+        <p class="text-center text-sm text-[#8a7060] mt-2">🎨 古風兒童繪本風格的古代市集鞋鋪</p>
+      </div>
+    </div>
+    <div id="shoeExplain" class="mt-4 max-w-4xl mx-auto hidden bg-green-50 border-2 border-green-300 rounded-xl p-4">
+      <p class="font-bold text-green-800 mb-2" id="shoeExplainTitle"></p>
+      <p class="text-lg">「寧信度，無自信也」——別做死守教條的人，要懂得靈活變通！</p>
+      <div class="text-center mt-3">
+        <span class="stamp">觸類旁通</span>
+      </div>
+    </div>
+    `,
+    
+    // 2. 山中送別 - 送別回憶拼圖（按順序點擊記憶碎片，還原送別場景）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🧩 送別回憶錄</h3>
+      <p class="text-[#6b4f3a]">山中送別的回憶散成了碎片！按詩句順序點擊這些記憶碎片，幫詩人把回憶拼回來吧！</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="relative rounded-2xl overflow-hidden border-4 border-[#d4a84b] shadow-lg" style="height:340px;background:linear-gradient(180deg,#fde68a 0%,#fbbf24 30%,#92400e 60%,#78350f 100%);">
+        <!-- 日暮背景（古風送別場景） -->
+        <div class="absolute inset-0 opacity-30">
+          <div class="absolute top-4 right-10 text-6xl">🌅</div>
+          <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#5a8c5a] to-transparent"></div>
+        </div>
+        <!-- 進度顯示 -->
+        <div class="absolute top-3 left-3 bg-white/90 rounded-lg px-3 py-1 text-base font-bold text-[#8B2323] z-10">
+          進度：<span id="memoryProgress">0</span>/4
+        </div>
+        <!-- 拼圖碎片容器 -->
+        <div id="memoryPuzzleArea" class="absolute inset-0">
+        </div>
+        <!-- 拼好的回憶展示區 -->
+        <div id="memoryReveal" class="absolute inset-0 hidden bg-gradient-to-b from-[#fef3c7] via-[#fde68a] to-[#d97706] flex flex-col items-center justify-center p-4">
+          <div class="bg-white/95 rounded-xl p-5 border-4 border-[#8B2323] shadow-2xl text-center max-w-sm">
+            <p class="font-brush text-3xl text-[#8B2323] mb-2">山中送別</p>
+            <div class="space-y-1 font-brush text-xl text-[#3d2b1f]">
+              <p>山中相送罷，</p>
+              <p>日暮掩柴扉。</p>
+              <p>春草明年綠，</p>
+              <p>王孫歸不歸？</p>
+            </div>
+            <p class="text-base text-[#6b4f3a] mt-3">送別的回憶完整了，滿滿都是對友人的思念～</p>
+          </div>
+        </div>
+        <!-- 提示文字 -->
+        <div id="memoryHint" class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-[rgba(253,248,240,0.95)] border-2 border-[#d4a84b] text-[#3d2b1f] px-4 py-2 rounded-xl text-center shadow-md min-w-[280px] z-10">
+          👆 按詩句順序點擊：先送別，再日暮關門...
+        </div>
+      </div>
+      <div class="flex justify-center gap-2 mt-3">
+        <button class="btn-ancient btn-gold text-base py-2 px-4" onclick="initMemoryPuzzle()">🔄 重玩一次</button>
+      </div>
+      <div id="memoryResult" class="text-center mt-3"></div>
+    </div>
+    `,
+    
+    // 3. 出塞 - 飛將守城記（古風兒童繪本風格）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">⚔️ 飛將守城記</h3>
+      <p class="text-[#6b4f3a]">敵人來了！點擊衝過來的胡馬，像飛將軍一樣守護陰山！(15秒內擊退足夠敵人)</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="flex justify-between items-center mb-3">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-[#8B2323]">得分：</span>
+          <span id="defendScore" class="text-2xl font-bold text-[#c83c3c]">0</span>
+          <span class="text-gray-500">/10</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-[#8B2323]">時間：</span>
+          <span id="defendTime" class="text-2xl font-bold">15</span>秒
+        </div>
+        <button class="btn-ancient btn-gold text-base py-2 px-4" onclick="startDefendGame()" id="startDefendBtn">開始守城</button>
+      </div>
+      <div class="progress-bar mb-3">
+        <div class="progress-fill" id="defendProgress" style="width:0%"></div>
+      </div>
+      <div id="defendField" class="relative rounded-2xl overflow-hidden cursor-crosshair border-4 border-[#d4a84b]" style="height:340px;background:url('https://gips2.baidu.com/it/u=2373581651,4078835101&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152') center/cover no-repeat;">
+        <!-- 古風繪本場景：明月、長城、飛將軍，敵人從右邊衝過來 -->
+        <div id="enemySpawn" class="absolute inset-0"></div>
+      </div>
+      <p class="text-center mt-2 text-base text-[#8a7060]">🎨 古風兒童繪本風格的邊塞長城，明月下飛將軍守城</p>
+      <div id="defendResult" class="text-center mt-3"></div>
+    </div>
+    `,
+    
+    // 4. 客至 - 杜甫家常酒菜搭配（選擇詩中描述的樸素家常菜，不要山珍海味）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🍶 杜甫家常酒菜</h3>
+      <p class="text-[#6b4f3a]">詩中說「盤飧市遠無兼味，樽酒家貧只舊醅」，杜甫家貧又離市集遠，哪些適合用來招待客人？點選合適的酒菜吧！</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="bg-[rgba(212,168,75,0.1)] rounded-2xl p-6">
+        <p class="text-center mb-4 font-cute">草堂地處偏僻，沒有山珍海味，用樸素的心意招待朋友才最珍貴！</p>
+        <div class="grid grid-cols-4 gap-3 mb-4" id="foodGrid">
+        </div>
+        <div id="foodPlate" class="bg-white rounded-xl p-4 min-h-[80px] border-2 border-dashed border-[#d4a84b]">
+          <p class="text-center text-gray-400 text-base">選好的酒菜會擺在餐盤上</p>
+        </div>
+        <div id="foodResult" class="text-center mt-3"></div>
+      </div>
+    </div>
+    `
+  ];
+  
+  // 繼續補 5-9 的 game1
+  const moreGames1 = [
+    // 5. 山行 - 楓林詩句接龍（收集楓葉拼出詩句，替代迷宮）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🍁 楓林詩句接龍</h3>
+      <p class="text-[#6b4f3a]">秋風吹落了楓葉，上面寫著打散的詩句字詞！按正確順序點擊楓葉，拼出完整的《山行》詩句吧！</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="relative rounded-2xl overflow-hidden border-4 border-[#d4a84b] shadow-lg" style="height:340px;background:url('https://gips3.baidu.com/it/u=2379989197,2898907695&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152') center/cover no-repeat;">
+        <!-- 古風兒童繪本楓林背景 -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[rgba(0,0,0,0.05)] to-[rgba(124,45,18,0.25)]"></div>
+        <!-- 飄落楓葉裝飾 -->
+        <div class="absolute top-3 left-6 text-5xl opacity-60 float-anim">🍂</div>
+        <div class="absolute top-8 right-8 text-5xl opacity-60 float-anim" style="animation-delay:0.8s">🍁</div>
+        <div class="absolute bottom-4 left-10 text-4xl opacity-50 float-anim" style="animation-delay:1.2s">🍂</div>
+        <div class="absolute bottom-8 right-16 text-4xl opacity-50 float-anim" style="animation-delay:0.5s">🍁</div>
+        <!-- 詩句拼寫區 -->
+        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-white/90 rounded-xl px-5 py-3 border-2 border-[#8B2323] z-10 min-w-[300px]">
+          <p class="text-center font-brush text-xl text-[#8B2323] mb-2">拼出的詩句：</p>
+          <div id="poemLineArea" class="text-center font-brush text-2xl text-[#3d2b1f] min-h-[40px] flex items-center justify-center gap-1 flex-wrap">
+            <span class="text-gray-400 text-lg">按順序點擊楓葉...</span>
+          </div>
+        </div>
+        <!-- 楓葉字詞按鈕區 -->
+        <div id="mapleLeavesArea" class="absolute inset-x-4 top-28 bottom-16 flex flex-wrap justify-center items-center gap-3 z-10">
+        </div>
+        <!-- 提示 -->
+        <div id="mapleHint" class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-[rgba(253,248,240,0.95)] border-2 border-[#d4a84b] text-[#3d2b1f] px-4 py-2 rounded-xl text-center shadow-md text-base z-10">
+          第一句：遠上寒山石徑斜
+        </div>
+      </div>
+      <div class="flex justify-center gap-2 mt-3">
+        <button class="btn-ancient btn-gold text-base py-2 px-4" onclick="initMaplePoem()">🔄 重玩一次</button>
+      </div>
+      <div id="mapleResult" class="text-center mt-3"></div>
+    </div>
+    `,
+    
+    // 6. 曉出淨慈寺送林子方 - 荷花塘尋寶（古風兒童繪本風格）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🪷 西湖荷花塘</h3>
+      <p class="text-[#6b4f3a]">六月西湖荷花盛開！點擊找出所有盛開的荷花，體會「映日荷花別樣紅」的美景吧～</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="flex justify-between mb-3">
+        <span class="font-bold">已找到：<span id="lotusCount" class="text-[#c83c3c]">0</span> / 8 朵荷花</span>
+        <button class="btn-ancient btn-green text-base py-2 px-4" onclick="initLotusPond()">重新開始</button>
+      </div>
+      <div id="lotusPond" class="relative rounded-2xl overflow-hidden border-4 border-[#d4a84b]" style="height:350px;background:url('https://aisearch.cdn.bcebos.com/fileAsset/AyIM1tb1XDR8_J-APSxMJg/1792894662743oTlas6.jpg?authorization=bce-auth-v1%2F7e22d8caf5af46cc9310f1e3021709f3%2F2026-10-25T02%3A17%3A43Z%2F86400%2Fhost%2F1f75b9d2a0c16bd5fe27ab641dd47e63e5082d9e9420140dab06f8a42d76bece') center/cover no-repeat;">
+        <!-- 古風繪本裝飾 -->
+        <div class="absolute top-3 left-4 text-4xl opacity-80 float-anim" style="text-shadow:0 2px 4px rgba(255,255,255,0.8)">☁️</div>
+        <div class="absolute top-3 right-6 text-4xl opacity-80 float-anim" style="animation-delay:0.5s;text-shadow:0 2px 4px rgba(255,255,255,0.8)">☀️</div>
+        <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[rgba(253,248,240,0.7)] to-transparent"></div>
+      </div>
+      <p class="text-center mt-2 text-base text-[#8a7060]">🎨 古風兒童繪本風格的六月西湖，滿池荷花盛開</p>
+      <div id="lotusResult" class="text-center mt-3"></div>
+    </div>
+    `,
+    
+    // 7. 竹里館 - 竹林靜心園（移除底部文字框，熱點移到景物實際位置：詩人按鈕移到人頭上方，與琴分開）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🎋 竹林靜心園</h3>
+      <p class="text-[#6b4f3a]">詩人在竹林裡做甚麼？點擊畫面中虛線圈圈裡的景物，體會「深林人不知」的幽靜意境</p>
+    </div>
+    <div class="max-w-4xl mx-auto relative rounded-2xl overflow-hidden border-4 border-[#d4a84b] shadow-lg" style="height:420px">
+      <img src="https://gips3.baidu.com/it/u=1509822120,323311452&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&w=1280&h=720" class="w-full h-full object-cover" alt="竹林夜景">
+      <!-- 半透明虛線熱點：對準圖中景物位置 -->
+      <!-- 明月在右上方天空 -->
+      <div id="moonBamboo" class="bamboo-spot absolute top-[8%] right-[12%] w-16 h-16 cursor-pointer rounded-full bg-yellow-100/15 border border-dashed border-yellow-300/40 hover:bg-yellow-200/30 transition-all flex items-center justify-center text-xl" onclick="bambooEvent(this,'🌙 明月靜靜灑下銀光，只有她陪伴著你')">🌙</div>
+      <!-- 左側竹林 -->
+      <div id="bambooLeft" class="bamboo-spot absolute bottom-[18%] left-[8%] w-[72px] h-[72px] cursor-pointer rounded-full bg-green-100/15 border border-dashed border-green-400/40 hover:bg-green-200/30 transition-all flex items-center justify-center text-xl" onclick="bambooEvent(this,'🎋 你撥動竹葉，清風吹過，發出沙沙聲響...')">🎋</div>
+      <!-- 詩人按鈕移到人頭上方（頂部中央偏上），不再貼近琴 -->
+      <div id="poetBamboo" class="bamboo-spot absolute top-[30%] left-1/2 -translate-x-1/2 w-14 h-14 cursor-pointer rounded-full bg-blue-100/15 border border-dashed border-blue-300/40 hover:bg-blue-200/30 transition-all flex items-center justify-center text-lg" onclick="bambooEvent(this,'🧘 你靜靜坐在青石上，閉上眼睛，感受竹林裡的安靜...')">👤</div>
+      <!-- 古琴按鈕放在畫面下方偏左（詩人膝前位置），與人頭按鈕垂直分開 -->
+      <div id="qinBamboo" class="bamboo-spot absolute bottom-[14%] left-[38%] w-16 h-16 cursor-pointer rounded-full bg-orange-100/15 border border-dashed border-orange-300/40 hover:bg-orange-200/30 transition-all flex items-center justify-center text-xl" onclick="bambooEvent(this,'🎸 悠揚的琴聲在竹林間迴盪，只有明月和竹葉聽得到～')">🎸</div>
+      <!-- 長嘯按鈕在右側竹林 -->
+      <div id="bambooRight" class="bamboo-spot absolute top-[28%] right-[18%] w-16 h-16 cursor-pointer rounded-full bg-purple-100/15 border border-dashed border-purple-300/40 hover:bg-purple-200/30 transition-all flex items-center justify-center text-xl" onclick="bambooEvent(this,'🗣️ 你發出一聲長嘯，聲音在林間輕輕迴響，山間都安靜了...')">🗣️</div>
+      <!-- 移除底部實心文字框，改用浮動 Toast 提示（懸浮在畫面頂部中央，不遮擋景物） -->
+      <div id="bambooMessage" class="absolute top-3 left-1/2 -translate-x-1/2 bg-white/70 backdrop-blur-sm border border-[#d4a84b]/60 text-[#3d2b1f] px-4 py-1 rounded-full text-sm shadow pointer-events-none opacity-90">
+        點擊虛線圈圈裡的景物
+      </div>
+    </div>
+    <p class="text-center mt-2 text-base text-[#8a7060]">🎨 古風兒童繪本風格橫版竹林夜景，明月照詩人撫琴</p>
+    <div class="text-center mt-4">
+      <p class="text-[#6b4f3a]">當你找到了琴聲、長嘯和明月的陪伴，就能體會詩人悠然獨處的快樂了！</p>
+      <button class="btn-ancient mt-2" onclick="awardStar(7,1);document.getElementById('bambooResult').innerHTML='<span class=stamp>領悟幽靜 ★</span>'">我明白了！</button>
+      <div id="bambooResult" class="mt-3"></div>
+    </div>
+    `,
+    
+    // 8. 春江晚景 - 找春天（新背景圖含明顯河豚，熱點對準圖中景物：桃花左上、鴨子水上、蔞蒿/蘆芽岸邊、河豚右下）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🦆 找春天的訊息</h3>
+      <p class="text-[#6b4f3a]">春天來了！點擊畫面中虛線圈圈裡春天的景物，看誰最先發現春天的訊息！</p>
+    </div>
+    <div class="max-w-4xl mx-auto relative rounded-2xl overflow-hidden border-4 border-[#d4a84b] shadow-lg" style="height:420px">
+      <!-- 全新古風兒童繪本風春江圖：桃花左上、鴨子水中、蔞蒿蘆芽岸邊、河豚右下可見 -->
+      <img src="https://gips2.baidu.com/it/u=1225591640,1569542619&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&w=1280&h=720" class="w-full h-full object-cover" alt="春日江南">
+      <!-- 半透明虛線熱點：對準背景圖中對應景物 -->
+      <!-- 桃花：左上方桃枝 -->
+      <div id="springPeach" class="spring-spot absolute top-[10%] left-[5%] w-[72px] h-[72px] cursor-pointer rounded-full bg-pink-100/15 border border-dashed border-pink-400/40 hover:bg-pink-200/30 transition-all flex items-center justify-center text-xl" onclick="findSpring(this,'🌸 桃花盛開，粉紅粉紅的，春天來啦！')" data-spring="1" data-emoji="🌸">🌸</div>
+      <!-- 鴨媽媽：江面左側中部 -->
+      <div id="springDuck1" class="spring-spot absolute top-[42%] left-[22%] w-16 h-16 cursor-pointer rounded-full bg-yellow-100/15 border border-dashed border-yellow-400/40 hover:bg-yellow-200/30 transition-all flex items-center justify-center text-xl" onclick="findSpring(this,'🦆 鴨子最先知道江水變暖了，開心地游來游去！')" data-spring="1" data-emoji="🦆">🦆</div>
+      <!-- 小鴨子：鴨媽媽旁邊 -->
+      <div id="springDuckling" class="spring-spot absolute top-[40%] left-[36%] w-14 h-14 cursor-pointer rounded-full bg-yellow-100/15 border border-dashed border-yellow-400/40 hover:bg-yellow-200/30 transition-all flex items-center justify-center text-lg" onclick="findSpring(this,'🐤 小鴨子也跟著媽媽玩水，嘰嘰喳喳真熱鬧！')" data-spring="1" data-emoji="🐤">🐤</div>
+      <!-- 另一隻鴨：江面右側 -->
+      <div id="springDuck2" class="spring-spot absolute top-[38%] right-[28%] w-16 h-16 cursor-pointer rounded-full bg-yellow-100/15 border border-dashed border-yellow-400/40 hover:bg-yellow-200/30 transition-all flex items-center justify-center text-xl" onclick="findSpring(this,'🦆 這邊也有一隻小鴨，江裡好熱鬧呀！')" data-spring="1" data-emoji="🦆">🦆</div>
+      <!-- 蔞蒿：岸邊下方偏右 -->
+      <div id="springWormwood" class="spring-spot absolute bottom-[12%] left-[50%] w-[72px] h-[72px] cursor-pointer rounded-full bg-green-100/15 border border-dashed border-green-500/40 hover:bg-green-200/30 transition-all flex items-center justify-center text-xl" onclick="findSpring(this,'🌿 蔞蒿長滿岸邊，嫩綠嫩綠的春天野菜！')" data-spring="1" data-emoji="🌿">🌿</div>
+      <!-- 蘆芽：岸邊右下角附近 -->
+      <div id="springShoot" class="spring-spot absolute bottom-[10%] right-[32%] w-[68px] h-[68px] cursor-pointer rounded-full bg-lime-100/15 border border-dashed border-lime-500/40 hover:bg-lime-200/30 transition-all flex items-center justify-center text-xl" onclick="findSpring(this,'🌱 蘆筍剛剛發出小芽，這也是春天的訊息！')" data-spring="1" data-emoji="🌱">🌱</div>
+      <!-- 河豚彩蛋：右下角江水中（一開始就可見半透明，找齊5個後浮現明顯） -->
+      <div class="spring-spot absolute bottom-[12%] right-[8%] w-16 h-16 cursor-pointer rounded-full bg-orange-100/25 border border-dashed border-orange-400/50 hover:bg-orange-200/40 transition-all flex items-center justify-center text-xl opacity-60 hover:opacity-100" id="fuguSpring" onclick="findSpring(this,'🐡 河豚也要逆流而上產卵了，這是詩人想像中的春天！')" data-spring="1" data-emoji="🐡">🐡</div>
+      <!-- 頂部浮動 Toast 提示，不遮擋景物 -->
+      <div class="absolute top-3 left-1/2 -translate-x-1/2 bg-white/70 backdrop-blur-sm border border-[#d4a84b]/60 text-[#3d2b1f] px-4 py-1 rounded-full text-sm shadow pointer-events-none opacity-90" id="springTip">
+        點擊虛線圈圈裡春天的景物
+      </div>
+    </div>
+    <p class="text-center mt-2 text-base text-[#8a7060]">🎨 古風兒童繪本風格橫版春江晚景，桃花水暖鴨先知，河豚水中游</p>
+    <div id="springFound" class="flex justify-center gap-3 mt-3 flex-wrap"></div>
+    <div id="springResult" class="text-center mt-3"></div>
+    `,
+    
+    // 9. 八陣圖 - 四門點兵（超簡單版本：點擊正確方位佈陣，古風兒童繪本背景）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">⚔️ 諸葛點兵·四門陣法</h3>
+      <p class="text-[#6b4f3a]">諸葛亮要佈陣啦！按提示點擊四個方位的城門，把士兵佈到正確的位置就可以哦～</p>
+    </div>
+    <div class="max-w-4xl mx-auto relative rounded-2xl overflow-hidden border-4 border-[#d4a84b] shadow-lg" style="height:420px">
+      <img src="https://gips0.baidu.com/it/u=864751422,3248101648&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720" class="w-full h-full object-cover" alt="點將台四門陣">
+      <!-- 半透明縮小虛線按鍵，對應四個城門位置 -->
+      <div class="absolute top-[8%] left-1/2 -translate-x-1/2">
+        <button id="gateNorth" class="w-20 h-20 rounded-full bg-white/15 border border-dashed border-blue-400/50 hover:bg-white/30 transition-all flex flex-col items-center justify-center" onclick="placeStone('北','north')">
+          <span class="text-xl">⬆️</span>
+          <span class="font-bold text-base">北門</span>
+        </button>
+      </div>
+      <div class="absolute left-[8%] top-1/2 -translate-y-1/2">
+        <button id="gateWest" class="w-20 h-20 rounded-full bg-white/15 border border-dashed border-blue-400/50 hover:bg-white/30 transition-all flex flex-col items-center justify-center" onclick="placeStone('西','west')">
+          <span class="text-xl">⬅️</span>
+          <span class="font-bold text-base">西門</span>
+        </button>
+      </div>
+      <div class="absolute right-[8%] top-1/2 -translate-y-1/2">
+        <button id="gateEast" class="w-20 h-20 rounded-full bg-white/15 border border-dashed border-blue-400/50 hover:bg-white/30 transition-all flex flex-col items-center justify-center" onclick="placeStone('東','east')">
+          <span class="text-xl">➡️</span>
+          <span class="font-bold text-base">東門</span>
+        </button>
+      </div>
+      <div class="absolute bottom-[22%] left-1/2 -translate-x-1/2">
+        <button id="gateSouth" class="w-20 h-20 rounded-full bg-white/15 border border-dashed border-blue-400/50 hover:bg-white/30 transition-all flex flex-col items-center justify-center" onclick="placeStone('南','south')">
+          <span class="text-xl">⬇️</span>
+          <span class="font-bold text-base">南門</span>
+        </button>
+      </div>
+      <div class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-[rgba(253,248,240,0.95)] border-2 border-[#d4a84b] text-[#3d2b1f] px-5 py-2 rounded-xl min-w-[320px] text-center shadow-md" id="battleOrder">
+        點擊下方「開始佈陣」，聽從軍師號令！
+      </div>
+    </div>
+    <p class="text-center mt-2 text-base text-[#8a7060]">🎨 古風兒童繪本風格點將台四門陣</p>
+    <div class="flex justify-center gap-2 mt-3">
+      <button class="btn-ancient btn-gold text-base" onclick="startBattleFormation()">開始佈陣</button>
+    </div>
+    <div id="battleResult" class="text-center mt-3"></div>
+    `
+  ];
+  
+  return (games[id] !== undefined ? games[id] : moreGames1[id-5]) || '<p>遊戲載入中...</p>';
+}
+
+
+function renderGame2(id) {
+  const games2 = [
+    // 0. 二子學弈 - 成語選擇：誰做得對？
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🤔 他們做得對嗎？</h3>
+      <p class="text-[#6b4f3a]">看看下面這些情景，判斷他們是「專心致志」還是「三心二意」</p>
+    </div>
+    <div class="max-w-2xl mx-auto space-y-3">
+      <div class="bg-white rounded-xl p-4 border-2 border-gray-100 shadow-sm flex gap-4 items-center">
+        <div class="text-5xl flex-shrink-0">📺</div>
+        <div class="flex-1">
+          <p class="mb-2 font-bold">小明一邊做作業，一邊看電視。</p>
+          <div class="flex gap-2">
+            <button class="game-btn flex-1" onclick="judgeFocus(this,false)">✅ 專心致志</button>
+            <button class="game-btn flex-1" onclick="judgeFocus(this,true)">❌ 三心二意</button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl p-4 border-2 border-gray-100 shadow-sm flex gap-4 items-center">
+        <div class="text-5xl flex-shrink-0">🎨</div>
+        <div class="flex-1">
+          <p class="mb-2 font-bold">小美畫畫時全神貫注，連媽媽叫她吃飯都沒聽到。</p>
+          <div class="flex gap-2">
+            <button class="game-btn flex-1" onclick="judgeFocus(this,false)">✅ 專心致志</button>
+            <button class="game-btn flex-1" onclick="judgeFocus(this,true)">❌ 三心二意</button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl p-4 border-2 border-gray-100 shadow-sm flex gap-4 items-center">
+        <div class="text-5xl flex-shrink-0">🎵</div>
+        <div class="flex-1">
+          <p class="mb-2 font-bold">上音樂課時，小華一直在想下課要去哪裡玩。</p>
+          <div class="flex gap-2">
+            <button class="game-btn flex-1" onclick="judgeFocus(this,false)">✅ 專心致志</button>
+            <button class="game-btn flex-1" onclick="judgeFocus(this,true)">❌ 三心二意</button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl p-4 border-2 border-gray-100 shadow-sm flex gap-4 items-center">
+        <div class="text-5xl flex-shrink-0">🧮</div>
+        <div class="flex-1">
+          <p class="mb-2 font-bold">小芬做數學題時，認真思考每一道題目。</p>
+          <div class="flex gap-2">
+            <button class="game-btn flex-1" onclick="judgeFocus(this,false)">✅ 專心致志</button>
+            <button class="game-btn flex-1" onclick="judgeFocus(this,true)">❌ 三心二意</button>
+          </div>
+        </div>
+      </div>
+      <div id="focusResult" class="hidden bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4 text-center">
+        <p class="font-bold text-[#8B2323] text-xl">🎉 太棒了！</p>
+        <p class="section-text">不論學習還是做事，專心致志是成功的秘訣！別像想射天鵝的學生一樣三心二意哦。</p>
+      </div>
+    </div>
+    `,
+    
+    // 1. 鄭人買履 - 靈活變通小判官
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">💡 變通小判官</h3>
+      <p class="text-[#6b4f3a]">遇到這些情況，怎麼做才對？選出靈活變通的做法。</p>
+    </div>
+    <div class="max-w-2xl mx-auto space-y-4" id="situations"></div>
+    <div id="situationResult" class="hidden bg-green-50 border-2 border-green-300 rounded-xl p-4 text-center max-w-2xl mx-auto">
+      <p class="font-bold text-green-800 text-xl">🌟 你真懂得變通！</p>
+      <p class="section-text">「鄭人買履」告訴我們：做事要看實際情況，別死守教條！</p>
+    </div>
+    `,
+    
+    // 2. 山中送別 - 情緒溫度計（體會詩人感情）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">💗 詩人的心情</h3>
+      <p class="text-[#6b4f3a]">讀完這首詩，你覺得詩人每一句話是甚麼心情？拖動滑桿調整情緒溫度吧！</p>
+    </div>
+    <div class="max-w-2xl mx-auto space-y-4">
+      <div class="bg-white rounded-xl p-4 border-2 border-[rgba(212,168,75,0.3)]">
+        <p class="font-brush text-2xl mb-2">「山中相送罷，日暮掩柴扉。」</p>
+        <p class="text-base text-gray-600 mb-2">送別朋友，關上大門時的心情：</p>
+        <input type="range" min="0" max="100" value="50" class="w-full" oninput="updateMood(this,'mood1')">
+        <div class="flex justify-between text-base">
+          <span>😊 開心平靜</span>
+          <span id="mood1" class="font-bold">😐 淡淡惆悵</span>
+          <span>😢 非常傷心</span>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl p-4 border-2 border-[rgba(212,168,75,0.3)]">
+        <p class="font-brush text-2xl mb-2">「春草明年綠，王孫歸不歸？」</p>
+        <p class="text-base text-gray-600 mb-2">想到明年春天的時候，心情是：</p>
+        <input type="range" min="0" max="100" value="70" class="w-full" oninput="updateMood(this,'mood2')">
+        <div class="flex justify-between text-base">
+          <span>😊 滿心期待</span>
+          <span id="mood2" class="font-bold">🤔 牽掛期盼</span>
+          <span>😢 擔心失望</span>
+        </div>
+      </div>
+      <div class="bg-[#fff9ed] rounded-xl p-4 border-2 border-dashed border-[#d4a84b]">
+        <p class="text-center font-cute section-text">💡 這首詩把思念藏在淡淡的問句裡，感情真誠溫柔——這就是古詩「含蓄」的美！</p>
+      </div>
+      <div class="text-center">
+        <button class="btn-ancient" onclick="awardStar(2,2);document.getElementById('moodResult').innerHTML='<span class=stamp>體會詩情 ★★</span>'">我感受到詩人的心情了！</button>
+        <div id="moodResult" class="mt-3"></div>
+      </div>
+    </div>
+    `,
+    
+    // 3. 出塞 - 對對子連連看
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🔗 詩句對對子</h3>
+      <p class="text-[#6b4f3a]">古詩常常有對仗，點擊左邊一句，再點擊右邊能和它配對的相關詞語</p>
+    </div>
+    <div class="max-w-xl mx-auto">
+      <div class="grid grid-cols-2 gap-4" id="matchPairs">
+        <div class="space-y-2">
+          <button class="game-btn w-full match-left" data-match="moon" onclick="selectMatch(this,'left','moon')">秦時明月</button>
+          <button class="game-btn w-full match-left" data-match="general" onclick="selectMatch(this,'left','general')">龍城飛將</button>
+          <button class="game-btn w-full match-left" data-match="pass" onclick="selectMatch(this,'left','pass')">萬里長征</button>
+          <button class="game-btn w-full match-left" data-match="mountain" onclick="selectMatch(this,'left','mountain')">不教胡馬度</button>
+        </div>
+        <div class="space-y-2">
+          <button class="game-btn w-full match-right" data-match="general" onclick="selectMatch(this,'right','general')">李廣將軍</button>
+          <button class="game-btn w-full match-right" data-match="mountain" onclick="selectMatch(this,'right','mountain')">陰山</button>
+          <button class="game-btn w-full match-right" data-match="moon" onclick="selectMatch(this,'right','moon')">漢時關</button>
+          <button class="game-btn w-full match-right" data-match="pass" onclick="selectMatch(this,'right','pass')">人未還</button>
+        </div>
+      </div>
+      <div id="matchResult" class="text-center mt-4"></div>
+    </div>
+    `,
+    
+    // 4. 客至 - 待客之道排序
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🏡 待客正確順序</h3>
+      <p class="text-[#6b4f3a]">客人來了，杜甫會按甚麼順序準備？按正確順序點擊卡片！</p>
+    </div>
+    <div class="max-w-xl mx-auto">
+      <div id="hostSteps" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
+      <div class="bg-white rounded-xl p-4 border-2 border-dashed border-[#d4a84b] min-h-[80px]" id="hostOrder">
+        <p class="text-center text-gray-400">按你認為的順序點擊上面的卡片</p>
+      </div>
+      <div class="flex justify-center gap-2 mt-3">
+        <button class="btn-ancient btn-gold text-base" onclick="resetHostOrder()">重新排列</button>
+      </div>
+      <div id="hostResult" class="text-center mt-3"></div>
+    </div>
+    `
+  ];
+  
+  const moreGames2 = [
+    // 5. 山行 - 寒山行旅步移景換（每前進一步就看見對應詩句風景）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🚶 寒山行旅·步移景換</h3>
+      <p class="text-[#6b4f3a]">跟著杜牧驅車上山！點擊「向前走」按鈕，每走一步，眼前就會展現對應詩句的美麗風景～</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div id="journeyScene" class="relative rounded-2xl overflow-hidden border-4 border-[#d4a84b] shadow-lg transition-all duration-700" style="height:380px;">
+        <!-- 風景圖（動態更換） -->
+        <img id="journeyImg" src="https://gips0.baidu.com/it/u=2099816191,3916855236&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152" class="absolute inset-0 w-full h-full object-cover transition-all duration-700" alt="寒山楓景">
+        <!-- emoji風景層（非圖片站點使用） -->
+        <div id="journeyEmoji" class="absolute inset-0 flex items-center justify-around px-8 z-0" style="display:none;"></div>
+        <!-- 漸變遮罩保證文字清晰（底部加深以托住半透明對話框） -->
+        <div class="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.5)] via-transparent to-[rgba(0,0,0,0.1)] z-[1]"></div>
+        <!-- 旅人與馬車（半透明，不搶風景） -->
+        <div id="travelerPos" class="absolute bottom-14 transition-all duration-700 ease-out text-4xl z-[2] opacity-40" style="left:8%">
+          <span class="drop-shadow-md">🚶</span>
+        </div>
+        <!-- 當前風景說明（縮小+半透明毛玻璃+文字清晰） -->
+        <div class="absolute bottom-3 left-3 right-3 bg-white/60 backdrop-blur-md rounded-lg px-3 py-2 border border-white/50 shadow-md z-10">
+          <div class="flex items-center justify-between mb-0.5">
+            <span class="font-bold text-[#8B2323] text-sm drop-shadow-sm" id="journeyStepNum">第 1 站 / 共 4 站</span>
+            <span class="text-xs text-[#3d2b1f] font-medium drop-shadow-sm" id="journeyDist">山路入口</span>
+          </div>
+          <p class="font-brush text-xl text-[#5a1010] text-center leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]" id="journeyPoem">遠上寒山石徑斜</p>
+          <p class="text-xs text-[#2a1a0f] text-center mt-0.5 font-medium drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]" id="journeyDesc">石徑斜斜地伸向遠方的寒山，旅途開始了！</p>
+        </div>
+      </div>
+      <!-- 前進/重來按鈕 -->
+      <div class="flex justify-center gap-3 mt-4">
+        <button id="walkForwardBtn" class="btn-ancient text-lg py-3 px-8" onclick="walkForward()">🚶 向前走一步</button>
+        <button class="game-btn text-base py-2 px-4" onclick="initJourney()">🔄 重新出發</button>
+      </div>
+      <!-- 已遊覽景點記錄 -->
+      <div id="journeyLog" class="mt-3 bg-white rounded-xl p-3 border-2 border-dashed border-orange-300 min-h-[60px]">
+        <p class="text-center text-gray-400 text-base">📖 你的遊覽日誌會記錄在這裡～</p>
+      </div>
+      <div id="journeyResult" class="text-center mt-3"></div>
+    </div>
+    `,
+    
+    // 6. 曉出淨慈寺送林子方 - 西湖四季賞景
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🌄 西湖四季美景</h3>
+      <p class="text-[#6b4f3a]">西湖一年四季都有不同的美麗風景！點擊下方季節按鈕，欣賞不同季節的西湖景色～</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="flex justify-center gap-2 mb-3 flex-wrap">
+        <button class="btn-ancient text-base py-2 px-4" onclick="showSeason('spring')" id="btn-spring">春</button>
+        <button class="btn-ancient btn-gold text-base py-2 px-4" onclick="showSeason('summer')" id="btn-summer">夏</button>
+        <button class="game-btn text-base py-2 px-4" onclick="showSeason('autumn')" id="btn-autumn">秋</button>
+        <button class="game-btn text-base py-2 px-4" onclick="showSeason('winter')" id="btn-winter">冬</button>
+      </div>
+      <div id="seasonView" class="relative rounded-2xl overflow-hidden border-4 border-[#d4a84b] transition-all duration-700" style="height:380px;background:url('https://aisearch.cdn.bcebos.com/fileAsset/AyIM1tb1XDR8_J-APSxMJg/1792894662743oTlas6.jpg?authorization=bce-auth-v1%2F7e22d8caf5af46cc9310f1e3021709f3%2F2026-10-25T02%3A17%3A43Z%2F86400%2Fhost%2F1f75b9d2a0c16bd5fe27ab641dd47e63e5082d9e9420140dab06f8a42d76bece') center/cover no-repeat;">
+        <div id="seasonContent" class="absolute inset-0 flex flex-col items-center justify-end p-6 pb-6">
+          <div class="absolute inset-0 bg-gradient-to-t from-[rgba(253,248,240,0.92)] via-[rgba(253,248,240,0.5)] to-transparent"></div>
+          <div class="relative z-10 text-center">
+            <p class="font-brush text-3xl text-[#8B2323] mb-2">六月西湖·夏天</p>
+            <p class="text-xl text-[#5a8c5a] font-bold mb-2">接天蓮葉無窮碧，映日荷花別樣紅</p>
+            <p class="text-base text-[#6b4f3a]">滿池碧綠蓮葉連到天邊，陽光下荷花顯得格外嬌豔鮮紅，這就是詩人清晨送別林子方時看到的絕美西湖盛夏！</p>
+          </div>
+        </div>
+      </div>
+      <p class="text-center mt-3 text-base text-[#8a7060]">👆 點擊不同季節，看看西湖春夏秋冬各有甚麼美麗景色</p>
+      <div class="text-center mt-3">
+        <button class="btn-ancient" onclick="awardStar(6,2);document.getElementById('seasonResult').innerHTML='<span class=stamp>四季覽勝 ★★</span>'">我看完四季景色了！</button>
+        <div id="seasonResult" class="mt-2"></div>
+      </div>
+    </div>
+    `,
+    
+    // 7. 竹里館 - 獨處的快樂（古風兒童繪本風格）
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🌟 獨處的快樂</h3>
+      <p class="text-[#6b4f3a]">詩人獨自一人在竹林裡也很快樂，一個人的時候可以做甚麼開心事？選出你喜歡的！</p>
+    </div>
+    <div class="max-w-2xl mx-auto relative rounded-2xl overflow-hidden border-4 border-[#d4a84b]" style="min-height:380px;background:url('https://gips0.baidu.com/it/u=1890933433,2022883796&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152') center/cover no-repeat;padding:20px;">
+      <!-- 半透明紙質遮罩，保證文字清晰 -->
+      <div class="absolute inset-0 bg-[rgba(253,248,240,0.82)]"></div>
+      <div class="relative z-10">
+        <p class="text-center mb-3 text-[#6b4f3a]">一個人也可以很好玩～選出你覺得享受的事情（可以多選）：</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="aloneGrid">
+          <button class="alone-btn game-btn text-center py-4 bg-[rgba(255,255,255,0.92)] border-2 border-[rgba(212,168,75,0.4)] hover:border-[#d4a84b]" onclick="toggleAlone(this)">🎸 彈琴/玩樂器</button>
+          <button class="alone-btn game-btn text-center py-4 bg-[rgba(255,255,255,0.92)] border-2 border-[rgba(212,168,75,0.4)] hover:border-[#d4a84b]" onclick="toggleAlone(this)">📚 安靜看書</button>
+          <button class="alone-btn game-btn text-center py-4 bg-[rgba(255,255,255,0.92)] border-2 border-[rgba(212,168,75,0.4)] hover:border-[#d4a84b]" onclick="toggleAlone(this)">🎨 畫畫/寫書法</button>
+          <button class="alone-btn game-btn text-center py-4 bg-[rgba(255,255,255,0.92)] border-2 border-[rgba(212,168,75,0.4)] hover:border-[#d4a84b]" onclick="toggleAlone(this)">🌙 欣賞月亮/星星</button>
+          <button class="alone-btn game-btn text-center py-4 bg-[rgba(255,255,255,0.92)] border-2 border-[rgba(212,168,75,0.4)] hover:border-[#d4a84b]" onclick="toggleAlone(this)">🚶 在大自然散步</button>
+          <button class="alone-btn game-btn text-center py-4 bg-[rgba(255,255,255,0.92)] border-2 border-[rgba(212,168,75,0.4)] hover:border-[#d4a84b]" onclick="toggleAlone(this)">🎤 自己唱歌/長嘯</button>
+          <button class="alone-btn game-btn text-center py-4 bg-[rgba(255,255,255,0.92)] border-2 border-[rgba(212,168,75,0.4)] hover:border-[#d4a84b]" onclick="toggleAlone(this)">🧘 冥想靜坐</button>
+          <button class="alone-btn game-btn text-center py-4 bg-[rgba(255,255,255,0.92)] border-2 border-[rgba(212,168,75,0.4)] hover:border-[#d4a84b]" onclick="toggleAlone(this)">🤔 胡思亂想/做白日夢</button>
+          <button class="alone-btn game-btn text-center py-4 bg-[rgba(255,255,255,0.92)] border-2 border-[rgba(212,168,75,0.4)] hover:border-[#d4a84b]" onclick="toggleAlone(this)">✍️ 寫日記/寫詩</button>
+        </div>
+        <div class="bg-[rgba(90,140,90,0.18)] border-2 border-[rgba(90,140,90,0.4)] rounded-xl p-4 mt-4 text-center">
+          <p class="section-text">💡 王維在竹林「彈琴復長嘯」，有明月相伴，一點都不孤單。學會享受獨處也是一種智慧！</p>
+          <button class="btn-ancient mt-3" onclick="awardStar(7,2);this.nextElementSibling.innerHTML='<span class=stamp>享受獨處 ★★</span>'">我學會了！</button>
+          <div class="mt-2"></div>
+        </div>
+      </div>
+    </div>
+    <p class="text-center mt-2 text-base text-[#8a7060]">🎨 古風兒童繪本風格的竹林背景，淡雅溫馨</p>
+    `,
+    
+    // 8. 春江晚景 - 季節大風吹
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🌸 哪個是春天的景物？</h3>
+      <p class="text-[#6b4f3a]">每一組中只有一個是春天的景物，把它選出來！</p>
+    </div>
+    <div class="max-w-2xl mx-auto space-y-4" id="seasonRounds"></div>
+    <div id="seasonResult" class="hidden bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4 text-center">
+      <p class="font-bold text-[#8B2323] text-xl">🎉 全部答對！</p>
+      <p class="section-text">這首詩把初春的細微變化都寫出來了，詩人觀察多麼仔細！</p>
+    </div>
+    `,
+    
+    // 9. 八陣圖 - 三國知識小達人
+    `
+    <div class="text-center mb-4">
+      <h3 class="font-brush text-3xl text-[#8B2323]">🧠 三國小達人</h3>
+      <p class="text-[#6b4f3a]">關於諸葛亮和三國，你知道多少？一起來挑戰！</p>
+    </div>
+    <div class="max-w-2xl mx-auto space-y-3" id="threeKingQuiz">
+      <div id="tkQuizContainer"></div>
+      <div id="tkResult" class="hidden bg-blue-50 border-2 border-blue-300 rounded-xl p-4 text-center">
+        <p class="font-bold text-blue-800 text-xl" id="tkScoreText"></p>
+        <p class="section-text">「功蓋三分國，名成八陣圖」，短短十個字寫盡諸葛亮的偉大功績！</p>
+      </div>
+    </div>
+    `
+  ];
+  
+  return (games2[id] !== undefined ? games2[id] : moreGames2[id-5]) || '<p>遊戲載入中...</p>';
+}
+
+
+function renderConceptMap(id) {
+  const p = poems[id];
+  return `
+    <div class="text-center mb-6">
+      <h3 class="font-brush text-3xl text-[#8B2323] mb-2">🗺️ ${p.title} 概念圖</h3>
+      <p class="text-[#6b4f3a]">一張圖看懂這篇作品的重點！點擊卡片可以展開詳細說明</p>
+    </div>
+    <div class="max-w-3xl mx-auto">
+      <!-- 中心節點 -->
+      <div class="flex justify-center mb-6">
+        <div class="concept-map-node bg-gradient-to-br from-[#c83c3c] to-[#a82c2c] text-white border-[#8B2323] scale-110">
+          <p class="font-brush text-2xl">${p.title}</p>
+          <p class="text-base opacity-90">${p.dynasty} · ${p.author}</p>
+        </div>
+      </div>
+      
+      <!-- 連接線裝飾 -->
+      <div class="relative">
+        <div class="absolute left-1/2 top-0 w-1 h-8 bg-[#d4a84b] -translate-x-1/2"></div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="flex flex-col items-center">
+            <div class="w-1 h-6 bg-[#d4a84b]"></div>
+            <div class="concept-map-node w-full">
+              <p class="font-bold text-[#8B2323]">📜 文體</p>
+              <p class="text-base mt-1">${p.type}</p>
+            </div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-1 h-6 bg-[#d4a84b]"></div>
+            <div class="concept-map-node w-full">
+              <p class="font-bold text-[#8B2323]">💡 主旨</p>
+              <p class="text-base mt-1">${p.keywords[0]}</p>
+            </div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-1 h-6 bg-[#d4a84b]"></div>
+            <div class="concept-map-node w-full">
+              <p class="font-bold text-[#8B2323]">✨ 作品特色</p>
+              <p class="text-base mt-1">${p.rhetoric[0].name}</p>
+            </div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-1 h-6 bg-[#d4a84b]"></div>
+            <div class="concept-map-node w-full">
+              <p class="font-bold text-[#8B2323]">🔑 關鍵詞</p>
+              <p class="text-base mt-1">${p.keywords.slice(1,3).join('、')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 第二層：內容大意（古風卷軸流程圖） -->
+      <div class="mb-6">
+        <div class="concept-map-node text-left" style="background:transparent;box-shadow:none;border:none;padding:0;">
+          ${renderSummaryFlow(id)}
+        </div>
+      </div>
+      <div class="grid md:grid-cols-1 gap-4 mb-6">
+        <div class="concept-map-node text-left" onclick="this.querySelector('.concept-detail').classList.toggle('hidden')">
+          <p class="font-bold text-[#4a7ba8] flex items-center justify-between">
+            <span>🎨 作品特色</span>
+            <span>▼</span>
+          </p>
+          <p class="text-base mt-2">點開查看全部作品特色</p>
+          <div class="concept-detail hidden mt-2 pt-2 border-t border-dashed border-gray-200 space-y-2">
+            ${p.rhetoric.map(r => `<p class="text-base"><span class="font-bold text-[#8B2323]">${r.name}：</span>${r.desc}</p>`).join('')}
+          </div>
+        </div>
+      </div>
+      
+      <!-- 名句/啟示（左圖右文） -->
+      <div class="bg-gradient-to-r from-[rgba(212,168,75,0.15)] to-[rgba(200,60,60,0.1)] rounded-2xl p-5 border-2 border-[rgba(212,168,75,0.3)]">
+        <h4 class="font-brush text-3xl text-[#8B2323] mb-4 text-center">💫 閱讀啟示</h4>
+        <div class="flex flex-col md:flex-row items-center gap-4">
+          <img src="${p.img}" class="w-32 h-32 md:w-40 md:h-40 object-cover rounded-xl shadow-md flex-shrink-0">
+          <p class="font-cute text-2xl leading-relaxed text-left flex-1">${getInspiration(id)}</p>
+        </div>
+      </div>
+      
+      <div class="text-center mt-6">
+        <div class="stamp">學有所成</div>
+        <p class="text-base text-gray-500 mt-2">恭喜你完成本篇學習！</p>
+      </div>
+    </div>
+  `;
+}
+
+function getInspiration(id) {
+  const inspirations = [
+    '🎯 學習要專心致志，不能三心二意，否則再好的老師也教不會你。',
+    '💡 做事要靈活變通，根據實際情況想辦法，別死守教條。',
+    '🌸 真誠的友情值得珍惜，朋友離別後的思念，像春草年年生長。',
+    '🛡️ 我們要向英雄學習，長大保衛國家，讓人民過和平的生活。',
+    '🍶 朋友來訪是人生樂事，真誠熱情招待，樸素酒菜也很開心。',
+    '🍁 秋天不一定悲傷，霜打的楓葉比春花還美，每個季節都有驚喜。',
+    '🪷 大自然四季各有美麗，六月西湖接天荷花，多麼壯觀！',
+    '🎋 學會享受獨處：彈琴、讀書、親近自然，一個人也很快樂。',
+    '🦆 桃花開、鴨子下水、蘆芽冒，只要細心觀察就能發現春天。',
+    '🧠 諸葛亮智慧忠誠流傳千年，我們要學習他的聰明和報國精神。'
+  ];
+  return inspirations[id];
+}
+
+// 格律知識區
+function renderMeterPage() {
+  document.getElementById('meterContent').innerHTML = `
+    <div class="paper-card p-4 md:p-8 mb-6 fade-in">
+      <div class="text-center mb-6">
+        <h2 class="font-brush text-5xl md:text-6xl text-[#8B2323] mb-2">🎋 詩歌格律小學堂</h2>
+        <p class="text-[#6b4f3a] text-xl">認識古體詩與近體詩，學習平仄押韻！</p>
+        <img src="https://gips3.baidu.com/it/u=3454173250,1312669588&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152" class="w-56 h-56 md:w-64 md:h-64 object-cover rounded-xl mx-auto mt-3 shadow-lg float-anim">
+      </div>
+
+      <!-- 古體詩 vs 近體詩 -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-[rgba(90,140,90,0.08)] rounded-2xl p-5 border-2 border-[rgba(90,140,90,0.2)] text-center">
+          <div class="text-6xl mb-2">📜</div>
+          <h3 class="font-brush text-3xl text-[#5a8c5a] mb-3">古體詩</h3>
+          <ul class="space-y-2 section-text text-left">
+            <li>🕰️ 唐以前的詩（《詩經》、樂府）</li>
+            <li>📏 句數、字數自由</li>
+            <li>🎵 平仄押韻自由</li>
+            <li>✂️ 不需對仗</li>
+          </ul>
+          <p class="text-base text-gray-600 mt-3 bg-white/60 rounded-lg p-2">📌 《二子學弈》《鄭人買履》屬先秦古文</p>
+        </div>
+        <div class="bg-[rgba(200,60,60,0.08)] rounded-2xl p-5 border-2 border-[rgba(200,60,60,0.2)] text-center">
+          <div class="text-6xl mb-2">🏮</div>
+          <h3 class="font-brush text-3xl text-[#c83c3c] mb-3">近體詩</h3>
+          <ul class="space-y-2 section-text text-left">
+            <li>🕰️ 唐代形成的格律詩</li>
+            <li>📏 絕句4句 / 律詩8句，字數整齊</li>
+            <li>🎵 嚴格講究平仄押韻</li>
+            <li>✂️ 律詩中間兩聯須對仗</li>
+          </ul>
+          <p class="text-base text-gray-600 mt-3 bg-white/60 rounded-lg p-2">📌 我們學的大部分唐詩、宋詩都是近體詩！</p>
+        </div>
+      </div>
+
+      <!-- 平仄教學 -->
+      <div class="bg-[rgba(212,168,75,0.1)] rounded-2xl p-5 mb-6">
+        <h3 class="font-brush text-3xl text-[#8B2323] mb-4 text-center">🎵 甚麼是平仄？</h3>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white rounded-xl p-4 text-center">
+            <p class="mb-2"><span class="meter-box ping">平 —</span></p>
+            <p class="section-text">聲音平而長，不升不降。<br>（普通話一、二聲）</p>
+            <p class="font-brush text-3xl mt-3 text-[#2e7d32]">東 山 花 詩</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 text-center">
+            <p class="mb-2"><span class="meter-box ze">仄 |</span></p>
+            <p class="section-text">聲音有高低升降，比較短促。<br>（普通話三、四聲）</p>
+            <p class="font-brush text-3xl mt-3 text-[#c62828]">月 夜 竹 雪</p>
+          </div>
+        </div>
+        <p class="text-center mt-3 text-lg text-[#6b4f3a]">💡 平仄交替，讀起來高低起伏、像唱歌一樣好聽！</p>
+      </div>
+
+      <!-- 押韻教學 -->
+      <div class="bg-[rgba(74,123,168,0.08)] rounded-2xl p-5 mb-6">
+        <h3 class="font-brush text-3xl text-[#8B2323] mb-3 text-center">🔔 甚麼是押韻？</h3>
+        <p class="section-text text-center mb-3">詩句末尾字的韻母相同或相近，讀起來就會和諧好聽！</p>
+        <div class="bg-white rounded-xl p-4 max-w-md mx-auto text-center">
+          <p class="font-brush text-2xl mb-2">《山行》杜牧</p>
+          <div class="space-y-1 font-brush text-2xl">
+            <p>遠上寒山石徑<span class="text-[#c83c3c] font-bold">斜</span></p>
+            <p>白雲生處有人<span class="text-[#c83c3c] font-bold">家</span></p>
+            <p>停車坐愛楓林晚</p>
+            <p>霜葉紅於二月<span class="text-[#c83c3c] font-bold">花</span></p>
+          </div>
+          <p class="text-base text-gray-600 mt-2">「斜、家、花」韻母都是 a，朗朗上口！</p>
+        </div>
+      </div>
+
+      <!-- 絕句vs律詩 -->
+      <div class="grid md:grid-cols-3 gap-4 mb-4">
+        <div class="bg-white rounded-xl p-4 text-center border-2 border-[rgba(212,168,75,0.3)]">
+          <div class="text-5xl mb-2">📝</div>
+          <p class="font-brush text-3xl text-[#8B2323]">五言絕句</p>
+          <p class="text-lg mt-1">每句5字，4句，共20字</p>
+          <p class="text-base text-gray-500 mt-2">例：《竹里館》《山中送別》《八陣圖》</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 text-center border-2 border-[rgba(212,168,75,0.3)]">
+          <div class="text-5xl mb-2">📖</div>
+          <p class="font-brush text-3xl text-[#8B2323]">七言絕句</p>
+          <p class="text-lg mt-1">每句7字，4句，共28字</p>
+          <p class="text-base text-gray-500 mt-2">例：《出塞》《山行》《曉出淨慈寺》《春江晚景》</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 text-center border-2 border-[rgba(212,168,75,0.3)]">
+          <div class="text-5xl mb-2">📚</div>
+          <p class="font-brush text-3xl text-[#8B2323]">七言律詩</p>
+          <p class="text-lg mt-1">每句7字，8句，共56字</p>
+          <p class="text-base text-gray-500 mt-2">例：《客至》（杜甫）</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 格律小遊戲：平仄小偵探 -->
+    <div class="paper-card p-4 md:p-6">
+      <div class="text-center mb-4">
+        <h3 class="font-brush text-3xl text-[#8B2323]">🕵️ 平仄小偵探遊戲</h3>
+        <p class="text-[#6b4f3a]">看看下面的字，哪些是平聲（—），哪些是仄聲（|）？點擊按鈕分類！</p>
+      </div>
+      <div class="max-w-2xl mx-auto">
+        <div class="flex justify-center gap-8 mb-4">
+          <div>
+            <p class="text-center mb-2"><span class="meter-box ping">平聲</span></p>
+            <div id="pingBucket" class="drop-zone w-32 h-32 flex-wrap bg-green-50" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropPingZe(event,this,'ping')"></div>
+          </div>
+          <div>
+            <p class="text-center mb-2"><span class="meter-box ze">仄聲</span></p>
+            <div id="zeBucket" class="drop-zone w-32 h-32 flex-wrap bg-red-50" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropPingZe(event,this,'ze')"></div>
+          </div>
+        </div>
+        <div id="pingzeWords" class="flex flex-wrap justify-center gap-3 mb-4"></div>
+        <div id="pingzeResult" class="text-center"></div>
+        <div class="flex justify-center gap-2 mt-3">
+          <button class="btn-ancient btn-gold" onclick="initPingZeGame()">重新開始</button>
+        </div>
+      </div>
+    </div>
+  `;
+  setTimeout(initPingZeGame, 100);
+}
+
+
+function initGameEvents(id) {
+  if (id === 0) initDistractionGame();
+  if (id === 2) initMemoryPuzzle();
+  if (id === 4) initFoodGame();
+  if (id === 5) { initMaplePoem(); initJourney(); }
+  if (id === 6) initLotusPond();
+  if (id === 7) initBambooGame();
+  if (id === 8) initSpringGame();
+  if (id === 9) setTimeout(initBattleFormationUI, 100);
+}
+
+// === 遊戲 1: 二子學弈 - 找分心 ===
+let distractionFound = 0;
+function initDistractionGame() { 
+  distractionFound = 0; 
+  document.getElementById('distractionList').innerHTML = ''; 
+  document.getElementById('game1Result0').innerHTML = '';
+  // 重置三個熱點按鈕樣式
+  ['swanContainer','bowContainer','arrowContainer'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) {
+      el.style.background = 'rgba(255,255,255,0.15)';
+      el.style.border = '1px dashed rgba(251,191,36,0.5)';
+      el.style.pointerEvents = 'auto';
+      el.dataset.found = '';
+      const emojis = {swanContainer:'🦢', bowContainer:'🏹', arrowContainer:'💭'};
+      el.innerHTML = emojis[id];
+    }
+  });
+  // 重置提示文字
+  const tip = document.getElementById('focusTip');
+  if(tip) tip.innerHTML = '👆 點擊虛線圈圈裡讓人分心的東西';
+}
+function findDistraction(el, desc) {
+  if (el.dataset.found) return;
+  el.dataset.found = "1";
+  el.style.background = 'rgba(255,215,0,0.4)';
+  el.style.border = '2px solid rgba(255,215,0,0.9)';
+  el.innerHTML = '✅';
+  playSound('correct');
+  distractionFound++;
+  // 在底部提示框顯示簡單描述
+  const tipEl = document.getElementById('focusTip');
+  if (tipEl) tipEl.innerHTML = '✨ ' + desc;
+  // 添加找到標記
+  const tag = document.createElement('span');
+  tag.className = 'px-3 py-1 rounded-lg text-base font-bold bounce';
+  tag.style.background = 'rgba(251,234,234,0.9)';
+  tag.style.color = '#8B2323';
+  tag.style.border = '2px solid #8B2323';
+  const shortName = desc.split('：')[0];
+  tag.textContent = '✓ ' + shortName;
+  document.getElementById('distractionList').appendChild(tag);
+  if (distractionFound >= 3) {
+    if (tipEl) tipEl.innerHTML = '🎉 太棒了！全部找到啦～';
+    document.getElementById('game1Result0').innerHTML = '<div class="paper-card p-5 fade-in border-[#3d6b3d]"><p class="font-brush text-2xl text-[#3d6b3d] text-center">🎉 全部找到了！</p><p class="section-text text-center">這個不專心的學生滿腦子天鵝、弓箭、打獵，難怪學不好下棋！我們上課可不能像他一樣三心二意哦。</p><div class="mt-3 text-center"><span class="stamp text-lg">專心致志</span></div></div>';
+    awardStar(0,1);
+  }
+}
+
+// === 遊戲1: 鄭人買履 ===
+function shoeChoice(el, correct, msg) {
+  document.querySelectorAll('#shoeChoices button').forEach(b => { b.disabled = true; b.classList.remove('correct','wrong'); });
+  el.classList.add(correct ? 'correct' : 'wrong');
+  playSound(correct ? 'correct' : 'wrong');
+  document.getElementById('shoeExplainTitle').textContent = msg;
+  document.getElementById('shoeExplain').classList.remove('hidden');
+  if (correct) awardStar(1,1);
+}
+
+// === 遊戲1: 山中送別 送別回憶拼圖 ===
+const memoryPieces = [
+  { id: 1, line: '山中相送罷', icon: '⛰️', hint: '在山中送走朋友...', color: '#5a8c5a' },
+  { id: 2, line: '日暮掩柴扉', icon: '🌅🚪', hint: '夕陽西下，關上柴門...', color: '#d4a84b' },
+  { id: 3, line: '春草明年綠', icon: '🌱', hint: '明年春天草又綠了...', color: '#7CFC00' },
+  { id: 4, line: '王孫歸不歸', icon: '🤔❓', hint: '朋友，你會回來嗎？', color: '#c83c3c' }
+];
+let memoryStep = 0;
+function initMemoryPuzzle() {
+  const area = document.getElementById('memoryPuzzleArea');
+  if (!area) return;
+  memoryStep = 0;
+  const progress = document.getElementById('memoryProgress');
+  if (progress) progress.textContent = '0';
+  const hint = document.getElementById('memoryHint');
+  if (hint) hint.textContent = '👆 按詩句順序點擊：先送別，再日暮關門...';
+  const result = document.getElementById('memoryResult');
+  if (result) result.innerHTML = '';
+  const reveal = document.getElementById('memoryReveal');
+  if (reveal) reveal.classList.add('hidden');
+  area.innerHTML = '';
+  
+  // 打亂碎片位置
+  const shuffled = [...memoryPieces].sort(() => Math.random() - 0.5);
+  shuffled.forEach((piece, i) => {
+    const positions = [
+      { top: '20%', left: '12%' },
+      { top: '18%', right: '12%' },
+      { top: '55%', left: '18%' },
+      { top: '52%', right: '15%' }
+    ];
+    const pos = positions[i];
+    const chip = document.createElement('button');
+    chip.className = 'memory-chip absolute cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95';
+    chip.style.cssText = `
+      ${pos.top ? `top:${pos.top};` : ''}
+      ${pos.left ? `left:${pos.left};` : ''}
+      ${pos.right ? `right:${pos.right};` : ''}
+      background: white;
+      border: 3px solid ${piece.color};
+      border-radius: 12px;
+      padding: 8px 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-size: 2.2rem;
+      z-index: 5;
+    `;
+    chip.innerHTML = piece.icon;
+    chip.dataset.id = piece.id;
+    chip.onclick = () => clickMemoryPiece(chip, piece);
+    area.appendChild(chip);
+  });
+}
+function clickMemoryPiece(chip, piece) {
+  if (chip.dataset.clicked) return;
+  const expected = memoryStep + 1;
+  if (piece.id === expected) {
+    playSound('correct');
+    chip.dataset.clicked = '1';
+    chip.style.background = piece.color;
+    chip.style.transform = 'scale(1.2)';
+    chip.style.opacity = '0.4';
+    chip.style.pointerEvents = 'none';
+    memoryStep++;
+    document.getElementById('memoryProgress').textContent = memoryStep;
+    
+    if (memoryStep < 4) {
+      const hints = ['', '✅ 送別完成！接下來：日暮時分關上柴門...', '✅ 柴門關好了！下一片：春草明年還會綠...', '✅ 春草會再綠！最後：朋友會回來嗎？'];
+      document.getElementById('memoryHint').textContent = hints[memoryStep];
+    } else {
+      // 完成！展示完整回憶
+      document.getElementById('memoryHint').textContent = '🎉 回憶拼好了！';
+      setTimeout(() => {
+        document.getElementById('memoryPuzzleArea').innerHTML = '';
+        document.getElementById('memoryReveal').classList.remove('hidden');
+        document.getElementById('memoryResult').innerHTML = '<div class="bg-green-100 border-2 border-green-400 rounded-xl p-3 fade-in"><p class="font-bold text-green-800 text-lg">🎉 送別回憶完整重現！</p><p>山中相送、日暮掩扉、春草再綠、盼友人歸——這就是詩人對朋友滿滿的思念啊！</p></div>';
+        awardStar(2, 1);
+        playSound('win');
+      }, 500);
+    }
+  } else {
+    playSound('wrong');
+    chip.style.animation = 'shake 0.4s';
+    document.getElementById('memoryHint').textContent = '❌ 順序不對哦，想想詩句的先後順序！';
+    setTimeout(() => { chip.style.animation = ''; }, 500);
+  }
+}
+
+// === 遊戲1: 出塞 守城遊戲 ===
+let defendTimer = null, defendScore = 0, defendTime = 15;
+function startDefendGame() {
+  if (defendTimer) return;
+  playSound('click');
+  defendScore = 0; defendTime = 15;
+  document.getElementById('defendScore').textContent = '0';
+  document.getElementById('defendTime').textContent = '15';
+  document.getElementById('defendResult').innerHTML = '';
+  document.getElementById('enemySpawn').innerHTML = '';
+  document.getElementById('startDefendBtn').disabled = true;
+  document.getElementById('startDefendBtn').textContent = '守城中...';
+  
+  defendTimer = setInterval(() => {
+    defendTime--;
+    document.getElementById('defendTime').textContent = defendTime;
+    document.getElementById('defendProgress').style.width = ((15-defendTime)/15*100) + '%';
+    
+    // spawn enemy（敵人統一從右邊遠方衝向長城）
+    const enemy = document.createElement('div');
+    enemy.className = 'absolute text-4xl cursor-pointer drop-shadow-lg';
+    enemy.style.top = (45 + Math.random()*35) + '%';
+    enemy.style.right = '-60px';
+    enemy.style.transition = 'all 2.8s linear';
+    enemy.textContent = Math.random() > 0.5 ? '🐎' : '🏇';
+    enemy.onclick = function() {
+      if (this.dataset.hit) return;
+      this.dataset.hit = "1";
+      this.textContent = '💥';
+      this.style.transform = 'scale(1.5)';
+      playSound('correct');
+      defendScore++;
+      document.getElementById('defendScore').textContent = defendScore;
+      setTimeout(() => this.remove(), 300);
+    };
+    document.getElementById('enemySpawn').appendChild(enemy);
+    setTimeout(() => { enemy.style.right = '55%'; }, 50);
+    setTimeout(() => { if(enemy.parentNode && !enemy.dataset.hit) enemy.remove(); }, 2900);
+    
+    if (defendTime <= 0) {
+      clearInterval(defendTimer); defendTimer = null;
+      document.getElementById('startDefendBtn').disabled = false;
+      document.getElementById('startDefendBtn').textContent = '再玩一次';
+      if (defendScore >= 8) {
+        document.getElementById('defendResult').innerHTML = '<div class="bg-green-100 border-2 border-green-400 rounded-xl p-4"><p class="font-bold text-green-800 text-xl">🏆 飛將軍再世！</p><p class="section-text">你成功擊退敵人，保衛了陰山！</p></div>';
+        awardStar(3,1);
+      } else {
+        document.getElementById('defendResult').innerHTML = '<div class="bg-yellow-100 border-2 border-yellow-400 rounded-xl p-4"><p class="font-bold text-yellow-800 text-xl">再接再厲！</p><p class="section-text">敵人太多了，再試一次吧！</p></div>';
+      }
+    }
+  }, 1000);
+}
+
+// === 遊戲1: 客至 家常酒菜搭配 ===
+function initFoodGame() {
+  const foods = [
+    { name: '家釀舊酒', icon: '🍶', correct: true },
+    { name: '農家青菜', icon: '🥬', correct: true },
+    { name: '家常豆干', icon: '🫘', correct: true },
+    { name: '鄉村野菜', icon: '🌿', correct: true },
+    { name: '魚翅燕窩', icon: '🦈', correct: false },
+    { name: '龍蝦鮑魚', icon: '🦞', correct: false },
+    { name: '烤乳豬', icon: '🍖', correct: false },
+    { name: '滿漢全席', icon: '🍱', correct: false }
+  ];
+  // 打亂順序
+  foods.sort(() => Math.random()-0.5);
+  const grid = document.getElementById('foodGrid');
+  grid.innerHTML = '';
+  document.getElementById('foodPlate').innerHTML = '<p class="text-center text-gray-400 text-base">選好的酒菜會擺在餐盤上</p>';
+  document.getElementById('foodResult').innerHTML = '';
+  foodCorrect = 0; foodWrong = 0;
+  
+  foods.forEach((item, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'game-btn flex flex-col items-center py-3 px-2';
+    btn.innerHTML = `<span class="text-2xl mb-1">${item.icon}</span><span class="text-base">${item.name}</span>`;
+    btn.onclick = () => pickFood(btn, item);
+    grid.appendChild(btn);
+  });
+}
+let foodCorrect = 0, foodWrong = 0;
+function pickFood(btn, item) {
+  if (btn.dataset.picked) return;
+  btn.dataset.picked = "1";
+  btn.style.opacity = "0.4";
+  btn.style.pointerEvents = "none";
+  
+  const plate = document.getElementById('foodPlate');
+  if (foodCorrect === 0 && foodWrong === 0) plate.innerHTML = '';
+  const chip = document.createElement('span');
+  chip.className = 'inline-block px-2 py-1 m-1 rounded-lg text-sm ' + (item.correct ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700');
+  chip.innerHTML = item.icon + ' ' + item.name;
+  plate.appendChild(chip);
+  
+  if (item.correct) {
+    playSound('correct');
+    foodCorrect++;
+    btn.classList.add('correct');
+  } else {
+    playSound('wrong');
+    foodWrong++;
+    chip.textContent += ' ❌ 太貴重啦，杜甫家沒有哦';
+    btn.classList.add('wrong');
+  }
+  
+  // 選滿4樣正確家常菜就直接通關，不需要點所有錯的
+  if (foodCorrect >= 4) {
+    document.getElementById('foodResult').innerHTML = 
+    '<div class="bg-green-100 border-2 border-green-400 rounded-xl p-4 mt-4">' +
+      '<p class="font-bold text-green-800 text-xl text-center mb-2">🎉 太懂杜甫啦！</p>' +
+      '<div class="max-w-2xl mx-auto rounded-xl overflow-hidden border-4 border-[#d4a84b] my-3">' +
+        '<img src="https://gips1.baidu.com/it/u=2147308241,1453750895&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720" class="w-full h-auto" alt="杜甫家常酒菜滿桌">' +
+      '</div>' +
+      '<p class="section-text text-center">雖然只有陳年舊酒、青菜、豆乾、野菜這些樸素家常菜，但真誠的心意比山珍海味更珍貴，這就是「花徑不曾緣客掃，蓬門今始為君開」，真朋友相聚的快樂！</p>' +
+      '<div class="text-center mt-3"><span class="stamp">誠意待客</span></div>' +
+    '</div>';
+    // 禁用所有按鈕
+    document.querySelectorAll('#foodGrid button').forEach(b => {
+      b.style.opacity = "0.4";
+      b.style.pointerEvents = "none";
+    });
+    awardStar(4,1);
+  }
+}
+
+
+// === 遊戲1: 山行 楓林詩句接龍 ===
+const maplePoemData = [
+  ['遠', '上', '寒', '山', '石', '徑', '斜'],
+  ['白', '雲', '生', '處', '有', '人', '家'],
+  ['停', '車', '坐', '愛', '楓', '林', '晚'],
+  ['霜', '葉', '紅', '於', '二', '月', '花']
+];
+let mapleLineIdx = 0;
+let mapleCharIdx = 0;
+let mapleCollected = [];
+function initMaplePoem() {
+  mapleLineIdx = 0;
+  mapleCharIdx = 0;
+  mapleCollected = [[], [], [], []];
+  const area = document.getElementById('mapleLeavesArea');
+  if (!area) return;
+  area.innerHTML = '';
+  const lineArea = document.getElementById('poemLineArea');
+  if (lineArea) lineArea.innerHTML = '<span class="text-gray-400 text-lg">按順序點擊楓葉...</span>';
+  const hint = document.getElementById('mapleHint');
+  if (hint) hint.textContent = '第一句：遠上寒山石徑斜';
+  const result = document.getElementById('mapleResult');
+  if (result) result.innerHTML = '';
+  renderMapleLine();
+}
+function renderMapleLine() {
+  const area = document.getElementById('mapleLeavesArea');
+  if (!area) return;
+  area.innerHTML = '';
+  const line = maplePoemData[mapleLineIdx];
+  // 打亂當前句的字詞
+  const shuffled = line.map((ch, idx) => ({ ch, idx })).sort(() => Math.random() - 0.5);
+  shuffled.forEach(item => {
+    const leaf = document.createElement('button');
+    leaf.className = 'maple-leaf relative transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer';
+    leaf.style.cssText = `
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #fb923c, #c2410c);
+      border: 3px solid #7c2d12;
+      border-radius: 50% 0 50% 50%;
+      transform: rotate(${(Math.random()-0.5)*30}deg);
+      color: white;
+      font-family: 'Free HK Kai', 'KaiTi', serif;
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 8px rgba(124,45,18,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    leaf.textContent = item.ch;
+    leaf.dataset.charIdx = item.idx;
+    leaf.onclick = () => pickMapleChar(leaf, item);
+    area.appendChild(leaf);
+  });
+}
+function pickMapleChar(leaf, item) {
+  if (leaf.dataset.used) return;
+  if (item.idx === mapleCharIdx) {
+    playSound('correct');
+    leaf.dataset.used = '1';
+    leaf.style.opacity = '0.3';
+    leaf.style.transform += ' scale(0.7)';
+    leaf.style.pointerEvents = 'none';
+    mapleCollected[mapleLineIdx].push(item.ch);
+    mapleCharIdx++;
+    
+    // 更新拼寫區
+    let fullPoem = '';
+    for (let i = 0; i <= mapleLineIdx; i++) {
+      const lineText = mapleCollected[i].join('');
+      const isCurrent = (i === mapleLineIdx);
+      if (isCurrent) {
+        fullPoem += `<span class="text-[#c83c3c]">${lineText}</span>`;
+        // 加一個游標提示下一個字
+        if (mapleCharIdx < maplePoemData[mapleLineIdx].length) {
+          fullPoem += `<span class="text-orange-400 animate-pulse">▌</span>`;
+        }
+      } else {
+        fullPoem += `<span>${lineText}</span>`;
+      }
+      if (i < mapleLineIdx) fullPoem += '<br>';
+    }
+    document.getElementById('poemLineArea').innerHTML = fullPoem;
+    
+    if (mapleCharIdx >= maplePoemData[mapleLineIdx].length) {
+      // 本句完成
+      mapleLineIdx++;
+      mapleCharIdx = 0;
+      if (mapleLineIdx >= maplePoemData.length) {
+        // 全部完成
+        document.getElementById('mapleHint').textContent = '🎉 詩句全部拼完了！';
+        document.getElementById('mapleLeavesArea').innerHTML = '';
+        const fullPoemHtml = maplePoemData.map(line => `<span>${line.join('')}</span>`).join('<br>');
+        document.getElementById('poemLineArea').innerHTML = `<div class="text-[#8B2323]">${fullPoemHtml}</div>`;
+        document.getElementById('mapleResult').innerHTML = '<div class="bg-orange-100 border-2 border-orange-400 rounded-xl p-3 fade-in"><p class="font-bold text-orange-800 text-lg">🍁 楓林詩句接龍成功！</p><p>你收集了所有楓葉，拼出了完整的《山行》！停車坐愛楓林晚，霜葉紅於二月花，秋天真美啊～</p></div>';
+        awardStar(5, 1);
+        playSound('win');
+      } else {
+        // 下一句
+        const hints = ['', '第二句：白雲生處有人家', '第三句：停車坐愛楓林晚', '第四句：霜葉紅於二月花'];
+        document.getElementById('mapleHint').textContent = '✅ 這句完成！' + hints[mapleLineIdx];
+        setTimeout(() => renderMapleLine(), 600);
+      }
+    }
+  } else {
+    playSound('wrong');
+    leaf.style.animation = 'shake 0.4s';
+    setTimeout(() => { leaf.style.animation = ''; }, 500);
+  }
+}
+
+// === 遊戲2: 山行 寒山行旅步移景換 ===
+const journeyScenes = [
+  {
+    img: 'https://gips0.baidu.com/it/u=2099816191,3916855236&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    poem: '遠上寒山石徑斜',
+    desc: '石徑斜斜地伸向遠方的寒山，旅人驅車沿著石板路緩緩上山，旅程開始了！',
+    location: '山路入口',
+    useImg: true
+  },
+  {
+    img: 'https://gips2.baidu.com/it/u=2831444685,2913793501&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    poem: '白雲生處有人家',
+    desc: '走到高處，白雲繚繞的山間隱約看見幾戶人家的炊煙，好詩意啊！',
+    location: '白雲深處',
+    useImg: true
+  },
+  {
+    img: 'https://gips0.baidu.com/it/u=2161518837,3043054791&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    poem: '停車坐愛楓林晚',
+    desc: '一片火紅的楓林讓杜牧忍不住停下馬車，夕陽下的楓葉美得令人陶醉！',
+    location: '楓林晚景',
+    useImg: true
+  },
+  {
+    img: 'https://gips0.baidu.com/it/u=2479764116,2913939309&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=864&h=1152',
+    poem: '霜葉紅於二月花',
+    desc: '經過秋霜的楓葉，比春天二月的花朵還要鮮豔火紅！秋天也有獨特的美麗～',
+    location: '霜葉勝花',
+    useImg: true
+  }
+];
+let journeyStep = 0;
+function initJourney() {
+  journeyStep = 0;
+  updateJourneyScene();
+  const traveler = document.getElementById('travelerPos');
+  if (traveler) traveler.style.left = '8%';
+  const log = document.getElementById('journeyLog');
+  const scene = journeyScenes[0];
+  if (log) log.innerHTML = `<div class="flex items-start gap-2 py-2 border-b border-orange-100"><span class="text-orange-500 font-bold text-sm flex-shrink-0">第1站</span><div class="flex-1"><p class="font-bold text-[#8B2323] text-base">「${scene.poem}」</p><p class="text-sm text-[#6b4f3a]">📍 ${scene.location} — ${scene.desc}</p></div></div>`;
+  const result = document.getElementById('journeyResult');
+  if (result) result.innerHTML = '';
+  const btn = document.getElementById('walkForwardBtn');
+  if (btn) { btn.disabled = false; btn.textContent = '🚶 向前走一步'; }
+}
+function walkForward() {
+  if (journeyStep >= journeyScenes.length - 1) return;
+  playSound('click');
+  journeyStep++;
+  updateJourneyScene();
+  
+  // 旅人位置前進
+  const traveler = document.getElementById('travelerPos');
+  if (traveler) {
+    const positions = ['8%', '32%', '58%', '82%'];
+    traveler.style.left = positions[journeyStep];
+  }
+  
+  // 更新遊覽日誌
+  const log = document.getElementById('journeyLog');
+  const scene = journeyScenes[journeyStep];
+  const logItem = document.createElement('div');
+  logItem.className = 'fade-in flex items-start gap-2 py-2 border-b border-orange-100 last:border-b-0';
+  logItem.innerHTML = `
+    <span class="text-orange-500 font-bold text-sm flex-shrink-0">第${journeyStep+1}站</span>
+    <div class="flex-1">
+      <p class="font-bold text-[#8B2323] text-base">「${scene.poem}」</p>
+      <p class="text-sm text-[#6b4f3a]">📍 ${scene.location} — ${scene.desc}</p>
+    </div>
+  `;
+  log.appendChild(logItem);
+  
+  if (journeyStep >= journeyScenes.length - 1) {
+    // 到達終點
+    const btn = document.getElementById('walkForwardBtn');
+    if (btn) { btn.disabled = true; btn.textContent = '🏁 已到山頂'; }
+    const result = document.getElementById('journeyResult');
+    result.innerHTML = '<div class="bg-orange-100 border-2 border-orange-400 rounded-xl p-3 fade-in"><p class="font-bold text-orange-800 text-lg">🏆 寒山行旅圓滿完成！</p><p>你走完了整段寒山之旅，欣賞了石徑、白雲人家、楓林晚景、霜葉紅花四幅美麗風景，真是不虛此行！</p><p class="text-sm text-orange-700 mt-2">⭐ 別忘了先完成「楓林詩句接龍」領星星哦！</p></div>';
+    playSound('win');
+  }
+}
+function updateJourneyScene() {
+  const scene = journeyScenes[journeyStep];
+  const sceneBox = document.getElementById('journeyScene');
+  const img = document.getElementById('journeyImg');
+  const emojiLayer = document.getElementById('journeyEmoji');
+  if (scene.useImg) {
+    if (img) {
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = scene.img;
+        img.style.display = 'block';
+        img.style.opacity = '1';
+      }, 300);
+    }
+    if (sceneBox) sceneBox.style.background = '';
+    if (emojiLayer) emojiLayer.style.display = 'none';
+  } else {
+    // 使用CSS渐变+emoji場景
+    if (img) img.style.display = 'none';
+    if (sceneBox) sceneBox.style.background = scene.gradient;
+    if (emojiLayer) {
+      emojiLayer.style.display = 'flex';
+      emojiLayer.innerHTML = scene.scene.split('').map(c => `<span style="font-size:${2+Math.random()*2}rem;filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.3));animation:float ${3+Math.random()*2}s ease-in-out infinite;animation-delay:${Math.random()}s">${c}</span>`).join('');
+    }
+  }
+  const numEl = document.getElementById('journeyStepNum');
+  if (numEl) numEl.textContent = `第 ${journeyStep+1} 站 / 共 ${journeyScenes.length} 站`;
+  const distEl = document.getElementById('journeyDist');
+  if (distEl) distEl.textContent = scene.location;
+  const poemEl = document.getElementById('journeyPoem');
+  if (poemEl) poemEl.textContent = scene.poem;
+  const descEl = document.getElementById('journeyDesc');
+  if (descEl) descEl.textContent = scene.desc;
+}
+
+// === 遊戲1: 數荷花（古風繪本版）===
+let lotusFound = 0;
+function initLotusPond() {
+  // 延遲確保DOM完全渲染，避免null錯誤
+  setTimeout(() => {
+    const pond = document.getElementById('lotusPond');
+    if (!pond) return;
+    // 清空所有旧的荷花项，只保留装饰元素
+    Array.from(pond.querySelectorAll('.lotus-item')).forEach(el => el.remove());
+    lotusFound = 0;
+    const countEl = document.getElementById('lotusCount');
+    const resultEl = document.getElementById('lotusResult');
+    if (countEl) countEl.textContent = '0';
+    if (resultEl) resultEl.innerHTML = '';
+    // 固定8朵荷花的位置，均匀分布在荷塘水面，每朵都在可见可点击区域，保证不会少
+    const lotusPositions = [
+      {x: 12, y: 50}, {x: 26, y: 65}, {x: 42, y: 45}, {x: 58, y: 70},
+      {x: 70, y: 55}, {x: 82, y: 75}, {x: 22, y: 78}, {x: 50, y: 82}
+    ];
+    const positions = [];
+    // 固定加入8朵荷花
+    lotusPositions.forEach(pos => {
+      positions.push({
+        x: pos.x + (Math.random()-0.5)*5,
+        y: pos.y + (Math.random()-0.5)*3,
+        type:'flower'
+      });
+    });
+    // 再放干扰荷叶，12片
+    for (let i = 0; i < 12; i++) {
+      let x,y,ok, tries=0;
+      do {
+        x = 10 + Math.random()*80;
+        y = 42 + Math.random()*45;
+        ok = true;
+        for (let p of positions) if (Math.abs(p.x-x)<11 && Math.abs(p.y-y)<11) ok = false;
+        tries++;
+      } while (!ok && tries < 30);
+      positions.push({x, y, type:'leaf'});
+    }
+    positions.sort(() => Math.random()-0.5);
+    positions.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'absolute lotus-item';
+      el.style.left = p.x + '%';
+      el.style.top = p.y + '%';
+      el.style.width = p.type === 'flower' ? '56px' : '64px';
+      el.style.height = p.type === 'flower' ? '56px' : '64px';
+      el.style.transform = 'translate(-50%,-50%)';
+      el.style.zIndex = '30';
+      el.style.cursor = 'pointer';
+      el.style.borderRadius = '50%';
+      el.style.transition = 'all 0.2s ease';
+      if (p.type === 'flower') {
+        // 更明顯的半透明按鈕：淡粉底色加深粉色邊框，hover放大，清楚可見不突兀
+        el.style.opacity = '0.7';
+        el.style.background = 'rgba(255,182,193,0.45)';
+        el.style.border = '3px solid rgba(255,105,180,0.7)';
+        el.style.boxShadow = '0 2px 8px rgba(255,105,180,0.2)';
+        el.onmouseenter = () => { el.style.transform = 'translate(-50%,-50%) scale(1.1)'; el.style.opacity='0.9'; };
+        el.onmouseleave = () => { el.style.transform = 'translate(-50%,-50%)'; el.style.opacity='0.7'; };
+        el.onclick = () => {
+          if (el.dataset.found) return;
+          el.dataset.found = "1";
+          el.style.opacity = '1';
+          el.style.fontSize = '48px';
+          el.style.lineHeight = '52px';
+          el.style.textAlign = 'center';
+          el.textContent = '🌺';
+          el.style.border = 'none';
+          el.style.background = 'transparent';
+          el.style.boxShadow = 'none';
+          el.style.filter = 'drop-shadow(0 0 12px gold)';
+          playSound('correct');
+          lotusFound++;
+          if (countEl) countEl.textContent = lotusFound;
+          if (lotusFound >= 8 && resultEl) {
+            resultEl.innerHTML = '<div class="bg-pink-100 border-2 border-pink-400 rounded-xl p-3 fade-in"><p class="font-bold text-pink-800 text-lg">🪷 滿池荷花盛開！</p><p>接天蓮葉無窮碧，映日荷花別樣紅！你找到了所有8朵荷花，荷塘裡所有荷花都盛開啦～</p></div>';
+            awardStar(6,1);
+            // 通關後浮現更多盛開的荷花，保持古風繪本風格
+            setTimeout(() => {
+              // 隱藏所有剩下的半透明按鈕和干擾荷葉，不遮擋盛開效果
+              document.querySelectorAll('.lotus-item').forEach((el, idx) => {
+                if (!el.dataset.found) {
+                  el.style.transition = 'opacity 0.8s ease';
+                  el.style.opacity = '0';
+                  setTimeout(() => el.remove(), 800);
+                }
+              });
+              // 額外添加16朵大小不一、錯落盛開的荷花，散落在整個荷塘水面
+              const bloomCount = 16;
+              for (let i = 0; i < bloomCount; i++) {
+                const bloom = document.createElement('div');
+                bloom.className = 'absolute lotus-bloom';
+                const size = 32 + Math.random() * 36; // 大小32~68px不等，遠近層次
+                const x = 8 + Math.random() * 84;
+                const y = 40 + Math.random() * 48;
+                const opacity = 0.5 + Math.random() * 0.45; // 透明度層次
+                const delay = Math.random() * 1.2;
+                bloom.style.cssText = `
+                  left: ${x}%; top: ${y}%;
+                  width: ${size}px; height: ${size}px;
+                  transform: translate(-50%,-50%) scale(0);
+                  opacity: 0;
+                  font-size: ${size}px;
+                  line-height: ${size}px;
+                  text-align: center;
+                  filter: drop-shadow(0 2px 6px rgba(255,105,180,0.3));
+                  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}s;
+                  z-index: 25;
+                  pointer-events: none;
+                `;
+                bloom.textContent = '🌺';
+                pond.appendChild(bloom);
+                // 動畫綻放
+                setTimeout(() => {
+                  bloom.style.transform = 'translate(-50%,-50%) scale(1)';
+                  bloom.style.opacity = opacity;
+                }, 100);
+              }
+              // 加一點淡粉色柔光裝飾，不影響背景
+              const glow = document.createElement('div');
+              glow.className = 'absolute inset-0 pointer-events-none';
+              glow.style.background = 'radial-gradient(circle at 50% 70%, rgba(255,182,193,0.15) 0%, transparent 60%)';
+              glow.style.zIndex = '20';
+              pond.appendChild(glow);
+            }, 300);
+          }
+        };
+      } else {
+        // 荷叶干扰项也半透明淡绿色，和荷花统一
+        el.style.opacity = '0.6';
+        el.style.background = 'rgba(144,238,144,0.35)';
+        el.style.border = '3px solid rgba(34,139,34,0.5)';
+        el.onmouseenter = () => { el.style.transform = 'translate(-50%,-50%) scale(1.1)'; };
+        el.onmouseleave = () => { el.style.transform = 'translate(-50%,-50%)'; };
+        el.onclick = () => {
+          if (el.dataset.miss) return;
+          el.dataset.miss = "1";
+          playSound('wrong');
+          el.style.animation = 'shake 0.4s ease';
+          setTimeout(() => el.style.animation='', 400);
+        };
+      }
+      pond.appendChild(el);
+    });
+  }, 100);
+}
+
+// === 遊戲1: 竹里館 事件 ===
+let bambooFound = new Set();
+function bambooEvent(el, msg) {
+  if (el.dataset.found) return;
+  el.dataset.found = "1";
+  const icons = {'明月':'🌙','竹葉':'🎋','坐在':'👤','琴聲':'🎸','長嘯':'🗣️'};
+  let icon = '✨';
+  for (const k in icons) if (msg.includes(k)) { icon = icons[k]; break; }
+  // 點擊後變成金色實心半透+實線邊框+打勾標記，清晰顯示已找到，保持小尺寸不遮擋
+  el.innerHTML = '<span class="text-xl drop-shadow-lg">✅</span>';
+  el.style.background = 'rgba(255,215,0,0.35)';
+  el.style.border = '1px solid rgba(212,168,75,0.8)';
+  el.style.filter = 'drop-shadow(0 0 8px gold)';
+  playSound('correct');
+  el.style.transform = 'scale(1.1)';
+  setTimeout(() => el.style.transform='', 400);
+  // 用頂部 Toast 顯示訊息（帶✨，不同於初始無emoji狀態）
+  const msgEl = document.getElementById('bambooMessage');
+  if (msgEl) {
+    msgEl.textContent = msg;
+    msgEl.style.opacity = '1';
+    msgEl.style.background = 'rgba(255,250,230,0.92)';
+  }
+  bambooFound.add(msg);
+  // 找齊5個景物通關
+  if (bambooFound.size >= 5) {
+    document.getElementById('bambooResult').innerHTML = '<div class="bg-green-100 border-2 border-green-400 rounded-xl p-4 mt-3"><p class="font-bold text-green-800 text-lg">🎋 竹林靜心完成！</p><p>獨自一人在竹林裡彈琴長嘯，只有明月相伴，幽靜又自在，這就是王維獨處的快樂！</p></div>';
+    if (msgEl) msgEl.textContent = '🎉 你找到了竹林裡所有的美景！';
+    playSound('win');
+  }
+}
+
+// === 遊戲2: 西湖四季賞景 ===
+const seasonData = {
+  spring: {
+    img: 'https://aisearch.cdn.bcebos.com/fileAsset/AyIM1tb1XDR8_J-APSxMJg/17928946627469Yslxw.jpg?authorization=bce-auth-v1%2F7e22d8caf5af46cc9310f1e3021709f3%2F2026-10-25T02%3A17%3A43Z%2F86400%2Fhost%2F560bd91792046bf74101a2af92949d5c173411e6a5c37a7e89b730f6f1ddef73',
+    icon: '🌸',
+    title: '三月西湖·春天',
+    poem: '蘇堤春曉，桃花柳綠',
+    desc: '春天的西湖，柳樹發新芽，桃花沿堤盛開，燕子掠過湖面，遠處雷峰塔隱在青山白雲間，正是著名的「蘇堤春曉」美景！'
+  },
+  summer: {
+    img: 'https://aisearch.cdn.bcebos.com/fileAsset/AyIM1tb1XDR8_J-APSxMJg/1792894662743oTlas6.jpg?authorization=bce-auth-v1%2F7e22d8caf5af46cc9310f1e3021709f3%2F2026-10-25T02%3A17%3A43Z%2F86400%2Fhost%2F1f75b9d2a0c16bd5fe27ab641dd47e63e5082d9e9420140dab06f8a42d76bece',
+    icon: '🪷',
+    title: '六月西湖·夏天',
+    poem: '接天蓮葉無窮碧，映日荷花別樣紅',
+    desc: '滿池碧綠蓮葉連到天邊，陽光下荷花顯得格外嬌豔鮮紅，岸邊楊柳依依，這就是詩人清晨送別林子方時看到的絕美西湖盛夏！'
+  },
+  autumn: {
+    img: 'https://aisearch.cdn.bcebos.com/fileAsset/AyIM1tb1XDR8_J-APSxMJg/1792894662749Yxj4dN.jpg?authorization=bce-auth-v1%2F7e22d8caf5af46cc9310f1e3021709f3%2F2026-10-25T02%3A17%3A43Z%2F86400%2Fhost%2F8053c7d05e474660d49b1048607b5aea97610e13cadb8ac02c7bf773377412c0',
+    icon: '🍁',
+    title: '九月西湖·秋天',
+    poem: '平湖秋月，滿隴桂雨',
+    desc: '秋天的西湖，金黃桂花飄香，細雨中秋花隨風落入湖面，圓月倒映在平靜的水上，「平湖秋月」是西湖十大經典美景之一！'
+  },
+  winter: {
+    img: 'https://aisearch.cdn.bcebos.com/fileAsset/AyIM1tb1XDR8_J-APSxMJg/1792894662741f4YAqU.jpg?authorization=bce-auth-v1%2F7e22d8caf5af46cc9310f1e3021709f3%2F2026-10-25T02%3A17%3A43Z%2F86400%2Fhost%2F9a4b7ae75dec9ea4828ca28091cbb970e80af1ce6f84ecc7d9c4a2de984f917f',
+    icon: '❄️',
+    title: '臘月西湖·冬天',
+    poem: '斷橋殘雪，梅影橫斜',
+    desc: '冬天的西湖，雪花紛紛揚揚落下，石橋與松樹都覆上白雪，岸邊粉紅梅花傲雪開放，寧靜的「斷橋殘雪」有著詩情畫意的美！'
+  }
+};
+function showSeason(season) {
+  playSound('click');
+  const data = seasonData[season];
+  const view = document.getElementById('seasonView');
+  const content = document.getElementById('seasonContent');
+  // 更新按鈕樣式
+  ['spring','summer','autumn','winter'].forEach(s => {
+    const btn = document.getElementById('btn-'+s);
+    if (s === season) {
+      btn.className = 'btn-ancient text-base py-2 px-4';
+    } else {
+      btn.className = 'game-btn text-base py-2 px-4';
+    }
+  });
+  // 更新真實圖片背景和內容，不加任何遮擋畫面的大emoji
+  view.style.background = `url('${data.img}') center/cover no-repeat`;
+  view.style.backgroundImage = `url('${data.img}')`;
+  content.innerHTML = `
+    <div class="absolute inset-0 bg-gradient-to-t from-[rgba(253,248,240,0.92)] via-[rgba(253,248,240,0.45)] to-transparent"></div>
+    <div class="relative z-10 text-center px-4">
+      <p class="font-brush text-3xl text-[#8B2323] mb-2">${data.title}</p>
+      <p class="text-xl text-[#5a8c5a] font-bold mb-2">${data.poem}</p>
+      <p class="text-base text-[#6b4f3a] max-w-lg">${data.desc}</p>
+    </div>
+  `;
+  content.classList.add('fade-in');
+  setTimeout(() => content.classList.remove('fade-in'), 500);
+}
+
+// === 遊戲1: 春江晚景找春天 ===
+let springFoundCount = 0;
+function initSpringGame() {
+  springFoundCount = 0;
+  document.getElementById('springFound').innerHTML = '';
+  document.getElementById('springResult').innerHTML = '';
+  const tipEl = document.getElementById('springTip');
+  if (tipEl) {
+    tipEl.textContent = '點擊虛線圈圈裡春天來了的訊息吧';
+    tipEl.style.background = 'rgba(255,255,255,0.70)';
+    tipEl.style.opacity = '0.9';
+  }
+  // 重置所有熱點樣式和內容
+  document.querySelectorAll('[data-spring]').forEach(el => { 
+    el.dataset.found = '';
+    el.style.background = 'rgba(255,255,255,0.15)';
+    el.style.border = '1px dashed rgba(255,255,255,0.4)';
+    el.style.filter = '';
+    el.style.transform = '';
+    const originalEmoji = el.dataset.emoji || '🌸';
+    el.innerHTML = `<span class="text-xl">${originalEmoji}</span>`;
+  });
+  // 河豚復位為半透明可見（一開始就能看到淡淡的河豚引導）
+  if (document.getElementById('fuguSpring')) {
+    const fugu = document.getElementById('fuguSpring');
+    fugu.style.opacity = '0.6';
+    fugu.style.background = 'rgba(255,200,100,0.25)';
+    fugu.style.border = '1px dashed rgba(251,146,60,0.5)';
+    fugu.classList.remove('float-anim');
+  }
+}
+
+// === 遊戲1: 竹里館 竹林靜心 ===
+function initBambooGame() {
+  bambooFound.clear();
+  const msgEl = document.getElementById('bambooMessage');
+  if (msgEl) {
+    msgEl.textContent = '點擊虛線圈圈裡的景物';
+    msgEl.style.background = 'rgba(255,255,255,0.70)';
+    msgEl.style.opacity = '0.9';
+  }
+  if (document.getElementById('bambooResult')) document.getElementById('bambooResult').innerHTML = '';
+  // 重置所有熱點樣式（詩人按鈕emoji為👤，對應新位置）
+  const bambooHotspots = [
+    {id:'moonBamboo', emoji:'🌙', bg:'rgba(255,255,200,0.15)', border:'1px dashed rgba(253,224,71,0.4)'},
+    {id:'bambooLeft', emoji:'🎋', bg:'rgba(200,255,200,0.15)', border:'1px dashed rgba(74,222,128,0.4)'},
+    {id:'poetBamboo', emoji:'👤', bg:'rgba(200,220,255,0.15)', border:'1px dashed rgba(147,197,253,0.4)'},
+    {id:'qinBamboo', emoji:'🎸', bg:'rgba(255,220,180,0.15)', border:'1px dashed rgba(251,146,60,0.4)'},
+    {id:'bambooRight', emoji:'🗣️', bg:'rgba(220,200,255,0.15)', border:'1px dashed rgba(192,132,252,0.4)'}
+  ];
+  bambooHotspots.forEach(h => {
+    const el = document.getElementById(h.id);
+    if(el) {
+      el.dataset.found = '';
+      el.style.background = h.bg || 'rgba(255,255,255,0.15)';
+      el.style.border = h.border || '1px dashed rgba(255,255,255,0.4)';
+      el.style.filter = '';
+      el.style.transform = '';
+      el.style.pointerEvents = 'auto';
+      el.innerHTML = `<span class="text-xl">${h.emoji}</span>`;
+    }
+  });
+}
+function findSpring(el, msg) {
+  if (el.dataset.found) return;
+  el.dataset.found = "1";
+  const icons = {'桃花':'🌸','鴨子最先':'🦆','小鴨子':'🐤','這邊也有':'🦆','蔞蒿':'🌿','蘆筍':'🌱','河豚':'🐡'};
+  let icon = '🌼';
+  for (const k in icons) if (msg.includes(k)) { icon = icons[k]; break; }
+  // 點擊後變成金色實心半透+實線邊框+打勾標記，保持小尺寸不遮擋
+  el.innerHTML = '<span class="text-2xl drop-shadow-lg">✅</span>';
+  el.style.filter = 'drop-shadow(0 0 8px gold)';
+  el.style.background = 'rgba(255,215,0,0.35)';
+  el.style.border = '1px solid rgba(212,168,75,0.8)';
+  playSound('correct');
+  el.style.transform = 'scale(1.1)';
+  setTimeout(() => el.style.transform='', 400);
+  springFoundCount++;
+  const chip = document.createElement('span');
+  chip.className = 'px-3 py-1 bg-green-100 text-green-700 rounded-full text-base font-bold bounce';
+  chip.textContent = '✓ ' + icon + ' ' + msg.substring(0,8);
+  document.getElementById('springFound').appendChild(chip);
+  if (springFoundCount === 5) {
+    // 河豚從半透明變為明顯+浮動動畫
+    const fugu = document.getElementById('fuguSpring');
+    if (fugu) {
+      fugu.style.opacity = '1';
+      fugu.style.background = 'rgba(255,200,100,0.45)';
+      fugu.style.border = '2px solid rgba(251,146,60,0.8)';
+      fugu.classList.add('float-anim');
+    }
+    if (document.getElementById('springTip')) {
+      const tip = document.getElementById('springTip');
+      tip.textContent = '✨ 右下角江裡還有一個驚喜彩蛋，找找看！';
+      tip.style.background = 'rgba(255,250,230,0.92)';
+    }
+  }
+  if (springFoundCount >= 6) {
+    document.getElementById('springResult').innerHTML = '<div class="bg-green-100 border-2 border-green-400 rounded-xl p-4 max-w-xl mx-auto"><p class="font-bold text-green-800 text-lg">🦆 春天真的來了！</p><p>桃花、鴨子、蔞蒿、蘆芽，就連河豚也告訴我們春天來啦！</p></div>';
+    awardStar(8,1);
+  }
+}
+function springDistract(el, msg) {
+  playSound('wrong');
+  el.style.animation = 'shake 0.4s ease';
+  setTimeout(() => el.style.animation='', 400);
+  const hint = document.createElement('p');
+  hint.className = 'text-red-600 text-sm';
+  hint.textContent = '❌ ' + msg;
+  document.getElementById('springResult').appendChild(hint);
+  setTimeout(() => hint.remove(), 2000);
+}
+
+
+// === 舊打卡函數已替換為「寒山行旅·步移景換」（initJourney / walkForward 在前面楓林接龍附近）===
+
+
+// === 遊戲1: 八陣圖 四門點兵（超簡單版） ===
+let battleOrder = ['東','南','西','北'];
+let battleStep = 0;
+let battleStarted = false;
+function initBattleFormationUI() {
+  battleStarted = false;
+  battleStep = 0;
+  document.getElementById('battleOrder').textContent = '點擊「開始佈陣」，聽從軍師號令！';
+  document.getElementById('battleResult').innerHTML = '';
+  const dirMap = {North:['北','⬆️'],West:['西','⬅️'],East:['東','➡️'],South:['南','⬇️']};
+  ['North','West','East','South'].forEach(gate => {
+    const btn = document.getElementById('gate'+gate);
+    if(btn) {
+      btn.classList.remove('correct','wrong');
+      btn.style.background = 'rgba(255,255,255,0.15)';
+      btn.style.border = '1px dashed rgba(96,165,250,0.5)';
+      btn.style.pointerEvents = 'auto';
+      btn.style.animation = '';
+      btn.innerHTML = `<span class="text-xl">${dirMap[gate][1]}</span><span class="font-bold text-base">${dirMap[gate][0]}門</span>`;
+    }
+  });
+}
+function startBattleFormation() {
+  playSound('click');
+  battleStarted = true;
+  battleStep = 0;
+  // 打亂順序，固定3步就好，超簡單
+  battleOrder = ['東','西','南'].sort(()=>Math.random()-0.5);
+  document.getElementById('battleResult').innerHTML = '';
+  // 重置四個門按鈕樣式
+  ['North','West','East','South'].forEach(gate => {
+    const btn = document.getElementById('gate'+gate);
+    if(btn) {
+      btn.style.background = 'rgba(255,255,255,0.15)';
+      btn.style.border = '1px dashed rgba(96,165,250,0.5)';
+      btn.style.pointerEvents = 'auto';
+      const dirMap = {North:['北','⬆️'],West:['西','⬅️'],East:['東','➡️'],South:['南','⬇️']};
+      btn.innerHTML = `<span class="text-xl">${dirMap[gate][1]}</span><span class="font-bold text-base">${dirMap[gate][0]}門</span>`;
+    }
+  });
+  giveNextOrder();
+}
+function giveNextOrder() {
+  if (battleStep >= battleOrder.length) {
+    playSound('win');
+    document.getElementById('battleOrder').textContent = '🎉 陣法佈置完成！';
+    document.getElementById('battleResult').innerHTML = `
+      <div class="bg-yellow-50 border-2 border-yellow-500 rounded-xl p-4 animate-fade-in">
+        <p class="font-bold text-yellow-800 text-lg text-center">⚔️ 八陣圖佈陣成功！</p>
+        <div class="mt-3 rounded-xl overflow-hidden border-2 border-[#d4a84b] shadow-md">
+          <img src="https://gips0.baidu.com/it/u=4064620055,2801803996&fm=3086&app=3086&f=JPEG&wm=1,baiduai3,0,0,13,9&wmo=5,5?w=1280&h=720" class="w-full h-52 object-cover" alt="四門陣法原理">
+        </div>
+        <div class="mt-3 text-[#3d2b1f]">
+          <p class="font-bold text-lg text-[#8B2323] mb-1">🧠 陣法小知識：</p>
+          <p class="text-base leading-relaxed">諸葛亮的四門陣法很簡單哦：東西南北四個城門各派兵把守，中央由主帥指揮，敵人從哪個方向來，就從對應城門出兵應戰，互相支援，就像石頭一樣穩固，連江水都沖不走！</p>
+          <p class="text-base mt-1 text-[#5a8c5a]">「功蓋三分國，名成八陣圖」——這就是諸葛亮了不起的軍事智慧！</p>
+        </div>
+        <div class="text-center mt-3">
+          <span class="stamp">小軍師 ★</span>
+        </div>
+      </div>`;
+    battleStarted = false;
+    awardStar(9,1);
+    return;
+  }
+  const dir = battleOrder[battleStep];
+  document.getElementById('battleOrder').innerHTML = `✨ 軍師令：趕快點擊【${dir}門】佈陣！`;
+}
+function placeStone(dir, dirId) {
+  if (!battleStarted) {
+    playSound('wrong');
+    document.getElementById('battleResult').innerHTML = '<p class="text-red-600 text-sm">❌ 先點擊下方「開始佈陣」按鈕哦！</p>';
+    setTimeout(() => document.getElementById('battleResult').innerHTML='', 1500);
+    return;
+  }
+  const btn = document.getElementById('gate'+dirId.charAt(0).toUpperCase()+dirId.slice(1));
+  if (dir === battleOrder[battleStep]) {
+    playSound('correct');
+    btn.style.background = 'rgba(255,215,0,0.4)';
+    btn.style.border = '2px solid rgba(255,215,0,0.9)';
+    btn.innerHTML = `<span class="text-xl">✅</span><span class="font-bold text-base">${dir}門</span>`;
+    btn.style.pointerEvents = 'none';
+    battleStep++;
+    setTimeout(giveNextOrder, 400);
+  } else {
+    playSound('wrong');
+    btn.style.animation = 'shake 0.4s ease';
+    setTimeout(() => { btn.style.animation=''; }, 500);
+    document.getElementById('battleResult').innerHTML = '<p class="text-red-600 text-sm">❌ 不是這邊哦，看清楚軍師要你去哪個門！</p>';
+    setTimeout(() => document.getElementById('battleResult').innerHTML='', 1500);
+  }
+}
+
+
+// === 遊戲2: 專心判斷 ===
+let focusCorrect = 0;
+function judgeFocus(el, isWrong) {
+  if (el.disabled) return;
+  // 選項：第一個是「專心致志」按鈕，第二個是「三心二意」按鈕
+  // 當 isWrong=true 表示正確答案是「三心二意」（因為情況是不專心）
+  // 按鈕順序: [專心btn, 三心btn]
+  const parent = el.parentElement;
+  const btns = parent.querySelectorAll('button');
+  btns.forEach(b => b.disabled = true);
+  
+  const correctBtn = isWrong ? btns[1] : btns[0];
+  const wrongBtn = isWrong ? btns[0] : btns[1];
+  
+  if (el === correctBtn) {
+    el.classList.add('correct');
+    playSound('correct');
+    focusCorrect++;
+  } else {
+    el.classList.add('wrong');
+    correctBtn.classList.add('correct');
+    playSound('wrong');
+  }
+  
+  // 判斷是否4題都答完（每題有2個按鈕）
+  const answeredCount = document.querySelectorAll('#poemContent .game-btn:disabled').length;
+  if (answeredCount >= 8) {
+    if (focusCorrect >= 3) {
+      document.getElementById('focusResult').classList.remove('hidden');
+      awardStar(0,2);
+    } else {
+      // 顯示再試一次提示
+      const res = document.getElementById('focusResult');
+      if (res) {
+        res.classList.remove('hidden');
+        res.innerHTML = '<p class="font-bold text-[#8B2323] text-xl">再想想哪些情況是不專心吧～</p><button class="btn-ancient btn-gold mt-2" onclick="resetFocusGame()">🔄 再試一次</button>';
+      }
+    }
+  }
+}
+
+// === 重置專心判斷遊戲 ===
+function resetFocusGame() {
+  focusCorrect = 0;
+  document.querySelectorAll('#poemContent .game-btn').forEach(b => {
+    b.disabled = false;
+    b.classList.remove('correct','wrong');
+  });
+  const res = document.getElementById('focusResult');
+  if (res) { res.classList.add('hidden'); res.innerHTML = '<p class="font-bold text-[#8B2323] text-xl">🎉 太棒了！</p><p class="section-text">不論學習還是做事，專心致志是成功的秘訣！別像想射天鵝的學生一樣三心二意哦。</p>'; }
+}
+
+// === 遊戲2: 變通小判官（動態打亂）===
+let _sitCorrect = 0, _sitDone = 0;
+function initSituationQuiz() {
+  _sitCorrect = 0; _sitDone = 0;
+  const container = document.getElementById('situations');
+  if (!container) return;
+  container.innerHTML = '';
+  const letters = ['A','B','C'];
+  const situations = [
+    { q:'情境一：下雨天你忘記帶雨傘，但是書包裡有一件大雨衣外套', opts:[{t:'一定要等雨傘，沒有雨傘絕對不走',c:false},{t:'先穿雨衣外套回家，明天再說',c:true},{t:'淋雨回家，因為本來就計劃走路回去',c:false}] },
+    { q:'情境二：做作業時發現鉛筆斷了，但是你還有原子筆', opts:[{t:'不寫了，等媽媽買回新鉛筆再說',c:false},{t:'先用原子筆寫，最後再謄寫或調整',c:true},{t:'發呆，甚麼都不做',c:false}] },
+    { q:'情境三：你計劃去公園玩，但是突然下大雨了', opts:[{t:'一定要去公園，下雨也照樣在室外玩',c:false},{t:'生氣大哭，今天的計劃毀了',c:false},{t:'改去室內的圖書館看書，也很開心',c:true}] }
+  ];
+  situations.forEach((q, qi) => {
+    const shuffled = shuffleArr(q.opts.map((o,i)=>({...o})));
+    const box = document.createElement('div');
+    box.className = 'bg-[rgba(74,123,168,0.08)] rounded-xl p-4';
+    box.dataset.sitq = qi;
+    let bh = `<p class="font-bold mb-2">${q.q}</p><div class="grid gap-2">`;
+    shuffled.forEach((o, i) => {
+      bh += `<button class="game-btn text-left" data-correct="${o.c?1:0}" onclick="situationAnswerNew(this)">${letters[i]}. ${o.t}</button>`;
+    });
+    bh += '</div>';
+    box.innerHTML = bh;
+    container.appendChild(box);
+  });
+}
+function situationAnswerNew(el) {
+  const parent = el.parentElement;
+  const box = parent.parentElement;
+  if (box.dataset.done) return;
+  box.dataset.done = '1';
+  const btns = parent.querySelectorAll('button');
+  btns.forEach(b => b.disabled = true);
+  const isRight = el.dataset.correct === '1';
+  btns.forEach(b => { if (b.dataset.correct === '1') b.classList.add('correct'); });
+  if (isRight) { el.classList.add('correct'); _sitCorrect++; playSound('correct'); }
+  else { el.classList.add('wrong'); playSound('wrong'); }
+  _sitDone++;
+  if (_sitDone >= 3 && _sitCorrect >= 3) {
+    document.getElementById('situationResult').classList.remove('hidden');
+    awardStar(1,2);
+  }
+}
+
+// === 遊戲2: 情緒溫度計 ===
+function updateMood(input, id) {
+  const val = parseInt(input.value);
+  const el = document.getElementById(id);
+  if (val < 30) el.textContent = id==='mood1' ? '😊 平靜放鬆' : '😊 滿心歡喜期待';
+  else if (val < 60) el.textContent = id==='mood1' ? '😐 淡淡惆悵' : '🤔 淡淡牽掛';
+  else if (val < 85) el.textContent = id==='mood1' ? '😔 有些難過' : '😟 擔心友人';
+  else el.textContent = id==='mood1' ? '😢 非常傷心離愁' : '😢 深切期盼擔憂';
+  playSound('click');
+}
+
+// === 遊戲2: 對對子 ===
+let matchSelected = null, matchCorrect = 0;
+function selectMatch(el, side, matchKey) {
+  if (el.classList.contains('correct') || el.classList.contains('wrong')) return;
+  playSound('click');
+  if (side === 'left') {
+    document.querySelectorAll('.match-left').forEach(b => b.style.boxShadow = '');
+    el.style.boxShadow = '0 0 0 3px #c83c3c';
+    matchSelected = el;
+  } else {
+    if (!matchSelected) { alert('請先點擊左邊的句子！'); return; }
+    if (matchSelected.dataset.match === matchKey) {
+      el.classList.add('correct');
+      matchSelected.classList.add('correct');
+      matchSelected.style.boxShadow = '';
+      matchSelected.disabled = true;
+      el.disabled = true;
+      playSound('correct');
+      matchCorrect++;
+      if (matchCorrect >= 4) {
+        document.getElementById('matchResult').innerHTML = '<div class="bg-red-50 border-2 border-red-300 rounded-xl p-4"><p class="font-bold text-red-800 text-lg">🏮 對對子成功！</p><p>「秦時明月漢時關」是互文手法，「龍城飛將」指李廣將軍！</p></div>';
+        awardStar(3,2);
+      }
+    } else {
+      el.classList.add('wrong');
+      matchSelected.classList.add('wrong');
+      playSound('wrong');
+      setTimeout(() => {
+        el.classList.remove('wrong');
+        matchSelected.classList.remove('wrong');
+        matchSelected.style.boxShadow = '';
+      }, 600);
+    }
+    matchSelected = null;
+  }
+}
+
+// === 遊戲2: 待客排序 ===
+const hostStepData = [
+  { icon: '🧹', name: '打開門前小路（掃花徑）', order: 1 },
+  { icon: '🚪', name: '打開大門迎接客人（為君開）', order: 2 },
+  { icon: '🍶', name: '準備飯菜和酒水', order: 3 },
+  { icon: '👴', name: '隔籬叫來鄰翁一起喝', order: 4 }
+];
+let hostSelected = [];
+function initHostSteps() {
+  const container = document.getElementById('hostSteps');
+  container.innerHTML = '';
+  hostSelected = [];
+  document.getElementById('hostOrder').innerHTML = '<p class="text-center text-gray-400">按你認為的順序點擊上面的卡片</p>';
+  document.getElementById('hostResult').innerHTML = '';
+  const shuffled = [...hostStepData].sort(()=>Math.random()-0.5);
+  shuffled.forEach(step => {
+    const btn = document.createElement('button');
+    btn.className = 'game-btn flex flex-col items-center py-3';
+    btn.dataset.order = step.order;
+    btn.innerHTML = `<span class="text-4xl mb-1">${step.icon}</span><span class="text-base text-center">${step.name}</span>`;
+    btn.onclick = () => selectHost(btn, step);
+    container.appendChild(btn);
+  });
+}
+function selectHost(btn, step) {
+  if (btn.disabled) return;
+  btn.disabled = true; btn.style.opacity = '0.5';
+  hostSelected.push(step);
+  playSound('click');
+  const order = document.getElementById('hostOrder');
+  if (hostSelected.length === 1) order.innerHTML = '';
+  const item = document.createElement('div');
+  item.className = 'flex items-center gap-2 px-3 py-2 bg-[#fff9ed] rounded-lg m-1 inline-flex';
+  item.innerHTML = `<span class="w-6 h-6 rounded-full bg-[#d4a84b] text-white text-base flex items-center justify-center">${hostSelected.length}</span><span>${step.icon} ${step.name}</span>`;
+  order.appendChild(item);
+  
+  if (hostSelected.length === 4) {
+    let correct = true;
+    for (let i = 0; i < 4; i++) if (hostSelected[i].order !== i+1) correct = false;
+    if (correct) {
+      playSound('win');
+      document.getElementById('hostResult').innerHTML = '<div class="bg-green-100 border-2 border-green-400 rounded-xl p-3"><p class="font-bold text-green-800">🎉 完全正確！</p><p>花徑不曾緣客掃，蓬門今始為君開！先掃徑開門，再備酒菜，最後邀請鄰翁同飲！</p></div>';
+      awardStar(4,2);
+    } else {
+      playSound('wrong');
+      document.getElementById('hostResult').innerHTML = '<div class="bg-yellow-100 border-2 border-yellow-400 rounded-xl p-3"><p class="font-bold text-yellow-800">順序不太對哦～</p><p>想想看：客人來之前要先準備甚麼？再試一次吧！</p></div>';
+    }
+  }
+}
+function resetHostOrder() { initHostSteps(); playSound('click'); }
+// patch prepareCount
+function prepareCount() { return 4; }
+// 覆蓋之前的錯誤函數
+function items_count_check() { return 4; }
+
+// === 三國小達人動態打亂初始化 ===
+function initTkQuiz() {
+  const container = document.getElementById('tkQuizContainer');
+  if (!container) return;
+  const tkQuestions = [
+    { q: '1. 八陣圖是誰創造的陣法？', opts: [ {t:'諸葛亮',c:true},{t:'劉備',c:false},{t:'關羽',c:false},{t:'曹操',c:false} ] },
+    { q: '2. 「三分國」是指哪三個國家？', opts: [ {t:'魏、蜀、吳',c:true},{t:'秦、漢、唐',c:false},{t:'韓、趙、魏',c:false},{t:'夏、商、周',c:false} ] },
+    { q: '3. 「江流石不轉」說的是甚麼？', opts: [ {t:'江水沖不走八陣圖的石頭，像諸葛亮的功績永垂不朽',c:true},{t:'石頭太重了，江水沖不動',c:false},{t:'石頭被黏住了',c:false} ] }
+  ];
+  const letters = ['A','B','C','D'];
+  let html = '';
+  tkQuestions.forEach((q, qi) => {
+    const shuffled = shuffleArr(q.opts.map((o,i)=>({...o,oi:i})));
+    const gridClass = shuffled.length > 3 ? 'grid grid-cols-2 gap-2' : 'grid gap-2';
+    html += `<div class="bg-white rounded-xl p-4 border-2 border-gray-100" data-tkq="${qi}"><p class="mb-2">${q.q}</p><div class="${gridClass}">`;
+    shuffled.forEach((o, i) => {
+      html += `<button class="game-btn ${shuffled.length > 3 ? '' : 'text-left'}" data-correct="${o.c?1:0}" onclick="tkQuizNew(this)">${letters[i]}. ${o.t}</button>`;
+    });
+    html += `</div></div>`;
+  });
+  container.innerHTML = html;
+  window._tkScore = 0; window._tkTotal = 0; window._tkDone = 0;
+}
+function tkQuizNew(btn) {
+  const parent = btn.parentElement;
+  const box = parent.parentElement;
+  if (box.dataset.done) return;
+  box.dataset.done = '1';
+  const btns = parent.querySelectorAll('button');
+  btns.forEach(b => b.disabled = true);
+  window._tkTotal = (window._tkTotal||0) + 1;
+  const isRight = btn.dataset.correct === '1';
+  btns.forEach(b => { if (b.dataset.correct === '1') b.classList.add('correct'); });
+  if (!isRight) btn.classList.add('wrong');
+  playSound(isRight ? 'correct' : 'wrong');
+  if (isRight) window._tkScore = (window._tkScore||0) + 1;
+  window._tkDone = (window._tkDone||0) + 1;
+  if (window._tkDone >= 3) {
+    const scoreText = document.getElementById('tkScoreText');
+    const res = document.getElementById('tkResult');
+    if (scoreText) scoreText.textContent = `你答對了 ${window._tkScore}/3 題！`;
+    if (res) {
+      res.classList.remove('hidden');
+      if (window._tkScore >= 2) awardStar(9,2);
+    }
+  }
+}
+
+// === 遊戲2: 找顏色拖拽 ===
+let currentColorDrag = null;
+function dragColor(e) {
+  currentColorDrag = e.target.dataset.color;
+  e.dataTransfer.effectAllowed = 'move';
+}
+function dropColor(e, el, expected) {
+  e.preventDefault();
+  el.classList.remove('drag-over');
+  if (el.dataset.done) return;
+  if (currentColorDrag === expected) {
+    el.classList.add('correct');
+    el.style.backgroundColor = currentColorDrag === 'white' ? 'white' : 
+                               currentColorDrag === 'red' ? '#dc2626' :
+                               currentColorDrag === 'gray' ? '#4b5563' :
+                               currentColorDrag === 'blue' ? '#60a5fa' : '#16a34a';
+    el.dataset.done = '1';
+    playSound('correct');
+    colorDropCorrect++;
+    if (colorDropCorrect >= 4) {
+      document.getElementById('colorDropResult').innerHTML = '<div class="bg-green-100 border-2 border-green-400 rounded-xl p-3"><p class="font-bold text-green-800">🎨 顏色配對成功！</p></div>';
+      awardStar(5,2);
+    }
+  } else {
+    el.classList.add('wrong');
+    playSound('wrong');
+    setTimeout(() => el.classList.remove('wrong'), 500);
+  }
+}
+let colorDropCorrect = 0;
+
+// === 遊戲2: 荷花canvas ===
+let lotusBrush = 'leaf', lotusCount = 0;
+function initLotusCanvas() {
+  lotusCount = 0;
+  const canvas = document.getElementById('lotusCanvas');
+  if (!canvas) return;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  canvas.onclick = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    lotusCount++;
+    if (lotusBrush === 'leaf') {
+      ctx.fillStyle = '#228B22';
+      ctx.beginPath();
+      ctx.ellipse(x, y, 25, 18, Math.random()*Math.PI, 0, Math.PI*2);
+      ctx.fill();
+      ctx.strokeStyle = '#145214';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x-20,y); ctx.lineTo(x+20,y); ctx.stroke();
+    } else {
+      ctx.fillStyle = '#FF69B4';
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath();
+        const a = i/6 * Math.PI*2;
+        ctx.ellipse(x+Math.cos(a)*10, y+Math.sin(a)*10, 12, 8, a, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#FFD700';
+      ctx.beginPath();
+      ctx.arc(x,y,8,0,Math.PI*2);
+      ctx.fill();
+    }
+    playSound('click');
+  };
+}
+function clearLotusCanvas() {
+  lotusCount = 0;
+  const canvas = document.getElementById('lotusCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  playSound('click');
+}
+
+// === 遊戲2: 獨處快樂 ===
+function toggleAlone(el) {
+  el.classList.toggle('correct');
+  playSound('click');
+}
+
+// === 遊戲2: 季節大風吹（動態打亂）===
+let _seasonRound = 0;
+function initSeasonQuiz() {
+  _seasonRound = 0;
+  const container = document.getElementById('seasonRounds');
+  if (!container) return;
+  container.innerHTML = '';
+  const questions = [
+    { q: '第一題：哪一種花是春天開的代表？', opts:[{t:'🌸 桃花',c:true},{t:'🍁 楓葉',c:false},{t:'❄️ 梅花',c:false}] },
+    { q: '第二題：哪種動物最先知道江水變暖？', opts:[{t:'🐟 魚兒',c:false},{t:'🦆 鴨子',c:true},{t:'🐸 青蛙',c:false}] },
+    { q: '第三題：蘆芽是甚麼季節才有的嫩芽？', opts:[{t:'🌱 春天',c:true},{t:'☀️ 夏天',c:false},{t:'🍂 秋天',c:false}] }
+  ];
+  questions.forEach((q, qi) => {
+    const shuffled = shuffleArr(q.opts.map((o,i)=>({...o})));
+    const box = document.createElement('div');
+    box.className = 'bg-white rounded-xl p-4 border-2 border-gray-100 shadow-sm' + (qi > 0 ? ' opacity-50' : '');
+    box.dataset.sround = qi;
+    let bh = `<p class="font-bold mb-3">${q.q}</p><div class="grid grid-cols-3 gap-2">`;
+    shuffled.forEach(o => {
+      bh += `<button class="game-btn py-3" data-correct="${o.c?1:0}" onclick="seasonPickNew(this)">${o.t}</button>`;
+    });
+    bh += '</div>';
+    box.innerHTML = bh;
+    container.appendChild(box);
+  });
+}
+function seasonPickNew(el) {
+  const parent = el.parentElement;
+  const box = parent.parentElement;
+  if (box.dataset.done) return;
+  box.dataset.done = '1';
+  const btns = parent.querySelectorAll('button');
+  btns.forEach(b => b.disabled = true);
+  const isRight = el.dataset.correct === '1';
+  btns.forEach(b => { if (b.dataset.correct === '1') b.classList.add('correct'); });
+  if (isRight) {
+    playSound('correct');
+    _seasonRound++;
+    const next = document.querySelector(`[data-sround="${_seasonRound}"]`);
+    if (next) { next.classList.remove('opacity-50'); }
+    else { document.getElementById('seasonResult').classList.remove('hidden'); awardStar(8,2); }
+  } else {
+    el.classList.add('wrong');
+    playSound('wrong');
+  }
+}
+
+// === 遊戲2: 三國問答 ===
+let tkScore = 0, tkTotal = 0;
+function tkQuiz(el, correct) {
+  // 已由 tkQuizNew 動態打亂版取代，舊函數不再執行
+  return;
+}
+
+// === 遊戲2: 竹里館 獨處的快樂 ===
+function toggleAlone(el) {
+  if (el.classList.contains('correct')) {
+    el.classList.remove('correct');
+    el.style.background = 'rgba(255,255,255,0.9)';
+    playSound('click');
+  } else {
+    el.classList.add('correct');
+    el.style.background = 'rgba(90,140,90,0.2)';
+    el.style.borderColor = '#5a8c5a';
+    playSound('correct');
+  }
+}
+
+// === 平仄遊戲 ===
+const pingzeWords = [
+  { char: '山', pingze: 'ping' },
+  { char: '月', pingze: 'ze' },
+  { char: '花', pingze: 'ping' },
+  { char: '竹', pingze: 'ze' },
+  { char: '風', pingze: 'ping' },
+  { char: '葉', pingze: 'ze' },
+  { char: '雲', pingze: 'ping' },
+  { char: '雪', pingze: 'ze' },
+  { char: '春', pingze: 'ping' },
+  { char: '夜', pingze: 'ze' }
+];
+let pingzePool = [], pingzeCorrect = 0;
+function initPingZeGame() {
+  pingzePool = [...pingzeWords].sort(() => Math.random()-0.5).slice(0,6);
+  pingzeCorrect = 0;
+  const wordsDiv = document.getElementById('pingzeWords');
+  wordsDiv.innerHTML = '';
+  document.getElementById('pingBucket').innerHTML = '';
+  document.getElementById('zeBucket').innerHTML = '';
+  document.getElementById('pingzeResult').innerHTML = '';
+  pingzePool.forEach(w => {
+    const el = document.createElement('div');
+    el.className = 'w-14 h-14 rounded-xl bg-white border-2 border-[#d4a84b] flex items-center justify-center text-2xl font-brush cursor-grab shadow-md hover:scale-110 transition-all';
+    el.textContent = w.char;
+    el.draggable = true;
+    el.dataset.pingze = w.pingze;
+    el.ondragstart = (e) => { e.dataTransfer.setData('text', w.char); currentPingZeDrag = el; };
+    wordsDiv.appendChild(el);
+  });
+}
+let currentPingZeDrag = null;
+function dropPingZe(e, el, bucketType) {
+  e.preventDefault();
+  el.classList.remove('drag-over');
+  if (!currentPingZeDrag) return;
+  const expected = currentPingZeDrag.dataset.pingze;
+  if (expected === bucketType) {
+    el.classList.add('correct');
+    currentPingZeDrag.style.opacity = '0';
+    currentPingZeDrag.style.pointerEvents = 'none';
+    const chip = document.createElement('span');
+    chip.className = 'text-2xl font-brush m-1';
+    chip.textContent = currentPingZeDrag.textContent;
+    el.appendChild(chip);
+    playSound('correct');
+    pingzeCorrect++;
+    if (pingzeCorrect >= 6) {
+      document.getElementById('pingzeResult').innerHTML = '<div class="bg-gradient-to-r from-yellow-100 to-red-100 border-2 border-[#d4a84b] rounded-xl p-4 mt-3"><p class="font-bold text-[#8B2323] text-lg">🏆 平仄小大師！</p><p>你已經能分辨平聲和仄聲了！平聲拉長讀，仄聲短促讀，古詩讀起來就會像唱歌一樣好聽哦。</p></div>';
+      awardStar('meter', 3);
+      playSound('win');
+    }
+  } else {
+    el.classList.add('wrong');
+    playSound('wrong');
+    setTimeout(() => el.classList.remove('wrong'), 500);
+  }
+  currentPingZeDrag = null;
+}
+
+// Override awardStar for meter
+const _origAwardStar = awardStar;
+awardStar = function(poemId, count) {
+  if (poemId === 'meter') {
+    // meter star: add a special one
+    const el = document.getElementById('totalStars');
+    let total = parseInt(el.textContent) + count;
+    el.textContent = total;
+    playSound('win');
+    return;
+  }
+  _origAwardStar(poemId, count);
+};
+
+// 初始化
+renderPoemGrid();
+updateStars();
+
+// 覆蓋 openPoem 加入額外初始化（不再遞歸調用自己）
+const _origOpenPoem = openPoem;
+openPoem = function(id) {
+  _origOpenPoem(id);
+  // 打開詩頁預設在學習tab，不提前初始化遊戲，切換到遊戲tab時再初始化，避免null錯誤
+};
+
+</script>
+</body>
+</html>
